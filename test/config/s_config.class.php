@@ -1,7 +1,7 @@
 <?php
 /***************************************************************************************************************************/
 /**
-    COBRA Security Administration Layer
+    ANDISOL Object Model Layer
     
     © Copyright 2018, Little Green Viper Software Development LLC.
     
@@ -106,14 +106,6 @@ class CO_Config {
      */
     static function db_classes_extension_class_dir() {
         return self::chameleon_db_classes_extension_class_dir();
-    }
-    
-    /***********************/
-    /**
-    \returns the POSIX path to the CHAMELEON testing directory.
-     */
-    static function test_class_dir() {
-        return self::base_dir().'/test';
     }
     
     /***********************/
