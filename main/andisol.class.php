@@ -47,6 +47,7 @@ class Andisol {
     private $_cobra_instance = NULL;        ///< This is the COBRA instance.
     
     var $version;                           ///< The version indicator.
+    var $error;                             ///< Any errors that occured are kept here.
         
     /***********************************************************************************************************************/    
     /***********************/
@@ -55,9 +56,68 @@ class Andisol {
     
     We declare it private to prevent it being instantiated outside the factory.
      */
-	private function __construct(    $in_chameleon_instance = NULL   ///< The CHAMELEON instance associated with this COBRA instance.
+	public function __construct(    $in_login_id = NULL,        ///< The login ID
+                                    $in_hashed_password = NULL, ///< The password, crypt-hashed
+                                    $in_raw_password = NULL     ///< The password, cleartext.
 	                            ) {
-	    $this->_chameleon_instance = $in_chameleon_instance;
+        $this->class_description = 'The main model interface class.';
 	    $this->version = __ANDISOL_VERSION__;
+	    
+	    // The first thing we do, is set up any login instance, as well as any possible COBRA instance.
+        $chameleon_instance = new CO_Chameleon($in_login_id, $in_hashed_password, $in_raw_password);
+        if (isset($chameleon_instance) && ($chameleon_instance instanceof CO_Chameleon)) {
+            if ($chameleon_instance->valid) {
+                $this->_chameleon_instance = $chameleon_instance;
+                
+                $login_item = $chameleon_instance->get_login_item();
+                
+                // COBRA requires a manager (or God).
+                if (isset($login_item) && ($chameleon_instance->god_mode() || ($login_item instanceof CO_Login_Manager))) {
+                    $cobra_instance = CO_Cobra::make_cobra($chameleon_instance);
+        
+                    if (isset($cobra_instance) && ($cobra_instance instanceof CO_Cobra)) {
+                        $this->_cobra_instance = $cobra_instance;
+                    } elseif (isset($cobra_instance) && ($cobra_instance->error instanceof LGV_Error)) {
+                        $this->error = $cobra_instance->error;
+                    }
+                }
+            } elseif (isset($chameleon_instance) && ($chameleon_instance->error instanceof LGV_Error)) {
+                $this->error = $chameleon_instance->error;
+            }
+        }
+        
+        // At this point, we have (or have not) logged in, and any infrastructure for logged-in operations is in place.
+    }
+    
+    /***********************/
+    /**
+    \returns TRUE, if we have an active database connection (as represented by an active CHAMELEON instance).
+     */
+    public function valid() {
+        return isset($this->_chameleon_instance) && ($this->_chameleon_instance instanceof CO_Chameleon);
+    }
+    
+    /***********************/
+    /**
+    \returns TRUE, if we have actually logged into the CHAMELEON instance.
+     */
+    public function logged_in() {
+        return $this->valid() && ($this->_chameleon_instance->get_login_item() instanceof CO_Security_Login);
+    }
+    
+    /***********************/
+    /**
+    \returns TRUE, if we are logged in as a COBRA Login Manager.
+     */
+    public function manager() {
+        return isset($this->_cobra_instance) && ($this->_cobra_instance instanceof CO_Cobra);
+    }
+    
+    /***********************/
+    /**
+    \returns TRUE, if we are logged in as the "God" admin ID.
+     */
+    public function god() {
+        return $this->valid() && $this->_chameleon_instance->god_mode();
     }
 };

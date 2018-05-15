@@ -22,6 +22,7 @@ function instance_run_tests() {
 // -------------------------------- TESTS ---------------------------------------------
 
 function instance_test_01($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
 }
 
 // -------------------------------- STRUCTURE ---------------------------------------------

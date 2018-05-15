@@ -29,20 +29,19 @@
     
     require_once(CO_Config::main_class_dir().'/andisol.class.php');
     
-    function make_chameleon($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
-        $chameleon_instance = NULL;
+    function make_andisol($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+        $andisol_instance = new Andisol($in_login, $in_hashed_password, $in_password);
     
-        $chameleon_instance = new CO_Chameleon($in_login, $in_hashed_password, $in_password);
-        if (isset($chameleon_instance) && $chameleon_instance) {
-            if ($chameleon_instance->valid) {
-                echo("<h2 style=\"color:green;\">The CHAMELEON instance is valid!</h2>");
-            } else {
-                echo("<h2 style=\"color:red;font-weight:bold\">The CHAMELEON instance is not valid!</h2>");
-                echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$chameleon_instance->error->error_code.') '.$chameleon_instance->error->error_name.' ('.$chameleon_instance->error->error_description.')</p>');
-            }
+        if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
+            echo("<h2 style=\"color:green;font-weight:bold\">The ANDISOL instance is valid!</h2>");
+        } elseif (isset($andisol_instance) && ($andisol_instance->error instanceof LGV_Error)) {
+            echo("<h2 style=\"color:red;font-weight:bold\">The ANDISOL instance is not valid!</h2>");
+            echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance->error->error_code.') '.$andisol_instance->error->error_name.' ('.$andisol_instance->error->error_description.')</p>');
+        } else {
+            echo("<h2 style=\"color:red;font-weight:bold\">The ANDISOL instance is not valid!</h2>");
         }
     
-        return $chameleon_instance;
+        return $andisol_instance;
     }
     
     function make_cobra($chameleon_instance = NULL) {
