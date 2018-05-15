@@ -16,13 +16,88 @@ require_once(dirname(dirname(__FILE__)).'/functions.php');
 // -------------------------------- TEST DISPATCHER ---------------------------------------------
 
 function instance_run_tests() {
-    instance_run_test(1, 'TEST 1', 'This is a Test', 'king-cobra', NULL, 'CoreysGoryStory');
+    instance_run_test(1, 'PASS -Simple Instantiation -No Login', 'We create an instance of ANDISOL with no login, and make sure its valid.');
+    instance_run_test(2, 'PASS -Simple Instantiation -Basic Login', 'We create an instance of ANDISOL with a basic user login, make sure its valid, and that it registers as logged in.', 'krait', NULL, 'CoreysGoryStory');
+    instance_run_test(3, 'PASS -Simple Instantiation -Manager Login', 'We create an instance of ANDISOL with a manager user login, make sure its valid, and that it registers as a manager user.', 'asp', NULL, 'CoreysGoryStory');
+    instance_run_test(4, 'PASS -Simple Instantiation -God Login', 'We create an instance of ANDISOL with a God user login, make sure its valid, and that it registers as a God user.', 'admin', NULL, CO_Config::$god_mode_password);
+    instance_run_test(5, 'FAIL -Simple Instantiation -No Login', 'We create an instance of ANDISOL with no login, and see if it registers as a login. It should fail.');
+    instance_run_test(6, 'FAIL -Simple Instantiation -No Login', 'We create an instance of ANDISOL with no login, and see if it registers as a manager. It should fail.');
+    instance_run_test(7, 'FAIL -Simple Instantiation -No Login', 'We create an instance of ANDISOL with no login, and see if it registers as a god. It should fail.');
+    instance_run_test(8, 'FAIL -Simple Instantiation -Basic Login', 'We create an instance of ANDISOL with a basic login, and see if it registers as a manager. It should fail.', 'krait', NULL, 'CoreysGoryStory');
+    instance_run_test(9, 'FAIL -Simple Instantiation -Basic Login', 'We create an instance of ANDISOL with a basic login, and see if it registers as a god. It should fail.', 'krait', NULL, 'CoreysGoryStory');
+    instance_run_test(10, 'FAIL -Simple Instantiation -Manager Login', 'We create an instance of ANDISOL with a manager user login, make sure its valid, that it registers as a manager user, but not as a God user.', 'asp', NULL, 'CoreysGoryStory');
 }
 
 // -------------------------------- TESTS ---------------------------------------------
 
 function instance_test_01($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
-    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    return make_andisol($in_login, $in_hashed_password, $in_password);
+}
+
+function instance_test_02($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = instance_test_01($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        if ($andisol_instance->logged_in()) {
+            echo('<h4 style="color:green">The ANDISOL instance is logged in.</h4>');
+        } else {
+            echo('<h4 style="color:red;font-weight:bold">The ANDISOL instance is not logged in!</h4>');
+        }
+    }
+    
+    return $andisol_instance;
+}
+
+function instance_test_03($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = instance_test_02($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        if ($andisol_instance->manager()) {
+            echo('<h4 style="color:green">The ANDISOL instance is logged in as a manager.</h4>');
+        } else {
+            echo('<h4 style="color:red;font-weight:bold">The ANDISOL instance is not logged in as a manager!</h4>');
+        }
+    }
+    
+    return $andisol_instance;
+}
+
+function instance_test_04($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = instance_test_03($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        if ($andisol_instance->god()) {
+            echo('<h4 style="color:green">The ANDISOL instance is logged in as a God.</h4>');
+        } else {
+            echo('<h4 style="color:red;font-weight:bold">The ANDISOL instance is not logged in as God!</h4>');
+        }
+    }
+    
+    return $andisol_instance;
+}
+
+function instance_test_05($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    instance_test_02($in_login, $in_hashed_password, $in_password);
+}
+
+function instance_test_06($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    instance_test_03($in_login, $in_hashed_password, $in_password);
+}
+
+function instance_test_07($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    instance_test_04($in_login, $in_hashed_password, $in_password);
+}
+
+function instance_test_08($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    instance_test_03($in_login, $in_hashed_password, $in_password);
+}
+
+function instance_test_09($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    instance_test_04($in_login, $in_hashed_password, $in_password);
+}
+
+function instance_test_10($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    instance_test_04($in_login, $in_hashed_password, $in_password);
 }
 
 // -------------------------------- STRUCTURE ---------------------------------------------
@@ -52,7 +127,7 @@ ob_start();
         echo('<div id="instance-tests" class="closed">');
             echo('<h2 class="header"><a href="javascript:toggle_main_state(\'instance-tests\')">BASIC ANDISOL INSTANTIATION TESTS</a></h2>');
             echo('<div class="container">');
-                echo('<p class="explain"></p>');
+                echo('<p class="explain">These tests exercise the most fundamental aspects of ANDISOL -Just instantiating and making sure the logins are correct.</p>');
             
                 $start = microtime(TRUE);
                 
