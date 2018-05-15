@@ -25,6 +25,7 @@ class CO_Config {
     /***********************************************************************************************************************/
     
     static $lang = 'en';
+    static $min_pw_len = 8;                                     // The minimum password length.
     
     static $god_mode_password = 'BWU-HA-HAAAA-HA!';
     

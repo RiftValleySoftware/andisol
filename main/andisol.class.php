@@ -39,8 +39,13 @@ if ( !defined('LGV_LANG_CATCHER') ) {
 require_once($lang_file);
 require_once($lang_common_file);
 
-/***************************************************************************************************************************/
+/****************************************************************************************************************************/
 /**
+This class is the principal Model layer interface for the Rift Valley Platform. You instantiate an instance of this class, and
+it, in turn, will create an instance of CHAMELEON/BADGER, and, possibly, an instance of COBRA. That establishes a connection
+to the lower level data storage and security infrastructure.
+
+You are to use this class for ALL access to the lower level functionality.
  */
 class Andisol {
     private $_chameleon_instance = NULL;    ///< This is the CHAMELEON instance.
@@ -49,12 +54,10 @@ class Andisol {
     var $version;                           ///< The version indicator.
     var $error;                             ///< Any errors that occured are kept here.
         
-    /***********************************************************************************************************************/    
+    /************************************************************************************************************************/    
     /***********************/
     /**
     The constructor.
-    
-    We declare it private to prevent it being instantiated outside the factory.
      */
 	public function __construct(    $in_login_id = NULL,        ///< The login ID
                                     $in_hashed_password = NULL, ///< The password, crypt-hashed
@@ -89,6 +92,10 @@ class Andisol {
         // At this point, we have (or have not) logged in, and any infrastructure for logged-in operations is in place.
     }
     
+    /************************************************************************************************************************/    
+    /*                                              BASIC LOGIN STATUS QUERIES                                              */
+    /************************************************************************************************************************/    
+
     /***********************/
     /**
     \returns TRUE, if we have an active database connection (as represented by an active CHAMELEON instance).
