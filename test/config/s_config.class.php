@@ -105,7 +105,7 @@ class CO_Config {
     \returns the POSIX path to the user-defined extended database row classes.
      */
     static function db_classes_extension_class_dir() {
-        return self::chameleon_db_classes_extension_class_dir();
+        return self::cobra_db_classes_extension_class_dir();
     }
     
     /***********************/

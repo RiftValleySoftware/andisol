@@ -23,40 +23,25 @@
         require_once($config_file_path);
     }
     
-    if ( !defined('LGV_ANDISOL_CATCHER') ) {
-        define('LGV_ANDISOL_CATCHER', 1);
-    }
-    
-    require_once(CO_Config::main_class_dir().'/andisol.class.php');
-    
     function make_andisol($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+        if ( !defined('LGV_ANDISOL_CATCHER') ) {
+            define('LGV_ANDISOL_CATCHER', 1);
+        }
+    
+        require_once(CO_Config::main_class_dir().'/andisol.class.php');
+    
         $andisol_instance = new Andisol($in_login, $in_hashed_password, $in_password);
     
-        if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
+        if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
             echo("<h2 style=\"color:green;font-weight:bold\">The ANDISOL instance is valid!</h2>");
         } elseif (isset($andisol_instance) && ($andisol_instance->error instanceof LGV_Error)) {
             echo("<h2 style=\"color:red;font-weight:bold\">The ANDISOL instance is not valid!</h2>");
             echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance->error->error_code.') '.$andisol_instance->error->error_name.' ('.$andisol_instance->error->error_description.')</p>');
         } else {
-            echo("<h2 style=\"color:red;font-weight:bold\">The ANDISOL instance is not valid!</h2>");
+            echo("<h2 style=\"color:red;font-weight:bold\">The ANDISOL instance was not instantiated!</h2>");
         }
     
         return $andisol_instance;
-    }
-    
-    function make_cobra($chameleon_instance = NULL) {
-        $cobra_instance = CO_Cobra::make_cobra($chameleon_instance);
-        
-        if (isset($cobra_instance) && ($cobra_instance instanceof CO_Cobra)) {
-            echo("<h2 style=\"color:green;\">The COBRA instance is valid!</h2>");
-        } elseif ($cobra_instance instanceof LGV_Error) {
-            echo("<h2 style=\"color:red;font-weight:bold\">The COBRA instance is not valid!</h2>");
-            echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$cobra_instance->error_code.') '.$cobra_instance->error_name.' ('.$cobra_instance->error_description.')</p>');
-        } else {
-            echo("<h2 style=\"color:red;font-weight:bold\">The COBRA instance is not valid!</h2>");
-        }
-    
-        return $cobra_instance;
     }
     
     function prepare_databases($in_file_prefix) {
