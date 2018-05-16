@@ -101,7 +101,7 @@ class Andisol {
     \returns TRUE, if we have an active database connection (as represented by an active CHAMELEON instance).
      */
     public function valid() {
-        return isset($this->_chameleon_instance) && ($this->_chameleon_instance instanceof CO_Chameleon);
+        return (NULL != $this->get_chameleon_instance()) && ($this->get_chameleon_instance() instanceof CO_Chameleon);
     }
     
     /***********************/
@@ -109,15 +109,15 @@ class Andisol {
     \returns TRUE, if we have actually logged into the CHAMELEON instance.
      */
     public function logged_in() {
-        return $this->valid() && ($this->_chameleon_instance->get_login_item() instanceof CO_Security_Login);
+        return $this->valid() && ($this->get_chameleon_instance()->get_login_item() instanceof CO_Security_Login);
     }
     
     /***********************/
     /**
-    \returns TRUE, if we are logged in as a COBRA Login Manager.
+    \returns TRUE, if we are logged in as a COBRA Login Manager or as God.
      */
     public function manager() {
-        return isset($this->_cobra_instance) && ($this->_cobra_instance instanceof CO_Cobra);
+        return (NULL != $this->get_cobra_instance()) && ($this->get_cobra_instance() instanceof CO_Cobra);
     }
     
     /***********************/
@@ -125,8 +125,25 @@ class Andisol {
     \returns TRUE, if we are logged in as the "God" admin ID.
      */
     public function god() {
-        return $this->valid() && $this->_chameleon_instance->god_mode();
+        return $this->valid() && $this->get_chameleon_instance()->god_mode();
     }
+    
+    /***********************/
+    /**
+    \returns The COBRA instance. It will be NULL if the current login is not a manager or God.
+     */
+    public function get_cobra_instance() {
+        return $this->_cobra_instance;
+    }
+    
+    /***********************/
+    /**
+    \returns The CHAMELEON instance.
+     */
+    public function get_chameleon_instance() {
+        return $this->_chameleon_instance;
+    }
+
     /***********************/
     /**
     This returns the actual security DB login item for the requested user (or the current logged-in user).
@@ -137,7 +154,7 @@ class Andisol {
      */
     public function get_login_item( $in_login_id = NULL ///< The integer login ID to check. If not-NULL, then the ID of a login instance. It must be one that the current user can see. If NULL, then the current user.
                                     ) {
-        return $this->_chameleon_instance->get_login_item($in_login_id);
+        return $this->get_chameleon_instance()->get_login_item($in_login_id);
     }
         
     /***********************/
@@ -148,9 +165,9 @@ class Andisol {
                                             $in_make_user_if_necessary = FALSE  ///< If TRUE (Default is FALSE), then the user will be created if it does not already exist. Ignored, if we are not a Login Manager.
                                         ) {
         if ($in_make_user_if_necessary && $this->manager()) {   // See if we are a manager, and they want to maybe create a new user.
-            return $this->_cobra_instance->get_user_from_login($in_login_id, $in_make_user_if_necessary);
+            return $this->get_cobra_instance()->get_user_from_login($in_login_id, $in_make_user_if_necessary);
         } else {
-            return $this->_chameleon_instance->get_user_from_login($in_login_id);
+            return $this->get_chameleon_instance()->get_user_from_login($in_login_id);
         }
     }
     
@@ -168,5 +185,82 @@ class Andisol {
      */
     public function current_user() {
         return $this->get_user_from_login();
+    }
+    
+    /***********************/
+    /**
+    This is a "generic" data search. It can be called from external user contexts, and allows a fairly generalized search of the "data" datasource.
+    Sorting will be done for the "owner" and "location" values. "owner" will be sorted by the ID of the returned records, and "location" will be by distance from the center.
+    
+    If you add an element called 'use_like' ('use_like' => 1) to the end of one of the search arrays, then you can use SQL-style "wildcards" (%) in your matches.
+    
+    Strings are always forced lowercase.
+    
+    \returns an array of instances that match the search parameters. If $count_only is TRUE, then it will be a single integer, with the count of responses to the search (if a page, then only the number of items on that page).
+     */
+    public function generic_search( $in_search_parameters = NULL,   /**< This is an associative array of terms to define the search. The keys should be:
+                                                                        - 'id'
+                                                                            This should be accompanied by an array of one or more integers, representing specific item IDs.
+                                                                        - 'access_class'
+                                                                            This should be accompanied by an array, containing one or more PHP class names.
+                                                                        - 'name'
+                                                                            This will contain a case-insensitive array of strings to check against the object_name column.
+                                                                        - 'owner'
+                                                                            This should be accompanied by an array of one or more integers, representing specific item IDs for "owner" objects.
+                                                                        - 'tags'
+                                                                            This should be accompanied by an array (up to 10 elements) of one or more case-insensitive strings, representing specific tag values.
+                                                                        - 'location'
+                                                                            This requires that the parameter be a 3-element associative array of floating-point numbers:
+                                                                                - 'longtude'
+                                                                                    This is the search center location longitude, in degrees.
+                                                                                - 'latitude'
+                                                                                    This is the search center location latitude, in degrees.
+                                                                                - 'radius'
+                                                                                    This is the search radius, in Kilometers.
+                                                                    */
+                                    $or_search = FALSE,             ///< If TRUE, then the search is very wide (OR), as opposed to narrow (AND), by default. If you specify a location, then that will always be AND, but the other fields can be OR.
+                                    $page_size = 0,                 ///< If specified with a 1-based integer, this denotes the size of a "page" of results. NOTE: This is only applicable to MySQL or Postgres, and will be ignored if the DB is not MySQL or Postgres.
+                                    $initial_page = 0,              ///< This is ignored unless $page_size is greater than 0. If so, then this 0-based index will specify which page of results to return.
+                                    $and_writeable = FALSE,         ///< If TRUE, then we only want records we can modify.
+                                    $count_only = FALSE,            ///< If TRUE (default is FALSE), then only a single integer will be returned, with the count of items that fit the search.
+                                    $ids_only = FALSE               ///< If TRUE (default is FALSE), then the return array will consist only of integers (the object IDs). If $count_only is TRUE, this is ignored.
+                                    ) {
+        return $this->get_chameleon_instance()->generic_search($in_search_parameters, $or_search, $page_size, $initial_page, $and_writeable, $count_only, $ids_only);
+    }
+    
+    /***********************/
+    /**
+    \returns an array of instances of all the logins that are visible to the current user (or a supplied user, if in "God" mode).
+     */
+    public function get_all_logins( $and_write = FALSE,         ///< If TRUE, then we only want ones we have write access to.
+                                    $in_login_id = NULL,        ///< This is ignored, unless this is the God login. If We are logged in as God, then we can select a login via its string login ID, and see what logins are available to it.
+                                    $in_login_integer_id = NULL ///< This is ignored, unless this is the God login and $in_login_id is not specified. If We are logged in as God, then we can select a login via its integer login ID, and see what logins are available to it.
+                                    ) {
+        $ret = Array();
+        
+        if ($this->manager()) { // Don't even bother unless we're a manager.
+            return $this->get_cobra_instance()->get_all_logins($and_write, $in_login_id, $in_login_integer_id);
+        }
+        
+        return $ret;
+    }
+    
+    /***********************/
+    /**
+    Test an item to see which logins can access it.
+    
+    This is security-limited.
+    
+    \returns an array of instances of CO_Security_Login (Security Database login) items that can read/see the given item. If the read ID is 0 (open), then the function simply returns TRUE. If nothing can see the item, then FALSE is returned.
+     */
+    public function who_can_see(    $in_test_target ///< This is a subclass of A_CO_DB_Table_Base (General Database Record).
+                                ) {
+        $ret = Array();
+        
+        if ($this->manager()) { // Don't even bother unless we're a manager.
+            return $this->get_cobra_instance()->who_can_see($in_test_target);
+        }
+        
+        return $ret;
     }
 };
