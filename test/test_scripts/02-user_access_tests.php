@@ -31,6 +31,22 @@ function user_visibility_run_tests() {
     user_access_run_test(20, 'PASS - God Login', 'We create an instance of ANDISOL with the "God" login, and try to see other users.', 'admin', '', CO_Config::$god_mode_password);
 }
 
+function login_run_tests() {
+    user_access_run_test(21, 'FAIL - No Login', 'We create an instance of ANDISOL with no login, and try to see other logins.');
+    user_access_run_test(22, 'FAIL - Fundamental Login', 'We create an instance of ANDISOL with a "fundamental" (BADGER-level) login, and try to see other logins.', 'norm', '', 'CoreysGoryStory');
+    user_access_run_test(23, 'FAIL - Basic Login', 'We create an instance of ANDISOL with a basic COBRA login, and try to see other logins.', 'krait', '', 'CoreysGoryStory');
+    user_access_run_test(24, 'FAIL - Manager Login', 'We create an instance of ANDISOL with a COBRA Login manager login, and try to see other logins.', 'asp', '', 'CoreysGoryStory');
+    user_access_run_test(25, 'PASS - God Login', 'We create an instance of ANDISOL with the "God" login, and try to see other logins.', 'admin', '', CO_Config::$god_mode_password);
+}
+
+function create_run_tests() {
+    user_access_run_test(26, 'FAIL - No Login', 'We create an instance of ANDISOL with no login, and try to create a user for a login with no user.');
+    user_access_run_test(27, 'FAIL - Fundamental Login', 'We create an instance of ANDISOL with a "fundamental" (BADGER-level) login, and try to create a user for a login with no user.', 'norm', '', 'CoreysGoryStory');
+    user_access_run_test(28, 'FAIL - Basic Login', 'We create an instance of ANDISOL with a basic COBRA login, and try to create a user for a login with no user.', 'krait', '', 'CoreysGoryStory');
+    user_access_run_test(29, 'PASS - Manager Login', 'We create an instance of ANDISOL with a COBRA Login manager login, and try to create a user for a login with no user.', 'asp', '', 'CoreysGoryStory');
+    user_access_run_test(30, 'PASS - God Login', 'We create an instance of ANDISOL with the "God" login, and try to create a user for another login with no user.', 'admin', '', CO_Config::$god_mode_password);
+}
+
 // -------------------------------- TESTS ---------------------------------------------
 
 function user_access_test_11($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
@@ -83,7 +99,7 @@ function user_access_test_17($in_login = NULL, $in_hashed_password = NULL, $in_p
         if ($user_item) {
             display_record($user_item);
         } else {
-            echo('<h3 style="color:red">The User (2) Was Not Found!</h3>');
+            echo('<h3 style="color:red">The User (Login 2) Was Not Found!</h3>');
         }
         
         $user_item = $andisol_instance->get_user_from_login(3);
@@ -91,7 +107,7 @@ function user_access_test_17($in_login = NULL, $in_hashed_password = NULL, $in_p
         if ($user_item) {
             display_record($user_item);
         } else {
-            echo('<h3 style="color:red">The User (3) Was Not Found!</h3>');
+            echo('<h3 style="color:red">The User (Login 3) Was Not Found!</h3>');
         }
         
         $user_item = $andisol_instance->get_user_from_login(6);
@@ -99,7 +115,7 @@ function user_access_test_17($in_login = NULL, $in_hashed_password = NULL, $in_p
         if ($user_item) {
             display_record($user_item);
         } else {
-            echo('<h3 style="color:red">The User (6) Was Not Found!</h3>');
+            echo('<h3 style="color:red">The User (Login 6) Was Not Found!</h3>');
         }
     }
 }
@@ -114,6 +130,100 @@ function user_access_test_19($in_login = NULL, $in_hashed_password = NULL, $in_p
 
 function user_access_test_20($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     user_access_test_17($in_login, $in_hashed_password, $in_password);
+}
+
+function user_access_test_21($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $login_item = $andisol_instance->get_login_item(2);
+        
+        if ($login_item) {
+            display_record($login_item);
+        } else {
+            echo('<h3 style="color:red">The Login (2) Was Not Found!</h3>');
+        }
+        
+        $login_item = $andisol_instance->get_login_item(3);
+        
+        if ($login_item) {
+            display_record($login_item);
+        } else {
+            echo('<h3 style="color:red">The Login (3) Was Not Found!</h3>');
+        }
+        
+        $login_item = $andisol_instance->get_login_item(4);
+        
+        if ($login_item) {
+            display_record($login_item);
+        } else {
+            echo('<h3 style="color:red">The Login (4) Was Not Found!</h3>');
+        }
+        
+        $login_item = $andisol_instance->get_login_item(6);
+        
+        if ($login_item) {
+            display_record($login_item);
+        } else {
+            echo('<h3 style="color:red">The Login (6) Was Not Found!</h3>');
+        }
+    }
+}
+
+function user_access_test_22($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    user_access_test_21($in_login, $in_hashed_password, $in_password);
+}
+
+function user_access_test_23($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    user_access_test_21($in_login, $in_hashed_password, $in_password);
+}
+
+function user_access_test_24($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    user_access_test_21($in_login, $in_hashed_password, $in_password);
+}
+
+function user_access_test_25($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    user_access_test_21($in_login, $in_hashed_password, $in_password);
+}
+
+function user_access_test_26($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $user_item = $andisol_instance->get_user_from_login(4, true);
+        
+        if ($user_item) {
+            display_record($user_item);
+        } else {
+            echo('<h3 style="color:red">The User (Login 4) Was Not Created!</h3>');
+        }
+    }
+}
+
+function user_access_test_27($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    user_access_test_26($in_login, $in_hashed_password, $in_password);
+}
+
+function user_access_test_28($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    user_access_test_26($in_login, $in_hashed_password, $in_password);
+}
+
+function user_access_test_29($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    user_access_test_26($in_login, $in_hashed_password, $in_password);
+}
+
+function user_access_test_30($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $user_item = $andisol_instance->get_user_from_login(5, true);
+        
+        if ($user_item) {
+            display_record($user_item);
+        } else {
+            echo('<h3 style="color:red">The User (Login 5) Was Not Created!</h3>');
+        }
+    }
 }
 
 // -------------------------------- STRUCTURE ---------------------------------------------
@@ -141,7 +251,7 @@ ob_start();
     echo('<div class="test-wrapper" style="display:table;margin-left:auto;margin-right:auto;text-align:left">');
         echo('<h1 class="header">USER TESTS</h1>');
         echo('<div id="user_access-tests" class="closed">');
-            echo('<h2 class="header"><a href="javascript:toggle_main_state(\'user_access-tests\')">ANDISOL LOGGED-IN USER ACCESS TESTS</a></h2>');
+            echo('<h2 class="header"><a href="javascript:toggle_main_state(\'user_access-tests\')">LOGGED-IN USER ACCESS TESTS</a></h2>');
             echo('<div class="container">');
                 echo('<p class="explain"></p>');
             
@@ -155,13 +265,41 @@ ob_start();
         echo('</div>');
         
         echo('<div id="user_visibility-tests" class="closed">');
-            echo('<h2 class="header"><a href="javascript:toggle_main_state(\'user_visibility-tests\')">ANDISOL LOGGED-IN USER CROSS-VISIBILITY TESTS</a></h2>');
+            echo('<h2 class="header"><a href="javascript:toggle_main_state(\'user_visibility-tests\')">LOGGED-IN USER CROSS-VISIBILITY TESTS</a></h2>');
             echo('<div class="container">');
                 echo('<p class="explain"></p>');
             
                 $start = microtime(TRUE);
                 
                 user_visibility_run_tests();
+                
+                echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(TRUE) - $start) . ' seconds to complete.</h5>');
+                
+            echo('</div>');
+        echo('</div>');
+        
+        echo('<div id="login-tests" class="closed">');
+            echo('<h2 class="header"><a href="javascript:toggle_main_state(\'login-tests\')">LOGIN TESTS</a></h2>');
+            echo('<div class="container">');
+                echo('<p class="explain"></p>');
+            
+                $start = microtime(TRUE);
+                
+                login_run_tests();
+                
+                echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(TRUE) - $start) . ' seconds to complete.</h5>');
+                
+            echo('</div>');
+        echo('</div>');
+        
+        echo('<div id="create-tests" class="closed">');
+            echo('<h2 class="header"><a href="javascript:toggle_main_state(\'create-tests\')">CREATE USER TESTS</a></h2>');
+            echo('<div class="container">');
+                echo('<p class="explain">In these tests, we have a couple of logins with no user associated, and we will try to create users for these logins.</p>');
+            
+                $start = microtime(TRUE);
+                
+                create_run_tests();
                 
                 echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(TRUE) - $start) . ' seconds to complete.</h5>');
                 

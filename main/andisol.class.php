@@ -127,19 +127,39 @@ class Andisol {
     public function god() {
         return $this->valid() && $this->_chameleon_instance->god_mode();
     }
+    /***********************/
+    /**
+    This returns the actual security DB login item for the requested user (or the current logged-in user).
+    
+    The response is subject to standard security vetting, so there is a possibility that nothing will be returned, when there is an existing login at that ID.
+    
+    \returns the instance for the requested user.
+     */
+    public function get_login_item( $in_login_id = NULL ///< The integer login ID to check. If not-NULL, then the ID of a login instance. It must be one that the current user can see. If NULL, then the current user.
+                                    ) {
+        return $this->_chameleon_instance->get_login_item($in_login_id);
+    }
+        
+    /***********************/
+    /**
+    \returns the user collection object for a given login. If there is no login given, then the current login is assumed. This is subject to security restrictions.
+     */
+    public function get_user_from_login(    $in_login_id = NULL,                ///< The login ID that is associated with the user collection. If NULL, then the current login is used.
+                                            $in_make_user_if_necessary = FALSE  ///< If TRUE (Default is FALSE), then the user will be created if it does not already exist. Ignored, if we are not a Login Manager.
+                                        ) {
+        if ($in_make_user_if_necessary && $this->manager()) {   // See if we are a manager, and they want to maybe create a new user.
+            return $this->_cobra_instance->get_user_from_login($in_login_id, $in_make_user_if_necessary);
+        } else {
+            return $this->_chameleon_instance->get_user_from_login($in_login_id);
+        }
+    }
     
     /***********************/
     /**
     \returns The current login Item. NULL if no login.
      */
     public function current_login() {
-        $ret = NULL;
-    
-        if ($this->logged_in()) {
-            $ret = $this->_chameleon_instance->get_login_item();
-        }
-        
-        return $ret;
+        return $this->get_login_item();
     }
     
     /***********************/
@@ -147,22 +167,6 @@ class Andisol {
     \returns The current user Item. NULL, if no user for the current login.
      */
     public function current_user() {
-        $ret = NULL;
-        $login_item = $this->current_login();
-        if ($login_item) {
-            $login_id = $login_item->id();
-            $ret = $this->_chameleon_instance->get_user_from_login($login_id);
-        }
-        
-        return $ret;
-    }
-    
-    /***********************/
-    /**
-    \returns the user collection object for a given login. If there is no login given, then the current login is assumed. This is subject to security restrictions.
-     */
-    public function get_user_from_login(    $in_login_id = NULL ///< The login ID that is associated with the user collection. If NULL, then the current login is used.
-                                        ) {
-        return $this->_chameleon_instance->get_user_from_login($in_login_id);
+        return $this->get_user_from_login();
     }
 };

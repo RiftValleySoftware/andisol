@@ -12,7 +12,7 @@
     Little Green Viper Software Development: https://littlegreenviper.com
 */
 defined( 'LGV_LANG_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
-    
+
 /***************************************************************************************************************************/
 /**
  */
