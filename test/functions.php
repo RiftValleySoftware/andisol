@@ -172,6 +172,10 @@
                         }
                     }
             
+                    if (isset($in_record_object->name)) {
+                        echo("<p>Name: ".$in_record_object->name."</p>");
+                    }
+            
                     if (isset($in_record_object->login_id)) {
                         echo("<p>Login ID: ".$in_record_object->login_id."</p>");
                     }

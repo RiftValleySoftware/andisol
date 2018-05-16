@@ -127,4 +127,33 @@ class Andisol {
     public function god() {
         return $this->valid() && $this->_chameleon_instance->god_mode();
     }
+    
+    /***********************/
+    /**
+    \returns The current login Item. NULL if no login.
+     */
+    public function current_login() {
+        $ret = NULL;
+    
+        if ($this->logged_in()) {
+            $ret = $this->_chameleon_instance->get_login_item();
+        }
+        
+        return $ret;
+    }
+    
+    /***********************/
+    /**
+    \returns The current user Item. NULL, if no user for the current login.
+     */
+    public function current_user() {
+        $ret = NULL;
+        $login_item = $this->current_login();
+        if ($login_item) {
+            $login_id = $login_item->id();
+            $ret = $this->_chameleon_instance->get_user_from_login($login_id);
+        }
+        
+        return $ret;
+    }
 };
