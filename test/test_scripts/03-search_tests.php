@@ -48,7 +48,7 @@ function user_access_run_test($in_num, $in_title, $in_explain, $in_login = NULL,
 }
 
 ob_start();
-    prepare_databases('user_tests');
+    prepare_databases('search_tests');
     
     echo('<div class="test-wrapper" style="display:table;margin-left:auto;margin-right:auto;text-align:left">');
         echo('<h1 class="header">SEARCH TESTS</h1>');
