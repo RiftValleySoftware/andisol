@@ -156,4 +156,13 @@ class Andisol {
         
         return $ret;
     }
+    
+    /***********************/
+    /**
+    \returns the user collection object for a given login. If there is no login given, then the current login is assumed. This is subject to security restrictions.
+     */
+    public function get_user_from_login(    $in_login_id = NULL ///< The login ID that is associated with the user collection. If NULL, then the current login is used.
+                                        ) {
+        return $this->_chameleon_instance->get_user_from_login($in_login_id);
+    }
 };

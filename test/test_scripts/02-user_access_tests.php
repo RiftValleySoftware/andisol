@@ -24,6 +24,13 @@ function user_access_run_tests() {
     user_access_run_test(16, 'FAIL - Basic Login With No Associated User', 'We create an instance of ANDISOL with the a basic COBRA login that has no associated user, and make sure the login is valid, but we expect the user search to fail.', 'cobra', '', 'CoreysGoryStory');
 }
 
+function user_visibility_run_tests() {
+    user_access_run_test(17, 'FAIL - Fundamental Login', 'We create an instance of ANDISOL with a "fundamental" (BADGER-level) login, and try to see other users.', 'norm', '', 'CoreysGoryStory');
+    user_access_run_test(18, 'FAIL - Basic Login', 'We create an instance of ANDISOL with a basic COBRA login, and try to see other users.', 'krait', '', 'CoreysGoryStory');
+    user_access_run_test(19, 'PASS - Manager Login', 'We create an instance of ANDISOL with a COBRA Login manager login, and try to see other users.', 'asp', '', 'CoreysGoryStory');
+    user_access_run_test(20, 'PASS - God Login', 'We create an instance of ANDISOL with the "God" login, and try to see other users.', 'admin', '', CO_Config::$god_mode_password);
+}
+
 // -------------------------------- TESTS ---------------------------------------------
 
 function user_access_test_11($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
@@ -67,6 +74,48 @@ function user_access_test_16($in_login = NULL, $in_hashed_password = NULL, $in_p
     user_access_test_11($in_login, $in_hashed_password, $in_password);
 }
 
+function user_access_test_17($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $user_item = $andisol_instance->get_user_from_login(2);
+        
+        if ($user_item) {
+            display_record($user_item);
+        } else {
+            echo('<h3 style="color:red">The User (2) Was Not Found!</h3>');
+        }
+        
+        $user_item = $andisol_instance->get_user_from_login(3);
+        
+        if ($user_item) {
+            display_record($user_item);
+        } else {
+            echo('<h3 style="color:red">The User (3) Was Not Found!</h3>');
+        }
+        
+        $user_item = $andisol_instance->get_user_from_login(6);
+        
+        if ($user_item) {
+            display_record($user_item);
+        } else {
+            echo('<h3 style="color:red">The User (6) Was Not Found!</h3>');
+        }
+    }
+}
+
+function user_access_test_18($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    user_access_test_17($in_login, $in_hashed_password, $in_password);
+}
+
+function user_access_test_19($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    user_access_test_17($in_login, $in_hashed_password, $in_password);
+}
+
+function user_access_test_20($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    user_access_test_17($in_login, $in_hashed_password, $in_password);
+}
+
 // -------------------------------- STRUCTURE ---------------------------------------------
 
 function user_access_run_test($in_num, $in_title, $in_explain, $in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
@@ -99,6 +148,20 @@ ob_start();
                 $start = microtime(TRUE);
                 
                 user_access_run_tests();
+                
+                echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(TRUE) - $start) . ' seconds to complete.</h5>');
+                
+            echo('</div>');
+        echo('</div>');
+        
+        echo('<div id="user_visibility-tests" class="closed">');
+            echo('<h2 class="header"><a href="javascript:toggle_main_state(\'user_visibility-tests\')">ANDISOL LOGGED-IN USER CROSS-VISIBILITY TESTS</a></h2>');
+            echo('<div class="container">');
+                echo('<p class="explain"></p>');
+            
+                $start = microtime(TRUE);
+                
+                user_visibility_run_tests();
                 
                 echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(TRUE) - $start) . ' seconds to complete.</h5>');
                 

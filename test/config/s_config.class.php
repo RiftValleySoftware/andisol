@@ -18,6 +18,7 @@ defined( 'LGV_CONFIG_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes s
  */
 define('_MAIN_DB_TYPE_', 'mysql');
 define('_SECURITY_DB_TYPE_', 'mysql');
+
 require_once(dirname(dirname(dirname(__FILE__))).'/config/t_config.interface.php');
 
 class CO_Config {
