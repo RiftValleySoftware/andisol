@@ -81,6 +81,26 @@ class Andisol {
     }
     
     /************************************************************************************************************************/    
+    /*                                                COMPONENT ACCESS METHODS                                              */
+    /************************************************************************************************************************/    
+
+    /***********************/
+    /**
+    \returns The COBRA instance. It will be NULL if the current login is not a manager or God.
+     */
+    public function get_cobra_instance() {
+        return $this->_cobra_instance;
+    }
+    
+    /***********************/
+    /**
+    \returns The CHAMELEON instance.
+     */
+    public function get_chameleon_instance() {
+        return $this->_chameleon_instance;
+    }
+    
+    /************************************************************************************************************************/    
     /*                                              BASIC LOGIN STATUS QUERIES                                              */
     /************************************************************************************************************************/    
 
@@ -116,21 +136,9 @@ class Andisol {
         return $this->valid() && $this->get_chameleon_instance()->god_mode();
     }
     
-    /***********************/
-    /**
-    \returns The COBRA instance. It will be NULL if the current login is not a manager or God.
-     */
-    public function get_cobra_instance() {
-        return $this->_cobra_instance;
-    }
-    
-    /***********************/
-    /**
-    \returns The CHAMELEON instance.
-     */
-    public function get_chameleon_instance() {
-        return $this->_chameleon_instance;
-    }
+    /************************************************************************************************************************/    
+    /*                                                  USER ACCESS METHODS                                                 */
+    /************************************************************************************************************************/    
 
     /***********************/
     /**
@@ -177,47 +185,6 @@ class Andisol {
     
     /***********************/
     /**
-    This is a "generic" data search. It can be called from external user contexts, and allows a fairly generalized search of the "data" datasource.
-    Sorting will be done for the "owner" and "location" values. "owner" will be sorted by the ID of the returned records, and "location" will be by distance from the center.
-    
-    If you add an element called 'use_like' ('use_like' => 1) to the end of one of the search arrays, then you can use SQL-style "wildcards" (%) in your matches.
-    
-    Strings are always forced lowercase.
-    
-    \returns an array of instances that match the search parameters. If $count_only is TRUE, then it will be a single integer, with the count of responses to the search (if a page, then only the number of items on that page).
-     */
-    public function generic_search( $in_search_parameters = NULL,   /**< This is an associative array of terms to define the search. The keys should be:
-                                                                        - 'id'
-                                                                            This should be accompanied by an array of one or more integers, representing specific item IDs.
-                                                                        - 'access_class'
-                                                                            This should be accompanied by an array, containing one or more PHP class names.
-                                                                        - 'name'
-                                                                            This will contain a case-insensitive array of strings to check against the object_name column.
-                                                                        - 'owner'
-                                                                            This should be accompanied by an array of one or more integers, representing specific item IDs for "owner" objects.
-                                                                        - 'tags'
-                                                                            This should be accompanied by an array (up to 10 elements) of one or more case-insensitive strings, representing specific tag values.
-                                                                        - 'location'
-                                                                            This requires that the parameter be a 3-element associative array of floating-point numbers:
-                                                                                - 'longtude'
-                                                                                    This is the search center location longitude, in degrees.
-                                                                                - 'latitude'
-                                                                                    This is the search center location latitude, in degrees.
-                                                                                - 'radius'
-                                                                                    This is the search radius, in Kilometers.
-                                                                    */
-                                    $or_search = FALSE,             ///< If TRUE, then the search is very wide (OR), as opposed to narrow (AND), by default. If you specify a location, then that will always be AND, but the other fields can be OR.
-                                    $page_size = 0,                 ///< If specified with a 1-based integer, this denotes the size of a "page" of results. NOTE: This is only applicable to MySQL or Postgres, and will be ignored if the DB is not MySQL or Postgres.
-                                    $initial_page = 0,              ///< This is ignored unless $page_size is greater than 0. If so, then this 0-based index will specify which page of results to return.
-                                    $and_writeable = FALSE,         ///< If TRUE, then we only want records we can modify.
-                                    $count_only = FALSE,            ///< If TRUE (default is FALSE), then only a single integer will be returned, with the count of items that fit the search.
-                                    $ids_only = FALSE               ///< If TRUE (default is FALSE), then the return array will consist only of integers (the object IDs). If $count_only is TRUE, this is ignored.
-                                    ) {
-        return $this->get_chameleon_instance()->generic_search($in_search_parameters, $or_search, $page_size, $initial_page, $and_writeable, $count_only, $ids_only);
-    }
-    
-    /***********************/
-    /**
     \returns an array of instances of all the logins that are visible to the current user (or a supplied user, if in "God" mode).
      */
     public function get_all_logins( $and_write = FALSE,         ///< If TRUE, then we only want ones we have write access to.
@@ -232,7 +199,7 @@ class Andisol {
         
         return $ret;
     }
-    
+
     /***********************/
     /**
     Test an item to see which logins can access it.
@@ -250,5 +217,74 @@ class Andisol {
         }
         
         return $ret;
+    }
+    
+    /************************************************************************************************************************/    
+    /*                                                   DATA SEARCH METHODS                                                */
+    /************************************************************************************************************************/    
+
+    /***********************/
+    /**
+    This is a "generic" data search. It can be called from external user contexts, and allows a fairly generalized search of the "data" datasource.
+    Sorting will be done for the "owner" and "location" values. "owner" will be sorted by the ID of the returned records, and "location" will be by distance from the center.
+    
+    String searches are always case-insensitive.
+    
+    \returns an array of instances (or integers, if $ids_only is TRUE) that match the search parameters. If $count_only is TRUE, then it will be a single integer, with the count of responses to the search (if a page, then this count will only be the number of items on that page).
+     */
+    public function generic_search( $in_search_parameters = NULL,   /**<    This is an associative array of terms to define the search. The keys should be:
+                                                                                - 'id'
+                                                                                    This should be accompanied by an array of one or more integers, representing specific item IDs.
+                                                                                - 'access_class'
+                                                                                    This should be accompanied by an array, containing one or more PHP class names.
+                                                                                - 'name'
+                                                                                    This will contain a case-insensitive array of strings to check against the object_name column.
+                                                                                - 'owner'
+                                                                                    This should be accompanied by an array of one or more integers, representing specific item IDs for "owner" objects.
+                                                                                - 'tags'
+                                                                                    This should be accompanied by an array (up to 10 elements) of one or more case-insensitive strings, representing specific tag values.
+                                                                                    The position in the array denotes which tag to match, so unchecked tags should still be in the array, but empty. You don't match empty tags.
+                                                                                    You can specify an array for the values, which allows you to do an OR search for the values.
+                                                                                - 'location'
+                                                                                    This is only relevant if we are searching for subclasses (or instances) of CO_LL_Location
+                                                                                    This requires that the parameter be a 3-element associative array of floating-point numbers:
+                                                                                        - 'longitude'
+                                                                                            This is the search center location longitude, in degrees.
+                                                                                        - 'latitude'
+                                                                                            This is the search center location latitude, in degrees.
+                                                                                        - 'radius'
+                                                                                            This is the search radius, in Kilometers.
+    
+                                                                            You can specify an array for any one of the values, which allows you to do an OR search for those values ($or_search does not apply. It is only for the combination of main values).
+                                                                            If you add an element called 'use_like' ('use_like' => 1) to the end of 'access_class', 'name' or one of the 'tags', then you can use SQL-style "wildcards" (%) in your matches.
+                                                                    */
+                                    $or_search = FALSE,             ///< If TRUE, then the search is very wide (OR), as opposed to narrow (AND), by default. If you specify a location, then that will always be AND, but the other fields can be OR. Tags will always be searched as OR.
+                                    $page_size = 0,                 ///< If specified with a 1-based integer, this denotes the size of a "page" of results. NOTE: This is only applicable to MySQL or Postgres, and will be ignored if the DB is not MySQL or Postgres. Default is 0.
+                                    $initial_page = 0,              ///< This is ignored unless $page_size is greater than 0. In that case, this 0-based index will specify which page of results to return. Values beyond the maximum number of pages will result in no returned values.
+                                    $and_writeable = FALSE,         ///< If TRUE, then we only want records we can modify.
+                                    $count_only = FALSE,            ///< If TRUE (default is FALSE), then only a single integer will be returned, with the count of items that fit the search.
+                                    $ids_only = FALSE               ///< If TRUE (default is FALSE), then the return array will consist only of integers (the object IDs). If $count_only is TRUE, this is ignored.
+                                    ) {
+        return $this->get_chameleon_instance()->generic_search($in_search_parameters, $or_search, $page_size, $initial_page, $and_writeable, $count_only, $ids_only);
+    }
+    
+    /***********************/
+    /**
+    This is a search, based on a location and radius around that location.
+    Only objects that have a longitude and latitude that fall within the radius will be returned.
+    All visible classes and instances will be returned. Only location and security filtering are applied.
+    
+    \returns an array of instances (or integers, if $ids_only is TRUE) that fit within the location center and radius. If $count_only is TRUE, then it will be a single integer, with the count of responses to the search (if a page, then this count will only be the number of items on that page).
+     */
+    public function location_search(    $in_longitude_degrees,  ///< REQUIRED: The latitude of the center, in degrees.
+                                        $in_latitude_degrees,   ///< REQUIRED: The logitude of the center, in degrees.
+                                        $in_radius_kilometers,  ///< REQUIRED: The search radius, in Kilomters.
+                                        $page_size = 0,         ///< OPTIONAL: If specified with a 1-based integer, this denotes the size of a "page" of results. NOTE: This is only applicable to MySQL or Postgres, and will be ignored if the DB is not MySQL or Postgres. Default is 0.
+                                        $initial_page = 0,      ///< OPTIONAL: This is ignored unless $page_size is greater than 0. If so, then this 0-based index will specify which page of results to return. Values beyond the maximum number of pages will result in no returned values.
+                                        $and_writeable = FALSE, ///< OPTIONAL: If TRUE, then we only want records we can modify.
+                                        $count_only = FALSE,    ///< OPTIONAL: If TRUE (default is FALSE), then only a single integer will be returned, with the count of items that fit the search.
+                                        $ids_only = FALSE       ///< OPTIONAL: If TRUE (default is FALSE), then the return array will consist only of integers (the object IDs). If $count_only is TRUE, this is ignored.
+                                    ) {
+        return $this->generic_search(Array('location' => Array('longitude' => $in_longitude_degrees, 'latitude' => $in_latitude_degrees, 'radius' => $in_radius_kilometers)), FALSE, $page_size, $initial_page, $and_writeable, $count_only, $ids_only);
     }
 };
