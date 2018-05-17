@@ -15,10 +15,11 @@ defined( 'LGV_CONFIG_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes s
 
 /***************************************************************************************************************************/
 /**
+This file contains a trait that encompasses the majority of the required (and unaltered) methods for the standard config.
  */
 trait tCO_Config {
     /***********************************************************************************************************************/
-    /*                                                  DON'T CHANGE THIS                                                  */
+    /*                                                    COMMON STUFF                                                     */
     /***********************************************************************************************************************/
 
     /***********************/
@@ -28,9 +29,39 @@ trait tCO_Config {
     \returns the God Mode user ID.
      */
     static function god_mode_id() {
-        $id = intval(self::$_god_mode_id);  // This just ensures that the return will be an ephemeral int.
+        $id = intval(self::$_god_mode_id);  // This just ensures that the return will be an ephemeral int, so there is no access to the original.
         
         return $id;
+    }
+
+    /***********************/
+    /**
+    We encapsulate this, because this is likely to be called from methods, and this prevents it from being changed.
+    
+    \returns the God Mode user password, in cleartext.
+     */
+    static function god_mode_password() {
+        $ret = strval(self::$_god_mode_password);  // This just ensures that the return will be an ephemeral string, so there is no access to the original.
+        
+        return $ret;
+    }
+    
+    /***********************/
+    /**
+    Includes the given file from the database extension director[y|ies].
+     */
+    static function require_extension_class(   $in_filename    ///< The name of the file we want to require.
+                                            ) {
+        if (is_array(self::db_classes_extension_class_dir())) {
+            foreach (self::db_classes_extension_class_dir() as $dir) {
+                if (file_exists("$dir/$in_filename")) {
+                    require_once("$dir/$in_filename");
+                    break;
+                }
+            }
+        } else {
+            require_once(self::db_classes_extension_class_dir().'/'.$in_filename);
+        }
     }
     
     /***********************************************************************************************************************/
@@ -63,28 +94,10 @@ trait tCO_Config {
     
     /***********************/
     /**
-    \returns the POSIX path to the user-defined extended database row classes.
+    \returns the POSIX path to the user-defined extended database row classes (we use the COBRA extensions for ANDISOL).
      */
     static function db_classes_extension_class_dir() {
         return self::cobra_db_classes_extension_class_dir();
-    }
-    
-    /***********************/
-    /**
-    Includes the given file.
-     */
-    static function require_extension_class(   $in_filename    ///< The name of the file we want to require.
-                                            ) {
-        if (is_array(self::db_classes_extension_class_dir())) {
-            foreach (self::db_classes_extension_class_dir() as $dir) {
-                if (file_exists("$dir/$in_filename")) {
-                    require_once("$dir/$in_filename");
-                    break;
-                }
-            }
-        } else {
-            require_once(self::db_classes_extension_class_dir().'/'.$in_filename);
-        }
     }
     
     /***********************************************************************************************************************/

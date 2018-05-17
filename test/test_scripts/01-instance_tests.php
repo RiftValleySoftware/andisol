@@ -19,7 +19,7 @@ function instance_run_tests() {
     instance_run_test(1, 'PASS -Simple Instantiation -No Login', 'We create an instance of ANDISOL with no login, and make sure its valid.');
     instance_run_test(2, 'PASS -Simple Instantiation -Basic Login', 'We create an instance of ANDISOL with a basic user login, make sure its valid, and that it registers as logged in.', 'krait', NULL, 'CoreysGoryStory');
     instance_run_test(3, 'PASS -Simple Instantiation -Manager Login', 'We create an instance of ANDISOL with a manager user login, make sure its valid, and that it registers as a manager user.', 'asp', NULL, 'CoreysGoryStory');
-    instance_run_test(4, 'PASS -Simple Instantiation -God Login', 'We create an instance of ANDISOL with a God user login, make sure its valid, and that it registers as a God user.', 'admin', NULL, CO_Config::$god_mode_password);
+    instance_run_test(4, 'PASS -Simple Instantiation -God Login', 'We create an instance of ANDISOL with a God user login, make sure its valid, and that it registers as a God user.', 'admin', NULL, CO_COnfig::god_mode_password());
     instance_run_test(5, 'FAIL -Simple Instantiation -No Login', 'We create an instance of ANDISOL with no login, and see if it registers as a login. It should fail.');
     instance_run_test(6, 'FAIL -Simple Instantiation -No Login', 'We create an instance of ANDISOL with no login, and see if it registers as a manager. It should fail.');
     instance_run_test(7, 'FAIL -Simple Instantiation -No Login', 'We create an instance of ANDISOL with no login, and see if it registers as a god. It should fail.');

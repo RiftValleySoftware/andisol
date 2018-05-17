@@ -20,7 +20,7 @@ function user_access_run_tests() {
     user_access_run_test(12, 'PASS - Fundamental Login', 'We create an instance of ANDISOL with a "fundamental" (BADGER-level) login, and make sure its valid.', 'norm', '', 'CoreysGoryStory');
     user_access_run_test(13, 'PASS - Basic Login', 'We create an instance of ANDISOL with a basic COBRA login, and make sure its valid.', 'krait', '', 'CoreysGoryStory');
     user_access_run_test(14, 'PASS - Manager Login', 'We create an instance of ANDISOL with a COBRA Login manager login, and make sure its valid.', 'asp', '', 'CoreysGoryStory');
-    user_access_run_test(15, 'PASS - God Login', 'We create an instance of ANDISOL with the "God" login, and make sure its valid.', 'admin', '', CO_Config::$god_mode_password);
+    user_access_run_test(15, 'PASS - God Login', 'We create an instance of ANDISOL with the "God" login, and make sure its valid.', 'admin', '', CO_COnfig::god_mode_password());
     user_access_run_test(16, 'FAIL - Basic Login With No Associated User', 'We create an instance of ANDISOL with the a basic COBRA login that has no associated user, and make sure the login is valid, but we expect the user search to fail.', 'cobra', '', 'CoreysGoryStory');
 }
 
@@ -28,7 +28,7 @@ function user_visibility_run_tests() {
     user_access_run_test(17, 'FAIL - Fundamental Login', 'We create an instance of ANDISOL with a "fundamental" (BADGER-level) login, and try to see other users.', 'norm', '', 'CoreysGoryStory');
     user_access_run_test(18, 'FAIL - Basic Login', 'We create an instance of ANDISOL with a basic COBRA login, and try to see other users.', 'krait', '', 'CoreysGoryStory');
     user_access_run_test(19, 'PASS - Manager Login', 'We create an instance of ANDISOL with a COBRA Login manager login, and try to see other users.', 'asp', '', 'CoreysGoryStory');
-    user_access_run_test(20, 'PASS - God Login', 'We create an instance of ANDISOL with the "God" login, and try to see other users.', 'admin', '', CO_Config::$god_mode_password);
+    user_access_run_test(20, 'PASS - God Login', 'We create an instance of ANDISOL with the "God" login, and try to see other users.', 'admin', '', CO_COnfig::god_mode_password());
 }
 
 function login_run_tests() {
@@ -36,7 +36,7 @@ function login_run_tests() {
     user_access_run_test(22, 'FAIL - Fundamental Login', 'We create an instance of ANDISOL with a "fundamental" (BADGER-level) login, and try to see other logins.', 'norm', '', 'CoreysGoryStory');
     user_access_run_test(23, 'FAIL - Basic Login', 'We create an instance of ANDISOL with a basic COBRA login, and try to see other logins.', 'krait', '', 'CoreysGoryStory');
     user_access_run_test(24, 'FAIL - Manager Login', 'We create an instance of ANDISOL with a COBRA Login manager login, and try to see other logins.', 'asp', '', 'CoreysGoryStory');
-    user_access_run_test(25, 'PASS - God Login', 'We create an instance of ANDISOL with the "God" login, and try to see other logins.', 'admin', '', CO_Config::$god_mode_password);
+    user_access_run_test(25, 'PASS - God Login', 'We create an instance of ANDISOL with the "God" login, and try to see other logins.', 'admin', '', CO_COnfig::god_mode_password());
 }
 
 function create_run_tests() {
@@ -44,7 +44,7 @@ function create_run_tests() {
     user_access_run_test(27, 'FAIL - Fundamental Login', 'We create an instance of ANDISOL with a "fundamental" (BADGER-level) login, and try to create a user for a login with no user.', 'norm', '', 'CoreysGoryStory');
     user_access_run_test(28, 'FAIL - Basic Login', 'We create an instance of ANDISOL with a basic COBRA login, and try to create a user for a login with no user.', 'krait', '', 'CoreysGoryStory');
     user_access_run_test(29, 'PASS - Manager Login', 'We create an instance of ANDISOL with a COBRA Login manager login, and try to create a user for a login with no user.', 'asp', '', 'CoreysGoryStory');
-    user_access_run_test(30, 'PASS - God Login', 'We create an instance of ANDISOL with the "God" login, and try to create a user for another login with no user.', 'admin', '', CO_Config::$god_mode_password);
+    user_access_run_test(30, 'PASS - God Login', 'We create an instance of ANDISOL with the "God" login, and try to create a user for another login with no user.', 'admin', '', CO_COnfig::god_mode_password());
 }
 
 // -------------------------------- TESTS ---------------------------------------------

@@ -15,6 +15,7 @@ defined( 'LGV_CONFIG_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes s
 
 /***************************************************************************************************************************/
 /**
+This file contains the implementation-dependent configuration settings.
  */
 define('_MAIN_DB_TYPE_', 'mysql');
 define('_SECURITY_DB_TYPE_', 'mysql');
@@ -22,10 +23,11 @@ define('_SECURITY_DB_TYPE_', 'mysql');
 require_once(dirname(dirname(dirname(__FILE__))).'/config/t_config.interface.php');
 
 class CO_Config {
-    static $lang = 'en';
-    static $min_pw_len = 8;                             ///< The minimum password length.
+    static private $_god_mode_id = 2;   ///< God Login Security DB ID. This is private, so it can't be programmatically changed.
+    static private $_god_mode_password = 'BWU-HA-HAAAA-HA!'; ///< Plaintext password for the God Mode ID login. This overrides anything in the ID row.
     
-    static $god_mode_password = 'BWU-HA-HAAAA-HA!';
+    static $lang = 'en';                ///< The default language for the server.
+    static $min_pw_len = 8;             ///< The minimum password length.
     
     static $data_db_name = 'littlegr_badger_data';
     static $data_db_host = 'localhost';
@@ -44,8 +46,6 @@ class CO_Config {
     CHAMELEON requires this to have at least the Google Geocoding API enabled.
     */
     static $google_api_key = 'AIzaSyAPCtPBLI24J6qSpkpjngXAJtp8bhzKzK8';
-    
-    static private $_god_mode_id = 2;   ///< Default is 2 (First security item created).
     
     /***********************/
     /**
