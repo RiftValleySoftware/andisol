@@ -16,15 +16,15 @@ require_once(dirname(dirname(__FILE__)).'/functions.php');
 // -------------------------------- TEST DISPATCHER ---------------------------------------------
 
 function search_run_tests() {
-    user_access_run_test(31, 'PASS - Simple Location Search', 'The DB is preloaded with a bunch of meetings in the DC area, so we do a simple 5Km search, based on the Lincoln Memorial.');
-    user_access_run_test(32, 'FAIL - Simple Location Search', 'In this case, we search in Chicago. We should get no responses.');
-    user_access_run_test(33, 'PASS - Paged Location Search', 'Again, back to the Lincoln Memorial, but this time, we are searching in pages of ten.');
-    user_access_run_test(34, 'FAIL - Paged Location Search', 'Going back to Chicago, looking for pages of ten.');
+    user_access_run_test(35, 'PASS - Simple Location Search', 'The DB is preloaded with a bunch of meetings in the DC area, so we do a simple 5Km search, based on the Lincoln Memorial.');
+    user_access_run_test(36, 'FAIL - Simple Location Search', 'In this case, we search in Chicago. We should get no responses.');
+    user_access_run_test(37, 'PASS - Paged Location Search', 'Again, back to the Lincoln Memorial, but this time, we are searching in pages of ten.');
+    user_access_run_test(38, 'FAIL - Paged Location Search', 'Going back to Chicago, looking for pages of ten.');
 }
 
 // -------------------------------- TESTS ---------------------------------------------
 
-function user_access_test_31($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function user_access_test_35($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
@@ -41,7 +41,7 @@ function user_access_test_31($in_login = NULL, $in_hashed_password = NULL, $in_p
     }
 }
 
-function user_access_test_32($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function user_access_test_36($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
@@ -58,7 +58,7 @@ function user_access_test_32($in_login = NULL, $in_hashed_password = NULL, $in_p
     }
 }
 
-function user_access_test_33($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function user_access_test_37($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
@@ -89,7 +89,7 @@ function user_access_test_33($in_login = NULL, $in_hashed_password = NULL, $in_p
     }
 }
 
-function user_access_test_34($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function user_access_test_38($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
