@@ -47,6 +47,10 @@ function create_run_tests() {
     user_access_run_test(30, 'PASS - God Login', 'We create an instance of ANDISOL with the "God" login, and try to create a user for another login with no user.', 'admin', '', CO_COnfig::god_mode_password());
 }
 
+function create_delete_run_tests() {
+    user_access_run_test(31, 'PASS - Manager Login', 'We create an instance of ANDISOL with the "asp" login, and create a user and login pair with a login ID of \'crocodile\' and the \'CoresGoryStory\' password', 'asp', '', 'CoreysGoryStory');
+}
+
 // -------------------------------- TESTS ---------------------------------------------
 
 function user_access_test_11($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
@@ -226,6 +230,53 @@ function user_access_test_30($in_login = NULL, $in_hashed_password = NULL, $in_p
     }
 }
 
+function user_access_test_31($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $password = $andisol_instance->create_new_user('crocodile', 'CoreysGoryStory', 'Croc O\'Dial', $andisol_instance->get_login_item()->ids());
+        if ($password) {
+            if ($password == 'CoreysGoryStory') {
+                $user_from_andisol = $andisol_instance->get_user_from_login_string('crocodile');
+                
+                if ($user_from_andisol) {
+                    $login_item = $andisol_instance->get_login_item_by_login_string('crocodile');
+                    
+                    if ($login_item) {
+                        if ($user_from_andisol->get_login_instance() === $login_item) {
+                            echo('<h3 style="color:green">The Login Item:</h3>');
+                            display_record($login_item);
+                        } else {
+                            echo('<h3 style="color:red">There was a problem! The login from the user did not match the login we got from COBRA!</h3>');
+                        }
+                    
+                        $user_item = $andisol_instance->get_user_from_login($login_item->id());
+                        if ($user_item) {
+                            if ($user_from_andisol === $user_item) {
+                                echo('<hr /><h3 style="color:green">The User Item:</h3>');
+                                display_record($user_item);
+                            } else {
+                                echo('<h3 style="color:red">There was a problem! The user from ANDISOL did not match the user we got from COBRA!</h3>');
+                            }
+                        } else {
+                            echo('<h3 style="color:red">There was a problem! We did not get a user from COBRA!</h3>');
+                        }
+                    } else {
+                        echo('<h3 style="color:red">There was a problem! We did not get a login from COBRA!</h3>');
+                    }
+                } else {
+                    echo('<h3 style="color:red">There was a problem! The user wasn\'t returned from ANDISOL!</h3>');
+                }
+            } else {
+                echo('<h3 style="color:red">There was a problem! The passwords don\'t match!</h3>');
+            }
+        } else {
+            echo('<h3 style="color:red">The User Was Not Created!</h3>');
+            echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance->error->error_code.') '.$andisol_instance->error->error_name.' ('.$andisol_instance->error->error_description.')</p>');
+        }
+    }
+}
+
 // -------------------------------- STRUCTURE ---------------------------------------------
 
 function user_access_run_test($in_num, $in_title, $in_explain, $in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
@@ -293,13 +344,27 @@ ob_start();
         echo('</div>');
         
         echo('<div id="create-tests" class="closed">');
-            echo('<h2 class="header"><a href="javascript:toggle_main_state(\'create-tests\')">CREATE USER TESTS</a></h2>');
+            echo('<h2 class="header"><a href="javascript:toggle_main_state(\'create-tests\')">CREATE USER FROM LOGIN TESTS</a></h2>');
             echo('<div class="container">');
                 echo('<p class="explain">In these tests, we have a couple of logins with no user associated, and we will try to create users for these logins.</p>');
             
                 $start = microtime(TRUE);
                 
                 create_run_tests();
+                
+                echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(TRUE) - $start) . ' seconds to complete.</h5>');
+                
+            echo('</div>');
+        echo('</div>');
+        
+        echo('<div id="create-delete-tests" class="closed">');
+            echo('<h2 class="header"><a href="javascript:toggle_main_state(\'create-delete-tests\')">CREATE AND DELETE USER/LOGIN PAIRS</a></h2>');
+            echo('<div class="container">');
+                echo('<p class="explain"></p>');
+            
+                $start = microtime(TRUE);
+                
+                create_delete_run_tests();
                 
                 echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(TRUE) - $start) . ' seconds to complete.</h5>');
                 

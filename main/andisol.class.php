@@ -152,12 +152,41 @@ class Andisol {
                                     ) {
         return $this->get_chameleon_instance()->get_login_item($in_login_id);
     }
+
+    /***********************/
+    /**
+    This returns the actual security DB login item for the requested user (or the current logged-in user).
+    
+    The response is subject to standard security vetting, so there is a possibility that nothing will be returned, when there is an existing login at that ID.
+    
+    \returns the instance for the requested user.
+     */
+    public function get_login_item_by_login_string( $in_login_id    ///< The string login ID to check. It must be one that the current user can see.
+                                                    ) {
+        return $this->get_chameleon_instance()->get_login_item_by_login_string($in_login_id);
+    }
+        
+    /***********************/
+    /**
+    \returns the user collection object for a given login string. If there is no login given, then the current login is assumed. This is subject to security restrictions.
+     */
+    public function get_user_from_login_string( $in_login_id    ///< The string login ID that is associated with the user collection.   
+                                                ) {
+        $ret = NULL;
+        
+        $login_item = $this->get_login_item_by_login_string($in_login_id);
+        if ($login_item instanceof CO_Security_Login) {
+            $ret = $this->get_user_from_login($login_item->id());
+        }
+        
+        return $ret;
+    }
         
     /***********************/
     /**
     \returns the user collection object for a given login. If there is no login given, then the current login is assumed. This is subject to security restrictions.
      */
-    public function get_user_from_login(    $in_login_id = NULL,                ///< The login ID that is associated with the user collection. If NULL, then the current login is used.
+    public function get_user_from_login(    $in_login_id = NULL,                ///< The integer login ID that is associated with the user collection. If NULL, then the current login is used.
                                             $in_make_user_if_necessary = FALSE  ///< If TRUE (Default is FALSE), then the user will be created if it does not already exist. Ignored, if we are not a Login Manager.
                                         ) {
         if ($in_make_user_if_necessary && $this->manager()) {   // See if we are a manager, and they want to maybe create a new user.
@@ -305,8 +334,8 @@ class Andisol {
     public function create_new_user(    $in_login_id,                   ///< REQUIRED: The login ID. It must be unique in the Security DB.
                                         $in_password = NULL,            ///< OPTIONAL: A new password. It must be at least as long as the minimum password length. If not supplied, an auto-generated password is created and returned as the function return. If too short, then an auto-generated password is created.
                                         $in_display_name = NULL,        ///< OPTIONAL: A string, representing the basic "display name" to be associated with the login and user collection. If not supplied, the $in_login_id is used.
-                                        $in_read_security_id = NULL,    ///< An optional read security ID. If not supplied, then ID 1 (logged-in users) is set. The write security ID is always set to the ID of the login.
                                         $in_security_tokens = NULL,     ///< Any additional security tokens to apply to the new login. These must be a subset of the security tokens available to the logged-in manager. The God admin can set any tokens they want.
+                                        $in_read_security_id = NULL,    ///< An optional read security ID. If not supplied, then ID 1 (logged-in users) is set. The write security ID is always set to the ID of the login.
                                         $is_manager = FALSE             ///< If TRUE (default is FALSE), then the new user will be a CO_Login_Manager object.
                                     ) {
         $ret = NULL;
@@ -332,7 +361,8 @@ class Andisol {
                     // Set the display name.
                     if ($login_item->set_name($display_name)) {
                         // Assuming all that went well, now we create the user item.
-                        $user_item = $this->get_cobra_instance()->get_user_from_login($login_item->id(), true);
+                        $id = $login_item->id();
+                        $user_item = $this->get_cobra_instance()->get_user_from_login($id, true);
                         if ($user_item instanceof CO_User_Collection) {
                             if ($user_item->set_name($display_name)) {
                                 $password = $in_password;
