@@ -230,6 +230,8 @@ class Andisol {
     
     String searches are always case-insensitive.
     
+    All parameters are optional, but calling this "blank" will return the entire data databse (that is visible to the user).
+    
     \returns an array of instances (or integers, if $ids_only is TRUE) that match the search parameters. If $count_only is TRUE, then it will be a single integer, with the count of responses to the search (if a page, then this count will only be the number of items on that page).
      */
     public function generic_search( $in_search_parameters = NULL,   /**<    This is an associative array of terms to define the search. The keys should be:
@@ -286,5 +288,214 @@ class Andisol {
                                         $ids_only = FALSE       ///< OPTIONAL: If TRUE (default is FALSE), then the return array will consist only of integers (the object IDs). If $count_only is TRUE, this is ignored.
                                     ) {
         return $this->generic_search(Array('location' => Array('longitude' => $in_longitude_degrees, 'latitude' => $in_latitude_degrees, 'radius' => $in_radius_kilometers)), FALSE, $page_size, $initial_page, $and_writeable, $count_only, $ids_only);
+    }
+    
+    /************************************************************************************************************************/    
+    /*                                                 USER MANAGEMENT METHODS                                              */
+    /************************************************************************************************************************/
+    
+    /***********************/
+    /**
+    This method can only be called if the user is logged in as a Login Manager (or God).
+    This creates a new login and user collection.
+    Upon successful completion, both a new login, and a user collection, based upon that login, now exist.
+    
+    \returns a string, with the login password as cleartext (If an acceptable-length password is supplied in $in_password, that that is returned). If the operation failed, then NULL is returned.
+     */
+    public function create_new_user(    $in_login_id,                   ///< REQUIRED: The login ID. It must be unique in the Security DB.
+                                        $in_password = NULL,            ///< OPTIONAL: A new password. It must be at least as long as the minimum password length. If not supplied, an auto-generated password is created and returned as the function return. If too short, then an auto-generated password is created.
+                                        $in_display_name = NULL,        ///< OPTIONAL: A string, representing the basic "display name" to be associated with the login and user collection. If not supplied, the $in_login_id is used.
+                                        $in_read_security_id = NULL,    ///< An optional read security ID. If not supplied, then ID 1 (logged-in users) is set. The write security ID is always set to the ID of the login.
+                                        $in_security_tokens = NULL,     ///< Any additional security tokens to apply to the new login. These must be a subset of the security tokens available to the logged-in manager. The God admin can set any tokens they want.
+                                        $is_manager = FALSE             ///< If TRUE (default is FALSE), then the new user will be a CO_Login_Manager object.
+                                    ) {
+        $ret = NULL;
+        
+        if ($in_login_id) {
+            if ($this->manager()) { // Don't even bother unless we're a manager.
+                $login_item = NULL;
+            
+                if ($is_manager) {  // See if they want to create a manager, or a standard login.
+                    $login_item = $this->get_cobra_instance()->create_new_manager_login($in_login_id, $in_password, $in_security_tokens);
+                } else {
+                    $login_item = $this->get_cobra_instance()->create_new_standard_login($in_login_id, $in_password, $in_security_tokens);
+                }
+                
+                // Make sure we got what we expect.
+                if ($login_item instanceof CO_Security_Login) {
+                    // Next, set the display name.
+                    $display_name = $in_display_name;
+                    if (!$display_name) {
+                        $display_name = $in_login_id;
+                    }
+                    
+                    // Set the display name.
+                    if ($login_item->set_name($display_name)) {
+                        // Assuming all that went well, now we create the user item.
+                        $user_item = $this->get_cobra_instance()->get_user_from_login($login_item->id(), true);
+                        if ($user_item instanceof CO_User_Collection) {
+                            if ($user_item->set_name($display_name)) {
+                                $password = $in_password;
+                                // See if we need to auto-generate a password.
+                                if (!$password || (strlen($password) < CO_Config::$min_pw_len)) {
+                                    // This was cribbed from here: https://hugh.blog/2012/04/23/simple-way-to-generate-a-random-password-in-php/
+                                    $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-=+;:,.?";
+                                    $password = substr(str_shuffle($chars), 0, CO_Config::$min_pw_len);
+                                }
+                                
+                                if ($login_item->set_password_from_cleartext($password)) {
+                                    $ret = $password;
+                                } else {
+                                    $user_item->delete_from_db();
+                                    $login_item->delete_from_db();
+                                    $user_item = NULL;
+                                    $login_item = NULL;
+                                    $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_login_instance_failed_to_initialize,
+                                                                    CO_ANDISOL_Lang::$andisol_error_name_login_instance_failed_to_initialize,
+                                                                    CO_ANDISOL_Lang::$andisol_error_desc_login_instance_failed_to_initialize);
+                                }
+                            } else {
+                                $user_item->delete_from_db();
+                                $login_item->delete_from_db();
+                                $user_item = NULL;
+                                $login_item = NULL;
+                                $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_login_instance_failed_to_initialize,
+                                                                CO_ANDISOL_Lang::$andisol_error_name_login_instance_failed_to_initialize,
+                                                                CO_ANDISOL_Lang::$andisol_error_desc_login_instance_failed_to_initialize);
+                            }
+                        } else {
+                            $this->error = $this->get_cobra_instance()->error;
+                    
+                            // Just in case something was created.
+                            if (isset($user_item) && ($user_item instanceof A_CO_DB_Table_Base)) {
+                                $user_item->delete_from_db();
+                            }
+                            
+                            $user_item = NULL;
+                            
+                            $login_item->delete_from_db();
+                            $login_item = NULL;
+                            if (!$this->error) {
+                                $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_login_instance_failed_to_initialize,
+                                                                CO_ANDISOL_Lang::$andisol_error_name_login_instance_failed_to_initialize,
+                                                                CO_ANDISOL_Lang::$andisol_error_desc_login_instance_failed_to_initialize);
+                            }
+                        }
+                    } else {
+                        $this->error = $this->get_cobra_instance()->error;
+                        $login_item->delete_from_db();
+                        $login_item = NULL;
+                        if (!$this->error) {
+                            $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_login_instance_failed_to_initialize,
+                                                            CO_ANDISOL_Lang::$andisol_error_name_login_instance_failed_to_initialize,
+                                                            CO_ANDISOL_Lang::$andisol_error_desc_login_instance_failed_to_initialize);
+                        }
+                    }
+                    
+                } else {
+                    $this->error = $this->get_cobra_instance()->error;
+                    
+                    // Just in case something was created.
+                    if (isset($login_item) && ($login_item instanceof A_CO_DB_Table_Base)) {
+                        $login_item->delete_from_db();
+                    }
+                    
+                    $login_item = NULL;
+                    
+                    if (!$this->error) {
+                        $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_login_instance_failed_to_initialize,
+                                                        CO_ANDISOL_Lang::$andisol_error_name_login_instance_failed_to_initialize,
+                                                        CO_ANDISOL_Lang::$andisol_error_desc_login_instance_failed_to_initialize);
+                    }
+                }
+            } else {
+                $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_user_not_authorized,
+                                                CO_ANDISOL_Lang::$andisol_error_name_user_not_authorized,
+                                                CO_ANDISOL_Lang::$andisol_error_desc_user_not_authorized);
+            }
+        }
+        
+        return $ret;
+    }
+    
+    /***********************/
+    /**
+    This method can only be called if the user is logged in as a Login Manager (or God).
+    This will delete both the login and the user collection for the given login ID.
+    It should be noted that deleting a collection does not delete the data associated with that collection, unless $with_extreme_prejudice is TRUE, and even then, only the records this manager can see will be deleted.
+    
+    \returns TRUE, if the operation was successful.
+     */
+    public function delete_user(    $in_login_id,                   ///< REQUIRED: The string login ID of the user to delete.
+                                    $with_extreme_prejudice = FALSE ///< OPTIONAL: If TRUE (Default is FALSE), then the manager will delete as many of the user data points as possible (It may not be possible for the manager to delete all data, unless the manager is God).
+                                ) {
+        $ret = FALSE;
+        
+        if ($in_login_id) {
+            if ($this->manager()) { // Don't even bother unless we're a manager.
+                // First, fetch the login item.
+                $login_item = $this->get_cobra_instance()->get_login_instance($in_login_id);
+                if ($login_item) {
+                    // Next, get the user item.
+                    $user_item = $this->get_cobra_instance()->get_user_from_login($login_item->id());
+                    if ($user_item) {
+                        // We have to have both the login and the user. Now, we make sure that we have write perms on both.
+                        if ($login_item->user_can_write() && $user_item->user_can_write()) {
+                            // OK. We have the things we need to delete, and we have established that we can delete them, so let's do it to it...
+                            if ($with_extreme_prejudice) {
+                                // We don't error-check this on purpose, as it's a given that there might be issues, here. This is a "due dilligence" thing.
+                                $user_items_to_delete = $user_item->children();
+                                
+                                foreach ($user_items_to_delete as $child) {
+                                    if ($child->user_can_write()) {
+                                        $child->delete_from_db();
+                                    }
+                                }
+                            }
+                            
+                            if ($user_item->delete_from_db()) {
+                                if ($login_item->delete_from_db()) {
+                                    $ret = FALSE;
+                                } else {
+                                    $this->error = $login_item->error;
+                                    if (!$this->error) {
+                                        $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_login_not_deleted,
+                                                                        CO_ANDISOL_Lang::$andisol_error_name_login_not_deleted,
+                                                                        CO_ANDISOL_Lang::$andisol_error_desc_login_not_deleted);
+                                    }
+                                }
+                            } else {
+                                $this->error = $user_item->error;
+                                if (!$this->error) {
+                                    $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_user_not_deleted,
+                                                                    CO_ANDISOL_Lang::$andisol_error_name_user_not_deleted,
+                                                                    CO_ANDISOL_Lang::$andisol_error_desc_user_not_deleted);
+                                }
+                            }
+                        } else {
+                            $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_user_not_authorized,
+                                                            CO_ANDISOL_Lang::$andisol_error_name_user_not_authorized,
+                                                            CO_ANDISOL_Lang::$andisol_error_desc_user_not_authorized);
+                        }
+                    } else {
+                        $this->error = $this->get_cobra_instance()->error;
+                        if (!$this->error) {
+                            $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_user_instance_unavailable,
+                                                            CO_ANDISOL_Lang::$andisol_error_name_user_instance_unavailable,
+                                                            CO_ANDISOL_Lang::$andisol_error_desc_user_instance_unavailable);
+                        }
+                    }
+                } else {
+                    $this->error = $this->get_cobra_instance()->error;
+                    if (!$this->error) {
+                        $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_login_instance_unavailable,
+                                                        CO_ANDISOL_Lang::$andisol_error_name_login_instance_unavailable,
+                                                        CO_ANDISOL_Lang::$andisol_error_desc_login_instance_unavailable);
+                    }
+                }
+            }
+        }
+        
+        return $ret;
     }
 };
