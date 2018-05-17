@@ -15,13 +15,15 @@ defined( 'LGV_LANG_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sur
 
 global $g_lang_override;    // This allows us to override the configured language at initiation time.
 
-if (isset($g_lang_override) && $g_lang_override && file_exists(CO_Config::lang_class_dir().'/'.$g_lang_override.'.php')) {
+if (isset($g_lang_override) && $g_lang_override && file_exists(dirname(__FILE__).'/'.$lang.'.php')) {
     $lang = $g_lang_override;
+} else {
+    $lang = CO_Config::$lang;
 }
 
-$lang_file = CO_Config::cobra_lang_class_dir().'/'.$lang.'.php';
 $lang_common_file = CO_Config::cobra_lang_class_dir().'/common.inc.php';
 
+require_once(dirname(__FILE__).'/'.$lang.'.php');
 require_once($lang_file);
 require_once($lang_common_file);
     
