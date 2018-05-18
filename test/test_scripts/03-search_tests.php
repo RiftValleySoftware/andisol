@@ -16,15 +16,15 @@ require_once(dirname(dirname(__FILE__)).'/functions.php');
 // -------------------------------- TEST DISPATCHER ---------------------------------------------
 
 function search_run_tests() {
-    user_access_run_test(40, 'PASS - Simple Location Search', 'The DB is preloaded with a bunch of meetings in the DC area, so we do a simple 5Km search, based on the Lincoln Memorial.');
-    user_access_run_test(41, 'FAIL - Simple Location Search', 'In this case, we search in Chicago. We should get no responses.');
-    user_access_run_test(42, 'PASS - Paged Location Search', 'Again, back to the Lincoln Memorial, but this time, we are searching in pages of ten.');
-    user_access_run_test(43, 'FAIL - Paged Location Search', 'Going back to Chicago, looking for pages of ten.');
+    search_run_test(40, 'PASS - Simple Location Search', 'The DB is preloaded with a bunch of meetings in the DC area, so we do a simple 5Km search, based on the Lincoln Memorial.');
+    search_run_test(41, 'FAIL - Simple Location Search', 'In this case, we search in Chicago. We should get no responses.');
+    search_run_test(42, 'PASS - Paged Location Search', 'Again, back to the Lincoln Memorial, but this time, we are searching in pages of ten.');
+    search_run_test(43, 'FAIL - Paged Location Search', 'Going back to Chicago, looking for pages of ten.');
 }
 
 // -------------------------------- TESTS ---------------------------------------------
 
-function user_access_test_40($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function search_test_40($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
@@ -41,7 +41,7 @@ function user_access_test_40($in_login = NULL, $in_hashed_password = NULL, $in_p
     }
 }
 
-function user_access_test_41($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function search_test_41($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
@@ -58,7 +58,7 @@ function user_access_test_41($in_login = NULL, $in_hashed_password = NULL, $in_p
     }
 }
 
-function user_access_test_42($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function search_test_42($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
@@ -89,7 +89,7 @@ function user_access_test_42($in_login = NULL, $in_hashed_password = NULL, $in_p
     }
 }
 
-function user_access_test_43($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function search_test_43($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
@@ -120,9 +120,20 @@ function user_access_test_43($in_login = NULL, $in_hashed_password = NULL, $in_p
     }
 }
 
+function search_test_44($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $all_users = $andisol_instance->get_all_users();
+        
+        if (isset($all_users)) {
+        }
+    }
+}
+
 // -------------------------------- STRUCTURE ---------------------------------------------
 
-function user_access_run_test($in_num, $in_title, $in_explain, $in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function search_run_test($in_num, $in_title, $in_explain, $in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $test_num_string = sprintf("%03d", $in_num);
     echo('<div id="test-'.$test_num_string.'" class="inner_closed">');
         echo('<h3 class="inner_header"><a href="javascript:toggle_inner_state(\'test-'.$test_num_string.'\')">TEST '.$in_num.': '.$in_title.'</a></h3>');
@@ -131,7 +142,7 @@ function user_access_run_test($in_num, $in_title, $in_explain, $in_login = NULL,
                 echo('<p class="explain">'.$in_explain.'</p>');
             echo('</div>');
             $st1 = microtime(TRUE);
-            $function_name = sprintf('user_access_test_%02d', $in_num);
+            $function_name = sprintf('search_test_%02d', $in_num);
             $function_name($in_login, $in_hashed_password, $in_password);
             $fetchTime = sprintf('%01.3f', microtime(TRUE) - $st1);
             echo("<h4>The test took $fetchTime seconds to complete.</h4>");
@@ -143,7 +154,7 @@ ob_start();
     prepare_databases('search_tests');
     
     echo('<div class="test-wrapper" style="display:table;margin-left:auto;margin-right:auto;text-align:left">');
-        echo('<h1 class="header">SEARCH TESTS</h1>');
+        echo('<h1 class="header">BASIC SEARCH TESTS</h1>');
         echo('<div id="search-tests" class="closed">');
             echo('<h2 class="header"><a href="javascript:toggle_main_state(\'search-tests\')">LOCATION SEARCH TESTS</a></h2>');
             echo('<div class="container">');

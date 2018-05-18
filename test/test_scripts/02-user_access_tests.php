@@ -550,7 +550,7 @@ ob_start();
         echo('</div>');
         
         echo('<div id="create-delete-tests" class="closed">');
-            echo('<h2 class="header"><a href="javascript:toggle_main_state(\'create-delete-tests\')">CREATE AND DELETE USER/LOGIN PAIRS</a></h2>');
+            echo('<h2 class="header"><a href="javascript:toggle_main_state(\'create-delete-tests\')">BASIC CREATE AND DELETE USER/LOGIN PAIRS</a></h2>');
             echo('<div class="container">');
                 echo('<p class="explain"></p>');
             
