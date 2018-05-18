@@ -13,7 +13,7 @@
 */
 defined( 'LGV_ANDISOL_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__ANDISOL_VERSION__', '1.0.0.0000');
+define('__ANDISOL_VERSION__', '1.0.0.1000');
 
 if (!defined('LGV_ACCESS_CATCHER')) {
     define('LGV_ACCESS_CATCHER', 1);
@@ -47,15 +47,16 @@ class Andisol {
     /**
     The constructor.
      */
-	public function __construct(    $in_login_id = NULL,        ///< The login ID
+	public function __construct(    $in_login_string_id = NULL, ///< The String login ID
                                     $in_hashed_password = NULL, ///< The password, crypt-hashed
                                     $in_raw_password = NULL     ///< The password, cleartext.
 	                            ) {
         $this->class_description = 'The main model interface class.';
 	    $this->version = __ANDISOL_VERSION__;
+	    $this->error = NULL;
 	    
 	    // The first thing we do, is set up any login instance, as well as any possible COBRA instance.
-        $chameleon_instance = new CO_Chameleon($in_login_id, $in_hashed_password, $in_raw_password);
+        $chameleon_instance = new CO_Chameleon($in_login_string_id, $in_hashed_password, $in_raw_password);
         if (isset($chameleon_instance) && ($chameleon_instance instanceof CO_Chameleon)) {
             if ($chameleon_instance->valid) {
                 $this->_chameleon_instance = $chameleon_instance;
@@ -136,66 +137,6 @@ class Andisol {
         return $this->valid() && $this->get_chameleon_instance()->god_mode();
     }
     
-    /************************************************************************************************************************/    
-    /*                                                  USER ACCESS METHODS                                                 */
-    /************************************************************************************************************************/    
-
-    /***********************/
-    /**
-    This returns the actual security DB login item for the requested user (or the current logged-in user).
-    
-    The response is subject to standard security vetting, so there is a possibility that nothing will be returned, when there is an existing login at that ID.
-    
-    \returns the instance for the requested user.
-     */
-    public function get_login_item( $in_login_id = NULL ///< The integer login ID to check. If not-NULL, then the ID of a login instance. It must be one that the current user can see. If NULL, then the current user.
-                                    ) {
-        return $this->get_chameleon_instance()->get_login_item($in_login_id);
-    }
-
-    /***********************/
-    /**
-    This returns the actual security DB login item for the requested user (or the current logged-in user).
-    
-    The response is subject to standard security vetting, so there is a possibility that nothing will be returned, when there is an existing login at that ID.
-    
-    \returns the instance for the requested user.
-     */
-    public function get_login_item_by_login_string( $in_login_id    ///< The string login ID to check. It must be one that the current user can see.
-                                                    ) {
-        return $this->get_chameleon_instance()->get_login_item_by_login_string($in_login_id);
-    }
-        
-    /***********************/
-    /**
-    \returns the user collection object for a given login string. If there is no login given, then the current login is assumed. This is subject to security restrictions.
-     */
-    public function get_user_from_login_string( $in_login_id    ///< The string login ID that is associated with the user collection.   
-                                                ) {
-        $ret = NULL;
-        
-        $login_item = $this->get_login_item_by_login_string($in_login_id);
-        if ($login_item instanceof CO_Security_Login) {
-            $ret = $this->get_user_from_login($login_item->id());
-        }
-        
-        return $ret;
-    }
-        
-    /***********************/
-    /**
-    \returns the user collection object for a given login. If there is no login given, then the current login is assumed. This is subject to security restrictions.
-     */
-    public function get_user_from_login(    $in_login_id = NULL,                ///< The integer login ID that is associated with the user collection. If NULL, then the current login is used.
-                                            $in_make_user_if_necessary = FALSE  ///< If TRUE (Default is FALSE), then the user will be created if it does not already exist. Ignored, if we are not a Login Manager.
-                                        ) {
-        if ($in_make_user_if_necessary && $this->manager()) {   // See if we are a manager, and they want to maybe create a new user.
-            return $this->get_cobra_instance()->get_user_from_login($in_login_id, $in_make_user_if_necessary);
-        } else {
-            return $this->get_chameleon_instance()->get_user_from_login($in_login_id);
-        }
-    }
-    
     /***********************/
     /**
     \returns The current login Item. NULL if no login.
@@ -212,18 +153,55 @@ class Andisol {
         return $this->get_user_from_login();
     }
     
+    /************************************************************************************************************************/    
+    /*                                                  USER ACCESS METHODS                                                 */
+    /************************************************************************************************************************/    
+
     /***********************/
     /**
-    \returns an array of instances of all the logins that are visible to the current user (or a supplied user, if in "God" mode).
+    This returns the actual security DB login item for the requested user (or the current logged-in user).
+    
+    The response is subject to standard security vetting, so there is a possibility that nothing will be returned, when there is an existing login at that ID.
+    
+    \returns the instance for the requested user.
      */
-    public function get_all_logins( $and_write = FALSE,         ///< If TRUE, then we only want ones we have write access to.
-                                    $in_login_id = NULL,        ///< This is ignored, unless this is the God login. If We are logged in as God, then we can select a login via its string login ID, and see what logins are available to it.
-                                    $in_login_integer_id = NULL ///< This is ignored, unless this is the God login and $in_login_id is not specified. If We are logged in as God, then we can select a login via its integer login ID, and see what logins are available to it.
+    public function get_login_item( $in_login_integer_id = NULL ///< The integer login ID to check. If not-NULL, then the ID of a login instance. It must be one that the current user can see. If NULL, then the current user.
                                     ) {
-        $ret = Array();
+        $ret = $this->get_chameleon_instance()->get_login_item($in_login_integer_id);
         
-        if ($this->manager()) { // Don't even bother unless we're a manager.
-            return $this->get_cobra_instance()->get_all_logins($and_write, $in_login_id, $in_login_integer_id);
+        $this->error = $this->get_chameleon_instance()->error;
+        
+        return $ret;
+    }
+
+    /***********************/
+    /**
+    This returns the actual security DB login item for the requested user (or the current logged-in user).
+    
+    The response is subject to standard security vetting, so there is a possibility that nothing will be returned, when there is an existing login at that ID.
+    
+    \returns the instance for the requested user.
+     */
+    public function get_login_item_by_login_string( $in_login_string_id    ///< The string login ID to check. It must be one that the current user can see.
+                                                    ) {
+        $ret = $this->get_chameleon_instance()->get_login_item_by_login_string($in_login_string_id);
+        
+        $this->error = $this->get_chameleon_instance()->error;
+        
+        return $ret;
+    }
+        
+    /***********************/
+    /**
+    \returns the user collection object for a given login string. If there is no login given, then the current login is assumed. This is subject to security restrictions.
+     */
+    public function get_user_from_login_string( $in_login_string_id    ///< The string login ID that is associated with the user collection.   
+                                                ) {
+        $ret = NULL;
+        
+        $login_item = $this->get_login_item_by_login_string($in_login_string_id);
+        if ($login_item instanceof CO_Security_Login) {
+            $ret = $this->get_user_from_login($login_item->id());
         }
         
         return $ret;
@@ -242,7 +220,9 @@ class Andisol {
         $ret = Array();
         
         if ($this->manager()) { // Don't even bother unless we're a manager.
-            return $this->get_cobra_instance()->who_can_see($in_test_target);
+            $ret = $this->get_cobra_instance()->who_can_see($in_test_target);
+        
+            $this->error = $this->get_cobra_instance()->error;
         }
         
         return $ret;
@@ -296,7 +276,11 @@ class Andisol {
                                     $count_only = FALSE,            ///< If TRUE (default is FALSE), then only a single integer will be returned, with the count of items that fit the search.
                                     $ids_only = FALSE               ///< If TRUE (default is FALSE), then the return array will consist only of integers (the object IDs). If $count_only is TRUE, this is ignored.
                                     ) {
-        return $this->get_chameleon_instance()->generic_search($in_search_parameters, $or_search, $page_size, $initial_page, $and_writeable, $count_only, $ids_only);
+        $ret = $this->get_chameleon_instance()->generic_search($in_search_parameters, $or_search, $page_size, $initial_page, $and_writeable, $count_only, $ids_only);
+        
+        $this->error = $this->get_chameleon_instance()->error;
+        
+        return $ret;
     }
     
     /***********************/
@@ -316,38 +300,77 @@ class Andisol {
                                         $count_only = FALSE,    ///< OPTIONAL: If TRUE (default is FALSE), then only a single integer will be returned, with the count of items that fit the search.
                                         $ids_only = FALSE       ///< OPTIONAL: If TRUE (default is FALSE), then the return array will consist only of integers (the object IDs). If $count_only is TRUE, this is ignored.
                                     ) {
-        return $this->generic_search(Array('location' => Array('longitude' => $in_longitude_degrees, 'latitude' => $in_latitude_degrees, 'radius' => $in_radius_kilometers)), FALSE, $page_size, $initial_page, $and_writeable, $count_only, $ids_only);
+        $ret = $this->generic_search(Array('location' => Array('longitude' => $in_longitude_degrees, 'latitude' => $in_latitude_degrees, 'radius' => $in_radius_kilometers)), FALSE, $page_size, $initial_page, $and_writeable, $count_only, $ids_only);
+        
+        return $ret;
+    }
+    
+    /***********************/
+    /**
+    \returns an array of instances of all the users (not logins) that are visible to the current login. It should be noted that this can return standalone users.
+     */
+    public function get_all_users(  $and_write = FALSE  ///< If TRUE (Default is FALSE), then we only want ones we have write access to.
+                                    ) {
+        $ret = $this->generic_search(Array('access_class' => '%_User_Collection', 'use_like' => 1), FALSE, 0, 0, $and_write);
+        
+        return $ret;
     }
     
     /************************************************************************************************************************/    
     /*                                                 USER MANAGEMENT METHODS                                              */
     /************************************************************************************************************************/
+        
+    /***********************/
+    /**
+    This is a special function for returning the user for a login, with the possibility of creating one, if one was not already in place.
+    In order to potentially create a user, the current login must be a manager, $in_make_user_if_necessary must be TRUE, and the user must not already exist (even if the current login cannot see that user).
+     
+    \returns the user collection object for a given login. If there is no login given, then the current login is assumed. This is subject to security restrictions.
+     */
+    public function get_user_from_login(    $in_login_integer_id = NULL,        ///< The integer login ID that is associated with the user collection. If NULL, then the current login is used.
+                                            $in_make_user_if_necessary = FALSE  ///< If TRUE (Default is FALSE), then the user will be created if it does not already exist. Ignored, if we are not a Login Manager.
+                                        ) {
+        $ret = NULL;
+        
+        if ($in_make_user_if_necessary && $this->manager()) {   // See if we are a manager, and they want to maybe create a new user.
+            $ret = $this->get_cobra_instance()->get_user_from_login($in_login_integer_id, $in_make_user_if_necessary);
+        
+            $this->error = $this->get_cobra_instance()->error;
+        } else {
+            $ret = $this->get_chameleon_instance()->get_user_from_login($in_login_integer_id);
+        
+            $this->error = $this->get_chameleon_instance()->error;
+        }
+        
+        return $ret;
+    }
     
     /***********************/
     /**
     This method can only be called if the user is logged in as a Login Manager (or God).
     This creates a new login and user collection.
     Upon successful completion, both a new login, and a user collection, based upon that login, now exist.
+    If there was an error, the user and login are deleted. It should be noted that, if the login was created, it is not really deleted, and is, instead, turned into a security token object.
     
     \returns a string, with the login password as cleartext (If an acceptable-length password is supplied in $in_password, that that is returned). If the operation failed, then NULL is returned.
      */
-    public function create_new_user(    $in_login_id,                   ///< REQUIRED: The login ID. It must be unique in the Security DB.
+    public function create_new_user(    $in_login_string_id,                   ///< REQUIRED: The login ID. It must be unique in the Security DB.
                                         $in_password = NULL,            ///< OPTIONAL: A new password. It must be at least as long as the minimum password length. If not supplied, an auto-generated password is created and returned as the function return. If too short, then an auto-generated password is created.
-                                        $in_display_name = NULL,        ///< OPTIONAL: A string, representing the basic "display name" to be associated with the login and user collection. If not supplied, the $in_login_id is used.
+                                        $in_display_name = NULL,        ///< OPTIONAL: A string, representing the basic "display name" to be associated with the login and user collection. If not supplied, the $in_login_string_id is used.
                                         $in_security_tokens = NULL,     ///< Any additional security tokens to apply to the new login. These must be a subset of the security tokens available to the logged-in manager. The God admin can set any tokens they want.
                                         $in_read_security_id = NULL,    ///< An optional read security ID. If not supplied, then ID 1 (logged-in users) is set. The write security ID is always set to the ID of the login.
                                         $is_manager = FALSE             ///< If TRUE (default is FALSE), then the new user will be a CO_Login_Manager object.
                                     ) {
         $ret = NULL;
         
-        if ($in_login_id) {
+        if ($in_login_string_id) {
             if ($this->manager()) { // Don't even bother unless we're a manager.
                 $login_item = NULL;
             
                 if ($is_manager) {  // See if they want to create a manager, or a standard login.
-                    $login_item = $this->get_cobra_instance()->create_new_manager_login($in_login_id, $in_password, $in_security_tokens);
+                    $login_item = $this->get_cobra_instance()->create_new_manager_login($in_login_string_id, $in_password, $in_security_tokens);
                 } else {
-                    $login_item = $this->get_cobra_instance()->create_new_standard_login($in_login_id, $in_password, $in_security_tokens);
+                    $login_item = $this->get_cobra_instance()->create_new_standard_login($in_login_string_id, $in_password, $in_security_tokens);
                 }
                 
                 // Make sure we got what we expect.
@@ -355,7 +378,7 @@ class Andisol {
                     // Next, set the display name.
                     $display_name = $in_display_name;
                     if (!$display_name) {
-                        $display_name = $in_login_id;
+                        $display_name = $in_login_string_id;
                     }
                     
                     // Set the display name.
@@ -368,9 +391,7 @@ class Andisol {
                                 $password = $in_password;
                                 // See if we need to auto-generate a password.
                                 if (!$password || (strlen($password) < CO_Config::$min_pw_len)) {
-                                    // This was cribbed from here: https://hugh.blog/2012/04/23/simple-way-to-generate-a-random-password-in-php/
-                                    $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-=+;:,.?";
-                                    $password = substr(str_shuffle($chars), 0, CO_Config::$min_pw_len);
+                                    $password = substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*~_-=+;:,.!?"), 0, CO_Config::$min_pw_len);
                                 }
                                 
                                 if ($login_item->set_password_from_cleartext($password)) {
@@ -456,15 +477,15 @@ class Andisol {
     
     \returns TRUE, if the operation was successful.
      */
-    public function delete_user(    $in_login_id,                   ///< REQUIRED: The string login ID of the user to delete.
+    public function delete_user(    $in_login_string_id,            ///< REQUIRED: The string login ID of the user to delete.
                                     $with_extreme_prejudice = FALSE ///< OPTIONAL: If TRUE (Default is FALSE), then the manager will delete as many of the user data points as possible (It may not be possible for the manager to delete all data, unless the manager is God).
                                 ) {
         $ret = FALSE;
         
-        if ($in_login_id) {
+        if ($in_login_string_id) {
             if ($this->manager()) { // Don't even bother unless we're a manager.
                 // First, fetch the login item.
-                $login_item = $this->get_cobra_instance()->get_login_instance($in_login_id);
+                $login_item = $this->get_cobra_instance()->get_login_instance($in_login_string_id);
                 if ($login_item) {
                     // Next, get the user item.
                     $user_item = $this->get_cobra_instance()->get_user_from_login($login_item->id());
@@ -524,6 +545,25 @@ class Andisol {
                     }
                 }
             }
+        }
+        
+        return $ret;
+    }
+    
+    /***********************/
+    /**
+    \returns an array of instances of all the logins that are visible to the current login (or a supplied login, if in "God" mode). The user must be a manager.
+     */
+    public function get_all_logins( $and_write = FALSE,         ///< If TRUE, then we only want ones we have write access to.
+                                    $in_login_string_id = NULL, ///< This is ignored, unless this is the God login. If We are logged in as God, then we can select a login via its string login ID, and see what logins are available to it. This trumps the integer ID.
+                                    $in_login_integer_id = NULL ///< This is ignored, unless this is the God login and $in_login_string_id is not specified. If We are logged in as God, then we can select a login via its integer login ID, and see what logins are available to it.
+                                    ) {
+        $ret = Array();
+        
+        if ($this->manager()) { // Don't even bother unless we're a manager.
+            $ret = $this->get_cobra_instance()->get_all_logins($and_write, $in_login_string_id, $in_login_integer_id);
+        
+            $this->error = $this->get_cobra_instance()->error;
         }
         
         return $ret;
