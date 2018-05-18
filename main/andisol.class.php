@@ -223,6 +223,10 @@ class Andisol {
             $ret = $this->get_cobra_instance()->who_can_see($in_test_target);
         
             $this->error = $this->get_cobra_instance()->error;
+        } else {
+            $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_user_not_authorized,
+                                            CO_ANDISOL_Lang::$andisol_error_name_user_not_authorized,
+                                            CO_ANDISOL_Lang::$andisol_error_desc_user_not_authorized);
         }
         
         return $ret;
@@ -311,7 +315,17 @@ class Andisol {
      */
     public function get_all_users(  $and_write = FALSE  ///< If TRUE (Default is FALSE), then we only want ones we have write access to.
                                     ) {
-        $ret = $this->generic_search(Array('access_class' => '%_User_Collection', 'use_like' => 1), FALSE, 0, 0, $and_write);
+        $ret = Array();
+        
+        $temp = $this->generic_search(Array('access_class' => Array('%_User_Collection', 'use_like' => 1)), FALSE, 0, 0, $and_write);
+        
+        // We make sure that we don't return the God user, if there is one.
+        foreach ($temp as $user) {
+            $login_instance = $user->get_login_instance();
+            if ($this->god() || (isset($login_instance) && ($login_instance->id() != CO_Config::god_mode_id()))) {
+                array_push($ret, $user);
+            }
+        }
         
         return $ret;
     }
@@ -542,6 +556,10 @@ class Andisol {
                                                         CO_ANDISOL_Lang::$andisol_error_desc_login_instance_unavailable);
                     }
                 }
+            } else {
+                $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_user_not_authorized,
+                                                CO_ANDISOL_Lang::$andisol_error_name_user_not_authorized,
+                                                CO_ANDISOL_Lang::$andisol_error_desc_user_not_authorized);
             }
         }
         
@@ -562,6 +580,10 @@ class Andisol {
             $ret = $this->get_cobra_instance()->get_all_logins($and_write, $in_login_string_id, $in_login_integer_id);
         
             $this->error = $this->get_cobra_instance()->error;
+        } else {
+            $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_user_not_authorized,
+                                            CO_ANDISOL_Lang::$andisol_error_name_user_not_authorized,
+                                            CO_ANDISOL_Lang::$andisol_error_desc_user_not_authorized);
         }
         
         return $ret;

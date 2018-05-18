@@ -20,6 +20,8 @@ function search_run_tests() {
     search_run_test(41, 'FAIL - Simple Location Search', 'In this case, we search in Chicago. We should get no responses.');
     search_run_test(42, 'PASS - Paged Location Search', 'Again, back to the Lincoln Memorial, but this time, we are searching in pages of ten.');
     search_run_test(43, 'FAIL - Paged Location Search', 'Going back to Chicago, looking for pages of ten.');
+    search_run_test(44, 'PASS - Get All Users (God)', 'Log in as the God admin, and see which users we can find.', 'admin', '', CO_Config::god_mode_password());
+    search_run_test(45, 'PASS - Get All Users', 'Log in as the main manager, and see which users we can find. The difference should be that we don\'t see the \'God\' admin user now.', 'DCAreaManager', '', 'CoreysGoryStory');
 }
 
 // -------------------------------- TESTS ---------------------------------------------
@@ -127,8 +129,16 @@ function search_test_44($in_login = NULL, $in_hashed_password = NULL, $in_passwo
         $all_users = $andisol_instance->get_all_users();
         
         if (isset($all_users)) {
+            echo('<h3 style="color:green">We got '.count($all_users).' responses to the user search:</h3>');
+            foreach ($all_users as $record) {
+                display_record($record);
+            }
         }
     }
+}
+
+function search_test_45($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    search_test_44($in_login, $in_hashed_password, $in_password);
 }
 
 // -------------------------------- STRUCTURE ---------------------------------------------

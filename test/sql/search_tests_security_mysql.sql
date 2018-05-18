@@ -19,7 +19,7 @@ INSERT INTO `co_security_nodes` (`id`, `login_id`, `access_class`, `last_access`
 (5, 'DCAdmin', 'CO_Cobra_Login', '1970-01-01 00:00:00', 1, 5, 'Washington DC Login', 'a:2:{s:4:"lang";s:2:"en";s:15:\"hashed_password\";s:13:\"CodYOzPtwxb4A\";}', ''),
 (6, 'WVAdmin', 'CO_Cobra_Login', '1970-01-01 00:00:00', 1, 6, 'West Virginia Login', 'a:2:{s:4:"lang";s:2:"en";s:15:\"hashed_password\";s:13:\"CodYOzPtwxb4A\";}', ''),
 (7, 'DEAdmin', 'CO_Cobra_Login', '1970-01-01 00:00:00', 1, 7, 'Delaware Login', 'a:2:{s:4:"lang";s:2:"en";s:15:\"hashed_password\";s:13:\"CodYOzPtwxb4A\";}', ''),
-(8, 'DCAreaManager', 'CO_Login_Manager', '1970-01-01 00:00:00', 1, 7, 'Manages All Logins', 'a:2:{s:4:"lang";s:2:"en";s:15:\"hashed_password\";s:13:\"CodYOzPtwxb4A\";}', '');
+(8, 'DCAreaManager', 'CO_Login_Manager', '1970-01-01 00:00:00', 1, 8, 'Manages All Logins', 'a:2:{s:4:"lang";s:2:"en";s:15:\"hashed_password\";s:13:\"CodYOzPtwxb4A\";}', '2,3,4,5,6,7');
 
 ALTER TABLE `co_security_nodes`
   ADD PRIMARY KEY (`id`),
