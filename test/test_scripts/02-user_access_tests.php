@@ -49,6 +49,7 @@ function create_run_tests() {
 
 function create_delete_run_tests() {
     user_access_run_test(31, 'PASS - Manager Login', 'We create an instance of ANDISOL with the "asp" login, and create a user and login pair with a login ID of \'crocodile\' and the \'CoresGoryStory\' password', 'asp', '', 'CoreysGoryStory');
+    user_access_run_test(32, 'PASS - Manager Login', 'We create an instance of ANDISOL with the "king-cobra" login, and create a user and login pair with a login ID of \'python\', specifying no password', 'king-cobra', '', 'CoreysGoryStory');
 }
 
 // -------------------------------- TESTS ---------------------------------------------
@@ -269,6 +270,36 @@ function user_access_test_31($in_login = NULL, $in_hashed_password = NULL, $in_p
                 }
             } else {
                 echo('<h3 style="color:red">There was a problem! The passwords don\'t match!</h3>');
+            }
+        } else {
+            echo('<h3 style="color:red">The User Was Not Created!</h3>');
+            echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance->error->error_code.') '.$andisol_instance->error->error_name.' ('.$andisol_instance->error->error_description.')</p>');
+        }
+    }
+}
+
+function user_access_test_32($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $password = $andisol_instance->create_new_user('python');
+        if ($password) {
+            echo('<h3 style="color:green">The User (\'python\') Was Created, and the auto-generated password is '.htmlspecialchars($password).'</h3>');
+            $user_from_andisol = $andisol_instance->get_user_from_login_string('python');
+            
+            if ($user_from_andisol) {
+                $login_item = $andisol_instance->get_login_item_by_login_string('python');
+            
+                if ($login_item) {
+                    if ($user_from_andisol->get_login_instance() === $login_item) {
+                        echo('<hr /><h3 style="color:green">The Login Item:</h3>');
+                        display_record($login_item);
+                        echo('<hr /><h3 style="color:green">The User Item:</h3>');
+                        display_record($user_from_andisol);
+                    } else {
+                        echo('<h3 style="color:red">There was a problem! The login from the user did not match the login we got from COBRA!</h3>');
+                    }
+                }
             }
         } else {
             echo('<h3 style="color:red">The User Was Not Created!</h3>');

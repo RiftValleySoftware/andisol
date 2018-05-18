@@ -366,13 +366,17 @@ class Andisol {
         if ($in_login_string_id) {
             if ($this->manager()) { // Don't even bother unless we're a manager.
                 $login_item = NULL;
+                
+                // See if we need to auto-generate a password.
+                if (!$in_password || (strlen($in_password) < CO_Config::$min_pw_len)) {
+                    $in_password = substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*~_-=+;:,.!?"), 0, CO_Config::$min_pw_len);
+                }
             
                 if ($is_manager) {  // See if they want to create a manager, or a standard login.
                     $login_item = $this->get_cobra_instance()->create_new_manager_login($in_login_string_id, $in_password, $in_security_tokens);
                 } else {
                     $login_item = $this->get_cobra_instance()->create_new_standard_login($in_login_string_id, $in_password, $in_security_tokens);
                 }
-                
                 // Make sure we got what we expect.
                 if ($login_item instanceof CO_Security_Login) {
                     // Next, set the display name.
@@ -388,14 +392,8 @@ class Andisol {
                         $user_item = $this->get_cobra_instance()->get_user_from_login($id, true);
                         if ($user_item instanceof CO_User_Collection) {
                             if ($user_item->set_name($display_name)) {
-                                $password = $in_password;
-                                // See if we need to auto-generate a password.
-                                if (!$password || (strlen($password) < CO_Config::$min_pw_len)) {
-                                    $password = substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*~_-=+;:,.!?"), 0, CO_Config::$min_pw_len);
-                                }
-                                
-                                if ($login_item->set_password_from_cleartext($password)) {
-                                    $ret = $password;
+                                if ($login_item->set_password_from_cleartext($in_password)) {
+                                    $ret = $in_password;
                                 } else {
                                     $user_item->delete_from_db();
                                     $login_item->delete_from_db();

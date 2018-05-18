@@ -227,11 +227,11 @@
                             }
                         }
                     }
-            
-                    if ( $in_record_object instanceof CO_Security_Login) {
-                        if (method_exists($in_record_object, 'ids')) {
-                            echo("<p>IDs: ".implode(', ', $in_record_object->ids())."</p>");
-                        } else {
+        
+                    if (method_exists($in_record_object, 'ids')) {
+                        echo("<p>IDs: ".implode(', ', $in_record_object->ids())."</p>");
+                    } else {
+                        if ($in_record_object instanceof CO_Security_Login) {
                             echo("<h4>NO IDS!</h4>");
                         }
                     }
