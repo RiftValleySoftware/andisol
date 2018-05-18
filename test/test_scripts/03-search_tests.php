@@ -20,6 +20,9 @@ function search_run_tests() {
     search_run_test(41, 'FAIL - Simple Location Search', 'In this case, we search in Chicago. We should get no responses.');
     search_run_test(42, 'PASS - Paged Location Search', 'Again, back to the Lincoln Memorial, but this time, we are searching in pages of ten.');
     search_run_test(43, 'FAIL - Paged Location Search', 'Going back to Chicago, looking for pages of ten.');
+}
+
+function user_search_run_tests() {
     search_run_test(44, 'PASS - Get All Users (God)', 'Log in as the God admin, and see which users we can find.', 'admin', '', CO_Config::god_mode_password());
     search_run_test(45, 'PASS - Get All Users', 'Log in as the main manager, and see which users we can find. The difference should be that we don\'t see the \'God\' admin user now.', 'DCAreaManager', '', 'CoreysGoryStory');
 }
@@ -173,6 +176,20 @@ ob_start();
                 $start = microtime(TRUE);
                 
                 search_run_tests();
+                
+                echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(TRUE) - $start) . ' seconds to complete.</h5>');
+                
+            echo('</div>');
+        echo('</div>');
+        
+        echo('<div id="user-search-tests" class="closed">');
+            echo('<h2 class="header"><a href="javascript:toggle_main_state(\'user-search-tests\')">USER SEARCH TESTS</a></h2>');
+            echo('<div class="container">');
+                echo('<p class="explain"></p>');
+            
+                $start = microtime(TRUE);
+                
+                user_search_run_tests();
                 
                 echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(TRUE) - $start) . ' seconds to complete.</h5>');
                 
