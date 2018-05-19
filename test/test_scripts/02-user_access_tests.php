@@ -234,6 +234,9 @@ function user_access_test_30($in_login = NULL, $in_hashed_password = NULL, $in_p
             display_record($user_item);
         } else {
             echo('<h3 style="color:red">The User (Login 5) Was Not Created!</h3>');
+            if (isset($andisol_instance->error)) {
+                echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance->error->error_code.') '.$andisol_instance->error->error_name.' ('.$andisol_instance->error->error_description.')</p>');
+            }
         }
     }
 }

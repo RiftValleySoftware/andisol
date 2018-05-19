@@ -16,15 +16,15 @@ require_once(dirname(dirname(__FILE__)).'/functions.php');
 // -------------------------------- TEST DISPATCHER ---------------------------------------------
 
 function search_run_tests() {
-    search_run_test(40, 'PASS - Simple Location Search', 'The DB is preloaded with a bunch of meetings in the DC area, so we do a simple 5Km search, based on the Lincoln Memorial.');
-    search_run_test(41, 'FAIL - Simple Location Search', 'In this case, we search in Chicago. We should get no responses.');
-    search_run_test(42, 'PASS - Paged Location Search', 'Again, back to the Lincoln Memorial, but this time, we are searching in pages of ten.');
-    search_run_test(43, 'FAIL - Paged Location Search', 'Going back to Chicago, looking for pages of ten.');
+    search_run_test(45, 'PASS - Simple Location Search', 'The DB is preloaded with a bunch of meetings in the DC area, so we do a simple 5Km search, based on the Lincoln Memorial.');
+    search_run_test(46, 'FAIL - Simple Location Search', 'In this case, we search in Chicago. We should get no responses.');
+    search_run_test(47, 'PASS - Paged Location Search', 'Again, back to the Lincoln Memorial, but this time, we are searching in pages of ten.');
+    search_run_test(48, 'FAIL - Paged Location Search', 'Going back to Chicago, looking for pages of ten.');
 }
 
 function user_search_run_tests() {
-    search_run_test(44, 'PASS - Get All Users (God)', 'Log in as the God admin, and see which users we can find.', 'admin', '', CO_Config::god_mode_password());
-    search_run_test(45, 'PASS - Get All Users', 'Log in as the main manager, and see which users we can find. The difference should be that we don\'t see the \'God\' admin user now.', 'DCAreaManager', '', 'CoreysGoryStory');
+    search_run_test(49, 'PASS - Get All Users (God)', 'Log in as the God admin, and see which users we can find.', 'admin', '', CO_Config::god_mode_password());
+    search_run_test(50, 'PASS - Get All Users', 'Log in as the main manager, and see which users we can find. The difference should be that we don\'t see the \'God\' admin user now.', 'DCAreaManager', '', 'CoreysGoryStory');
 }
 
 // -------------------------------- TESTS ---------------------------------------------

@@ -504,29 +504,8 @@ class Andisol {
                     if ($user_item) {
                         // We have to have both the login and the user. Now, we make sure that we have write perms on both.
                         if ($login_item->user_can_write() && $user_item->user_can_write()) {
-                            // OK. We have the things we need to delete, and we have established that we can delete them, so let's do it to it...
-                            if ($with_extreme_prejudice) {
-                                // We don't error-check this on purpose, as it's a given that there might be issues, here. This is a "due dilligence" thing.
-                                $user_items_to_delete = $user_item->children();
-                                
-                                foreach ($user_items_to_delete as $child) {
-                                    if ($child->user_can_write()) {
-                                        $child->delete_from_db();
-                                    }
-                                }
-                            }
-                            
-                            if ($user_item->delete_from_db()) {
-                                if ($login_item->delete_from_db()) {
-                                    $ret = FALSE;
-                                } else {
-                                    $this->error = $login_item->error;
-                                    if (!$this->error) {
-                                        $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_login_not_deleted,
-                                                                        CO_ANDISOL_Lang::$andisol_error_name_login_not_deleted,
-                                                                        CO_ANDISOL_Lang::$andisol_error_desc_login_not_deleted);
-                                    }
-                                }
+                            if ($user_item->delete_from_db($with_extreme_prejudice, TRUE)) {
+                                $ret = TRUE;
                             } else {
                                 $this->error = $user_item->error;
                                 if (!$this->error) {
