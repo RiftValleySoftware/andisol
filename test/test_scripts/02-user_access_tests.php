@@ -57,6 +57,11 @@ function create_delete_run_tests() {
     user_access_run_test(37, 'FAIL - Delete User/Login Pair', 'We create an instance of ANDISOL with the "asp" login, and try to delete \'python\'. This won\'t work, as \'asp\' doesn\'t have write perms for \'python\'.', 'asp', '', 'CoreysGoryStory');
     user_access_run_test(38, 'PASS - Delete User/Login Pair', 'We create an instance of ANDISOL with the "king-cobra" login, and try to delete \'python\'.', 'king-cobra', '', 'CoreysGoryStory');
     user_access_run_test(39, 'FAIL - Delete Login Only', 'We create an instance of ANDISOL with the "asp" login. We create a new login directly, then try to use ANDISOL to delete it. This should fail, as ANDISOL only works on pairs.', 'asp', '', 'CoreysGoryStory');
+    user_access_run_test(40, 'PASS - Delete Login Only (Directly)', 'We create an instance of ANDISOL with the "asp" login. We create a new login directly, then try to delete it directly. This time, it will work.', 'asp', '', 'CoreysGoryStory');
+    user_access_run_test(41, 'FAIL - Delete User', 'We create an instance of ANDISOL with the "asp" login. We then try to delete a user that we don\'t have permission to write.', 'asp', '', 'CoreysGoryStory');
+    user_access_run_test(42, 'PASS - Delete User', 'This time, we go in as \'king-cobra\', and should be able to delete the user and login.', 'king-cobra', '', 'CoreysGoryStory');
+    user_access_run_test(43, 'FAIL - Delete Login -Remove Reference From User', '', 'asp', '', 'CoreysGoryStory');
+    user_access_run_test(44, 'PASS - Delete Login -Remove Reference From User', '', 'king-cobra', '', 'CoreysGoryStory');
 }
 
 // -------------------------------- TESTS ---------------------------------------------
@@ -383,14 +388,15 @@ function user_access_test_35($in_login = NULL, $in_hashed_password = NULL, $in_p
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
         $password = $andisol_instance->create_new_user('mamba');
         if ($password) {
-            echo('<h3 style="color:green">The User (\'python\') Was Created, and the auto-generated password is '.htmlspecialchars($password).'</h3>');
+            echo('<h3 style="color:green">The User Was Created, and the auto-generated password is '.htmlspecialchars($password).'</h3>');
             $user_from_andisol = $andisol_instance->get_user_from_login_string('mamba');
             
             if ($user_from_andisol) {
                 $login_item = $andisol_instance->get_login_item_by_login_string('mamba');
-            
                 if ($login_item) {
                     if ($user_from_andisol->get_login_instance() === $login_item) {
+                        $login_item->set_read_security_id(7);
+                        $user_from_andisol->set_read_security_id(7);
                         echo('<hr /><h3 style="color:green">The Login Item:</h3>');
                         display_record($login_item);
                         echo('<hr /><h3 style="color:green">The User Item:</h3>');
@@ -470,6 +476,78 @@ function user_access_test_39($in_login = NULL, $in_hashed_password = NULL, $in_p
             echo('<h3 style="color:red">No COBRA Instance!</h3>');
         }
     }
+}
+
+function user_access_test_40($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $login_instance = $andisol_instance->get_login_item_by_login_string('puff-adder');
+        if ($login_instance) {
+            if ($login_instance->delete_from_db()) {
+                echo('<h3 style="color:green">We successfully deleted the login!</h3>');
+            } else {
+                echo('<h3 style="color:red">This did not succeed.</h3>');
+                echo('<p style="color:red;font-weight:bold">Error: ('.$login_instance->error->error_code.') '.$login_instance->error->error_name.' ('.$login_instance->error->error_description.')</p>');
+            }
+        } else {
+            echo('<h3 style="color:red">Could not get Login Item!</h3>');
+        }
+    }
+}
+
+function user_access_test_41($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $user_from_andisol = $andisol_instance->get_user_from_login_string('krait');
+        
+        if ($user_from_andisol) {
+            echo('<h3 style="color:green">We can see the user:</h3>');
+            display_record($user_from_andisol);
+        }
+        
+        if ($andisol_instance->delete_user('krait')) {
+            echo('<h3 style="color:green">We successfully deleted the user and login pair!</h3>');
+        } else {
+            echo('<h3 style="color:red">This did not succeed!</h3>');
+            echo('<p style="color:red;font-weight:bold">Error: ('.$andisol_instance->error->error_code.') '.$andisol_instance->error->error_name.' ('.$andisol_instance->error->error_description.')</p>');
+        }
+    }
+}
+
+function user_access_test_42($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    user_access_test_41($in_login, $in_hashed_password, $in_password);
+}
+
+function user_access_test_43($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $login_instance = $andisol_instance->get_login_item_by_login_string('mamba');
+        if ($login_instance) {
+            $user_object = $login_instance->get_user_object();
+            
+            echo('<h3 style="color:green">The associated user (BEFORE):</h3>');
+            display_record($user_object);
+        
+            if ($login_instance->delete_from_db()) {
+                echo('<h3 style="color:green">We successfully deleted the login!</h3>');
+            
+                echo('<h3 style="color:green">The associated user (AFTER):</h3>');
+                display_record($user_object);
+            } else {
+                echo('<h3 style="color:red">This did not succeed.</h3>');
+                echo('<p style="color:red;font-weight:bold">Error: ('.$login_instance->error->error_code.') '.$login_instance->error->error_name.' ('.$login_instance->error->error_description.')</p>');
+            }
+        } else {
+            echo('<h3 style="color:red">Could not get Login Item!</h3>');
+        }
+    }
+}
+
+function user_access_test_44($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    user_access_test_43($in_login, $in_hashed_password, $in_password);
 }
 
 // -------------------------------- STRUCTURE ---------------------------------------------
