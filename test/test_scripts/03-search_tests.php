@@ -24,12 +24,12 @@ function search_run_tests() {
 
 function user_search_run_tests() {
     search_run_test(49, 'PASS - Get All Users (God)', 'Log in as the God admin, and see which users we can find.', 'admin', '', CO_Config::god_mode_password());
-    search_run_test(50, 'PASS - Get All Users', 'Log in as the main manager, and see which users we can find. The difference should be that we don\'t see the \'God\' admin user now.', 'DCAreaManager', '', 'CoreysGoryStory');
+    search_run_test(50, 'PASS - Get All Users (Main Manager)', 'Log in as the main manager, and see which users we can find. The difference should be that we don\'t see the \'God\' admin user now.', 'DCAreaManager', '', 'CoreysGoryStory');
 }
 
 // -------------------------------- TESTS ---------------------------------------------
 
-function search_test_40($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function search_test_45($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
@@ -46,7 +46,7 @@ function search_test_40($in_login = NULL, $in_hashed_password = NULL, $in_passwo
     }
 }
 
-function search_test_41($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function search_test_46($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
@@ -63,7 +63,7 @@ function search_test_41($in_login = NULL, $in_hashed_password = NULL, $in_passwo
     }
 }
 
-function search_test_42($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function search_test_47($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
@@ -74,7 +74,7 @@ function search_test_42($in_login = NULL, $in_hashed_password = NULL, $in_passwo
             $returned_array = $andisol_instance->location_search(-77.0502, 38.8893, 5.0, 10, $page);
         
             if (isset($returned_array) && is_array($returned_array) && count($returned_array)) {
-                echo('<h3 style="color:green">Page '.$page.' ('.count($returned_array).' responses):</h3>');
+                echo('<hr style="margin-top:1em;" /><h3 style="text-align:center;color:green">Page '.$page.' ('.count($returned_array).' responses):</h3><hr style="margin-bottom:0.25em;" />');
                 $total += count($returned_array);
                 foreach ($returned_array as $record) {
                     display_record($record);
@@ -94,7 +94,7 @@ function search_test_42($in_login = NULL, $in_hashed_password = NULL, $in_passwo
     }
 }
 
-function search_test_43($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function search_test_48($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
@@ -105,7 +105,7 @@ function search_test_43($in_login = NULL, $in_hashed_password = NULL, $in_passwo
             $returned_array = $andisol_instance->location_search(-87.621887, 41.876465, 5.0, 10, $page);
         
             if (isset($returned_array) && is_array($returned_array) && count($returned_array)) {
-                echo('<h3 style="color:green">Page '.$page.' ('.count($returned_array).' responses):</h3>');
+                echo('<hr style="margin-top:1em;" /><h3 style="text-align:center;color:green">Page '.$page.' ('.count($returned_array).' responses):</h3><hr style="margin-bottom:0.25em;" />');
                 $total += count($returned_array);
                 foreach ($returned_array as $record) {
                     display_record($record);
@@ -125,7 +125,7 @@ function search_test_43($in_login = NULL, $in_hashed_password = NULL, $in_passwo
     }
 }
 
-function search_test_44($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function search_test_49($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
@@ -140,8 +140,8 @@ function search_test_44($in_login = NULL, $in_hashed_password = NULL, $in_passwo
     }
 }
 
-function search_test_45($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
-    search_test_44($in_login, $in_hashed_password, $in_password);
+function search_test_50($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    search_test_49($in_login, $in_hashed_password, $in_password);
 }
 
 // -------------------------------- STRUCTURE ---------------------------------------------
