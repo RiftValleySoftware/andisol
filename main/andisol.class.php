@@ -330,6 +330,28 @@ class Andisol {
         return $ret;
     }
     
+    /***********************/
+    /**
+    \returns an array of instances (or integers, if $ids_only is TRUE) that match the requested tag values. If $count_only is TRUE, then it will be a single integer, with the count of responses to the search (if a page, then this count will only be the number of items on that page).
+     */
+    public function tag_search( $in_tags_associative_array, /**< REQUIRED:  This is an associative array, with the keys being "0" through "9". Each element will have a requested value for that element.
+                                                                            Leaving an element out will remove it as a search factor. Adding it, but leaving it NULL or blank, means that this tag MUST be null or blank.
+                                                                            If you add an element called 'use_like' ('use_like' => 1) to the array, then you can use SQL-style "wildcards" (%) in your matches.
+                                                                            Unless $in_or_search is set to TRUE, the search will be an AND search; meaning that ALL the tag values must match, in order to result in a record being returned.
+                                                            */
+                                $in_or_search = FALSE,      ///< OPTIONAL: If TRUE (Default is FALSE), then the search will be an "OR" search (any of the values).
+                                $page_size = 0,             ///< OPTIONAL: If specified with a 1-based integer, this denotes the size of a "page" of results. NOTE: This is only applicable to MySQL or Postgres, and will be ignored if the DB is not MySQL or Postgres. Default is 0.
+                                $initial_page = 0,          ///< OPTIONAL: This is ignored unless $page_size is greater than 0. If so, then this 0-based index will specify which page of results to return. Values beyond the maximum number of pages will result in no returned values.
+                                $and_writeable = FALSE,     ///< OPTIONAL: If TRUE, then we only want records we can modify.
+                                $count_only = FALSE,        ///< OPTIONAL: If TRUE (default is FALSE), then only a single integer will be returned, with the count of items that fit the search.
+                                $ids_only = FALSE           ///< OPTIONAL: If TRUE (default is FALSE), then the return array will consist only of integers (the object IDs). If $count_only is TRUE, this is ignored.
+                            ) {
+        $tags_array = Array();
+        $ret = Array();
+        
+        return $ret;
+    }
+        
     /************************************************************************************************************************/    
     /*                                                 USER MANAGEMENT METHODS                                              */
     /************************************************************************************************************************/
