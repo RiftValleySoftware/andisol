@@ -538,7 +538,9 @@ function user_access_test_43($in_login = NULL, $in_hashed_password = NULL, $in_p
                 display_record($user_object);
             } else {
                 echo('<h3 style="color:red">This did not succeed.</h3>');
-                echo('<p style="color:red;font-weight:bold">Error: ('.$login_instance->error->error_code.') '.$login_instance->error->error_name.' ('.$login_instance->error->error_description.')</p>');
+                if (isset($login_instance->error)) {
+                    echo('<p style="color:red;font-weight:bold">Error: ('.$login_instance->error->error_code.') '.$login_instance->error->error_name.' ('.$login_instance->error->error_description.')</p>');
+                }
             }
         } else {
             echo('<h3 style="color:red">Could not get Login Item!</h3>');
