@@ -319,10 +319,10 @@ class Andisol {
         
         $temp = $this->generic_search(Array('access_class' => Array('%_User_Collection', 'use_like' => 1)), FALSE, 0, 0, $and_write);
         
-        // We make sure that we don't return the God user, if there is one.
+        // We make sure that we don't return the God user, if there is one (unless we are God).
         foreach ($temp as $user) {
             $login_instance = $user->get_login_instance();
-            if ($this->god() || (isset($login_instance) && ($login_instance->id() != CO_Config::god_mode_id()))) {
+            if ($this->god() || !$user->is_god_user()) {
                 array_push($ret, $user);
             }
         }

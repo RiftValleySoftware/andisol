@@ -16,15 +16,19 @@ require_once(dirname(dirname(__FILE__)).'/functions.php');
 // -------------------------------- TEST DISPATCHER ---------------------------------------------
 
 function search_run_tests() {
-    search_run_test(45, 'PASS - Simple Location Search', 'The DB is preloaded with a bunch of meetings in the DC area, so we do a simple 5Km search, based on the Lincoln Memorial.');
+    search_run_test(45, 'PASS - Simple Location Search', 'The DB is preloaded with a bunch of meetings in the DC area, so we do a simple 5Km search, based on the Lincoln Memorial. We expect to get 63 meetings.');
     search_run_test(46, 'FAIL - Simple Location Search', 'In this case, we search in Chicago. We should get no responses.');
     search_run_test(47, 'PASS - Paged Location Search', 'Again, back to the Lincoln Memorial, but this time, we are searching in pages of ten.');
     search_run_test(48, 'FAIL - Paged Location Search', 'Going back to Chicago, looking for pages of ten.');
+    search_run_test(49, 'PASS - Simple Location Search (Count)', 'The DB is preloaded with a bunch of meetings in the DC area, so we do a simple 5Km search, based on the Lincoln Memorial; however, this time, we ask only for the count (63).');
+    search_run_test(50, 'PASS - Simple Location Search (IDs)', 'The DB is preloaded with a bunch of meetings in the DC area, so we do a simple 5Km search, based on the Lincoln Memorial; however, this time, we ask only for the IDs of the records.');
+    search_run_test(51, 'PASS - Simple Location Search (Paged Count)', 'The DB is preloaded with a bunch of meetings in the DC area, so we do a simple 5Km search, based on the Lincoln Memorial; however, this time, we ask only for the count (which comes to 3), and for the last page in pages of ten.');
+    search_run_test(52, 'PASS - Simple Location Search (Paged IDs)', 'The DB is preloaded with a bunch of meetings in the DC area, so we do a simple 5Km search, based on the Lincoln Memorial; however, this time, we ask only for the IDs of the records, and for the last page in pages of ten.');
 }
 
 function user_search_run_tests() {
-    search_run_test(49, 'PASS - Get All Users (God)', 'Log in as the God admin, and see which users we can find.', 'admin', '', CO_Config::god_mode_password());
-    search_run_test(50, 'PASS - Get All Users (Main Manager)', 'Log in as the main manager, and see which users we can find. The difference should be that we don\'t see the \'God\' admin user now.', 'DCAreaManager', '', 'CoreysGoryStory');
+    search_run_test(53, 'PASS - Get All Users (God)', 'Log in as the God admin, and see which users we can find.', 'admin', '', CO_Config::god_mode_password());
+    search_run_test(54, 'PASS - Get All Users (Main Manager)', 'Log in as the main manager, and see which users we can find. The difference should be that we don\'t see the \'God\' admin user now.', 'DCAreaManager', '', 'CoreysGoryStory');
 }
 
 // -------------------------------- TESTS ---------------------------------------------
@@ -129,6 +133,68 @@ function search_test_49($in_login = NULL, $in_hashed_password = NULL, $in_passwo
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $returned_integer = $andisol_instance->location_search(-77.0502, 38.8893, 5.0, 0, 0, FALSE, TRUE);
+        
+        if (isset($returned_integer) && $returned_integer) {
+            echo('<h3 style="color:green">We got '.$returned_integer.' responses to the location search.</h3>');
+        } else {
+            echo('<h3 style="color:red">We got NUTHIN\'!</h3>');
+        }
+    }
+}
+
+function search_test_50($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $returned_array = $andisol_instance->location_search(-77.0502, 38.8893, 5.0, 0, 0, FALSE, FALSE, TRUE);
+        
+        if (isset($returned_array) && is_array($returned_array) && count($returned_array)) {
+            echo('<h3 style="color:green">We got '.count($returned_array).' responses to the location search:</h3>');
+            echo('<div style="font-family:Courier,Monospace">');
+            echo('<span style="float:left;width:4em;display:block;text-align:right">'.implode(',</span><span style="float:left;width:4em;display:block;text-align:right">', $returned_array).'</span>');
+            echo('<div style="clear:both"></div></div>');
+        } else {
+            echo('<h3 style="color:red">We got NUTHIN\'!</h3>');
+        }
+    }
+}
+
+function search_test_51($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $returned_integer = $andisol_instance->location_search(-77.0502, 38.8893, 5.0, 10, 6, FALSE, TRUE);
+        
+        if (isset($returned_integer) && $returned_integer) {
+            echo('<h3 style="color:green">We got '.$returned_integer.' responses to the location search.</h3>');
+        } else {
+            echo('<h3 style="color:red">We got NUTHIN\'!</h3>');
+        }
+    }
+}
+
+function search_test_52($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $returned_array = $andisol_instance->location_search(-77.0502, 38.8893, 5.0, 10, 6, FALSE, FALSE, TRUE);
+        
+        if (isset($returned_array) && is_array($returned_array) && count($returned_array)) {
+            echo('<h3 style="color:green">We got '.count($returned_array).' responses to the location search:</h3>');
+            echo('<div style="font-family:Courier,Monospace">');
+            echo('<span style="float:left;width:4em;display:block;text-align:right">'.implode(',</span><span style="float:left;width:4em;display:block;text-align:right">', $returned_array).'</span>');
+            echo('<div style="clear:both"></div></div>');
+        } else {
+            echo('<h3 style="color:red">We got NUTHIN\'!</h3>');
+        }
+    }
+}
+
+function search_test_53($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
         $all_users = $andisol_instance->get_all_users();
         
         if (isset($all_users)) {
@@ -140,8 +206,8 @@ function search_test_49($in_login = NULL, $in_hashed_password = NULL, $in_passwo
     }
 }
 
-function search_test_50($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
-    search_test_49($in_login, $in_hashed_password, $in_password);
+function search_test_54($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    search_test_53($in_login, $in_hashed_password, $in_password);
 }
 
 // -------------------------------- STRUCTURE ---------------------------------------------

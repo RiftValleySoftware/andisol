@@ -60,8 +60,8 @@ function create_delete_run_tests() {
     user_access_run_test(40, 'PASS - Delete Login Only (Directly)', 'We create an instance of ANDISOL with the "asp" login. We create a new login directly, then try to delete it directly. This time, it will work.', 'asp', '', 'CoreysGoryStory');
     user_access_run_test(41, 'FAIL - Delete User', 'We create an instance of ANDISOL with the "asp" login. We then try to delete a user that we don\'t have permission to write.', 'asp', '', 'CoreysGoryStory');
     user_access_run_test(42, 'PASS - Delete User', 'This time, we go in as \'king-cobra\', and should be able to delete the user and login.', 'king-cobra', '', 'CoreysGoryStory');
-    user_access_run_test(43, 'FAIL - Delete Login -Remove Reference From User', '', 'asp', '', 'CoreysGoryStory');
-    user_access_run_test(44, 'PASS - Delete Login -Remove Reference From User', '', 'king-cobra', '', 'CoreysGoryStory');
+    user_access_run_test(43, 'FAIL - Delete Login -Remove Reference From User', 'In this test, we attempt to remove a user we have write permissions for, but a login we don\'t (we only have read permissions for the associated login).', 'asp', '', 'CoreysGoryStory');
+    user_access_run_test(44, 'PASS - Delete Login -Remove Reference From User', 'Here, we have write permissions for both.', 'king-cobra', '', 'CoreysGoryStory');
 }
 
 // -------------------------------- TESTS ---------------------------------------------
@@ -537,7 +537,7 @@ function user_access_test_43($in_login = NULL, $in_hashed_password = NULL, $in_p
                 echo('<h3 style="color:green">The associated user (AFTER):</h3>');
                 display_record($user_object);
             } else {
-                echo('<h3 style="color:red">This did not succeed.</h3>');
+                echo('<h3 style="color:red">This did not succeed (We could not write the login).</h3>');
                 if (isset($login_instance->error)) {
                     echo('<p style="color:red;font-weight:bold">Error: ('.$login_instance->error->error_code.') '.$login_instance->error->error_name.' ('.$login_instance->error->error_description.')</p>');
                 }

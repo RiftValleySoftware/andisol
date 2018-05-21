@@ -33,7 +33,11 @@ INSERT INTO co_data_nodes (access_class, last_access, read_security_id, write_se
 ('CO_User_Collection', '1970-01-02 00:00:00', 1, 5, 'Washington DC Admin', NULL, NULL, NULL, NULL, '5', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 ('CO_User_Collection', '1970-01-02 00:00:00', 1, 6, 'West Virginia Admin', NULL, NULL, NULL, NULL, '6', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 ('CO_User_Collection', '1970-01-02 00:00:00', 1, 7, 'Delaware Admin', NULL, NULL, NULL, NULL, '7', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-('CO_User_Collection', '1970-01-02 00:00:00', 1, 8, 'DC Area Manager', NULL, NULL, NULL, NULL, '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+('CO_User_Collection', '1970-01-02 00:00:00', 1, 8, 'DC Area Manager', NULL, NULL, NULL, NULL, '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+('CO_User_Collection', '1970-01-02 00:00:00', 1, 8, 'Standalone User (ID 9)', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+('CO_User_Collection', '1970-01-02 00:00:00', 1, 8, 'Standalone User (ID 10)', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+('CO_User_Collection', '1970-01-02 00:00:00', 1, 8, 'Standalone User (ID 11)', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+('CO_User_Collection', '1970-01-02 00:00:00', 1, 8, 'Standalone User (ID 12)', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 INSERT INTO co_data_nodes (access_class, last_access, read_security_id, write_security_id, object_name, access_class_context, owner, longitude, latitude, tag0, tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8, tag9, payload) VALUES
 ('CO_US_Place', '1970-01-02 00:00:00', 0, 3, 'New Start', NULL, 3, -76.87700701, 39.05928327, 'Queens Chapel United Methodist Church', '7410 Old Muirkirk Road', '', 'Beltsville', '', 'MD', '20705', NULL, '6', '20:00:00', NULL),
