@@ -205,11 +205,13 @@ function search_test_53($in_login = NULL, $in_hashed_password = NULL, $in_passwo
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
         $all_users = $andisol_instance->get_all_users();
         
-        if (isset($all_users)) {
+        if (isset($all_users) && is_array($all_users) && count($all_users)) {
             echo('<h3 style="color:green">We got '.count($all_users).' responses to the user search:</h3>');
             foreach ($all_users as $record) {
                 display_record($record);
             }
+        } else {
+            echo('<h3 style="color:red">We got NOTHING!</h3>');
         }
     }
 }
@@ -224,11 +226,13 @@ function search_test_55($in_login = NULL, $in_hashed_password = NULL, $in_passwo
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
         $all_users = $andisol_instance->get_all_login_users();
         
-        if (isset($all_users)) {
+        if (isset($all_users) && is_array($all_users) && count($all_users)) {
             echo('<h3 style="color:green">We got '.count($all_users).' responses to the user search:</h3>');
             foreach ($all_users as $record) {
                 display_record($record);
             }
+        } else {
+            echo('<h3 style="color:red">We got NOTHING!</h3>');
         }
     }
 }
@@ -239,11 +243,13 @@ function search_test_56($in_login = NULL, $in_hashed_password = NULL, $in_passwo
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
         $all_users = $andisol_instance->get_all_standalone_users();
         
-        if (isset($all_users)) {
+        if (isset($all_users) && is_array($all_users) && count($all_users)) {
             echo('<h3 style="color:green">We got '.count($all_users).' responses to the user search:</h3>');
             foreach ($all_users as $record) {
                 display_record($record);
             }
+        } else {
+            echo('<h3 style="color:red">We got NOTHING!</h3>');
         }
     }
 }
@@ -258,11 +264,13 @@ function search_test_58($in_login = NULL, $in_hashed_password = NULL, $in_passwo
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
         $all_users = $andisol_instance->get_all_users(TRUE);
         
-        if (isset($all_users)) {
+        if (isset($all_users) && is_array($all_users) && count($all_users)) {
             echo('<h3 style="color:green">We got '.count($all_users).' responses to the user search:</h3>');
             foreach ($all_users as $record) {
                 display_record($record);
             }
+        } else {
+            echo('<h3 style="color:red">We got NOTHING!</h3>');
         }
     }
 }
@@ -277,11 +285,13 @@ function search_test_60($in_login = NULL, $in_hashed_password = NULL, $in_passwo
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
         $all_users = $andisol_instance->get_all_login_users(TRUE);
         
-        if (isset($all_users)) {
+        if (isset($all_users) && is_array($all_users) && count($all_users)) {
             echo('<h3 style="color:green">We got '.count($all_users).' responses to the user search:</h3>');
             foreach ($all_users as $record) {
                 display_record($record);
             }
+        } else {
+            echo('<h3 style="color:red">We got NOTHING!</h3>');
         }
     }
 }
