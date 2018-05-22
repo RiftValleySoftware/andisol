@@ -29,30 +29,28 @@ We have two separate database, with the main data database holding the actual da
 These databases do not need to have any relations, may be totally different technologies (we are currently limited to MySQL and Postgres), and can even be on different hosts.
  */
 class CO_Config {
-    static private $_god_mode_id = 2;   ///< God Login Security DB ID. This is private, so it can't be programmatically changed.
-    static private $_god_mode_password = <GOD MODE PASSWORD>;   ///< Plaintext password for the God Mode ID login. This overrides anything in the ID row.
-    
-    static $lang = 'en';                ///< The default language for the server.
-    static $min_pw_len = 8;             ///< The minimum password length.
-    
-    static $data_db_name = <MAIN DB NAME>;                          ///< The PDO name for the main data database.
-    static $data_db_host = <MAIN DB HOST (USUALLY 'localhost')>;    ///< The URL name for the main data database host.
-    static $data_db_type = <'pgsql' OR 'mysql'>;                    ///< The technology used for the main data database (MySQL or Postgres).
-    static $data_db_login = <MAIN DB LOGIN>;                        ///< The string login name for the main data database.
-    static $data_db_password = <MAIN DB PASSWORD>;                  ///< The main data database password string.
+    use tCO_Config; // These are the built-in config methods.
 
-    static $sec_db_name = <SECURITY DB NAME>;                       ///< The PDO name for the security database.
-    static $sec_db_host = <SECURITY DB HOST (USUALLY 'localhost')>; ///< The URL name for the security database host.
-    static $sec_db_type = <'pgsql' OR 'mysql'>;                     ///< The technology used for the security database (MySQL or Postgres).
-    static $sec_db_login = <SECURITY DB LOGIN>;                     ///< The string login name for the security database.
-    static $sec_db_password = <SECURITY DB PASSWORD>;               ///< The security database password string.
-
-    /**
-    This is the Google API key. It's required for CHAMELEON to do address lookups and other geocoding tasks.
-    CHAMELEON requires this to have at least the Google Geocoding API enabled.
-    */
-    static $google_api_key = <YOUR GOOGLE API KEY (With Geocoding API)>;
+    static private $_god_mode_id = 2;                                       ///< God Login Security DB ID. This is private, so it can't be programmatically changed.
+    static private $_god_mode_password = <GOD MODE PASSWORD>;               ///< Plaintext password for the God Mode ID login. This overrides anything in the ID row.
     
+    static $lang = 'en';                                                    ///< The default language for the server.
+    static $min_pw_len = 8;                                                 ///< The minimum password length.
+    
+    static $data_db_name = <MAIN DB NAME>;                                  ///< The PDO name for the main data database.
+    static $data_db_host = <MAIN DB HOST (USUALLY 'localhost')>;            ///< The URL name for the main data database host.
+    static $data_db_type = <'pgsql' OR 'mysql'>;                            ///< The technology used for the main data database (MySQL or Postgres).
+    static $data_db_login = <MAIN DB LOGIN>;                                ///< The string login name for the main data database.
+    static $data_db_password = <MAIN DB PASSWORD>;                          ///< The main data database password string.
+
+    static $sec_db_name = <SECURITY DB NAME>;                               ///< The PDO name for the security database.
+    static $sec_db_host = <SECURITY DB HOST (USUALLY 'localhost')>;         ///< The URL name for the security database host.
+    static $sec_db_type = <'pgsql' OR 'mysql'>;                             ///< The technology used for the security database (MySQL or Postgres).
+    static $sec_db_login = <SECURITY DB LOGIN>;                             ///< The string login name for the security database.
+    static $sec_db_password = <SECURITY DB PASSWORD>;                       ///< The security database password string.
+
+    static $google_api_key = <YOUR GOOGLE API KEY (With Geocoding API)>;    ///< This is the Google API key. It's required for CHAMELEON to do address lookups and other geocoding tasks. CHAMELEON requires this to have at least the Google Geocoding API enabled.
+
     /***********************/
     /**
     \returns the POSIX path to the main ANDISOL directory.
@@ -62,6 +60,4 @@ class CO_Config {
     static function base_dir() {
         return dirname(dirname(dirname(__FILE__)));
     }
-    
-    use tCO_Config; ///< These are the built-in config methods.
 }
