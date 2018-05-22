@@ -29,6 +29,14 @@ function search_run_tests() {
 function user_search_run_tests() {
     search_run_test(53, 'PASS - Get All Users (God)', 'Log in as the God admin, and see which users we can find.', 'admin', '', CO_Config::god_mode_password());
     search_run_test(54, 'PASS - Get All Users (Main Manager)', 'Log in as the main manager, and see which users we can find. The difference should be that we don\'t see the \'God\' admin user now.', 'DCAreaManager', '', 'CoreysGoryStory');
+    search_run_test(55, 'PASS - Get All Login Users (Main Manager)', 'Log in as the main manager, and see which login (not standalone) users we can find.', 'DCAreaManager', '', 'CoreysGoryStory');
+    search_run_test(56, 'PASS - Get All Standalone Users (Main Manager)', 'Log in as the main manager, and see which standalone (not login) users we can find.', 'DCAreaManager', '', 'CoreysGoryStory');
+    search_run_test(57, 'PASS - Get All Users (DC Manager)', 'Log in as the DC manager, and see which users we can find.', 'DCAdmin', '', 'CoreysGoryStory');
+    search_run_test(58, 'PASS - Get All Writeable Users (DC Manager)', 'Log in as the DC manager, and see which users we can find. This time, however, we are looking for ones we have write permissions on. We will end up with just one (us).', 'DCAdmin', '', 'CoreysGoryStory');
+    search_run_test(59, 'PASS - Get All Login Users (DC Manager)', 'Log in as the DC manager, and see which login (not standalone) users we can find.', 'DCAdmin', '', 'CoreysGoryStory');
+    search_run_test(60, 'PASS - Get All Writeable Login Users (DC Manager)', 'Log in as the DC manager, and see which login (not standalone) users we can find. This time, we look for writeable ones, which will give us just one.', 'DCAdmin', '', 'CoreysGoryStory');
+    search_run_test(61, 'PASS - Get All Standalone Users (DC Manager)', 'Log in as the DC manager, and see which standalone (not login) users we can find.', 'DCAdmin', '', 'CoreysGoryStory');
+    search_run_test(62, 'FAIL - Get All Writeable standalone Users (DC Manager)', 'Log in as the DC manager, and see which standalone (not login) users we can find. This time, we look for writeable ones, which will give us nothing.', 'DCAdmin', '', 'CoreysGoryStory');
 }
 
 // -------------------------------- TESTS ---------------------------------------------
@@ -208,6 +216,95 @@ function search_test_53($in_login = NULL, $in_hashed_password = NULL, $in_passwo
 
 function search_test_54($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     search_test_53($in_login, $in_hashed_password, $in_password);
+}
+
+function search_test_55($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $all_users = $andisol_instance->get_all_login_users();
+        
+        if (isset($all_users)) {
+            echo('<h3 style="color:green">We got '.count($all_users).' responses to the user search:</h3>');
+            foreach ($all_users as $record) {
+                display_record($record);
+            }
+        }
+    }
+}
+
+function search_test_56($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $all_users = $andisol_instance->get_all_standalone_users();
+        
+        if (isset($all_users)) {
+            echo('<h3 style="color:green">We got '.count($all_users).' responses to the user search:</h3>');
+            foreach ($all_users as $record) {
+                display_record($record);
+            }
+        }
+    }
+}
+
+function search_test_57($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    search_test_53($in_login, $in_hashed_password, $in_password);
+}
+
+function search_test_58($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $all_users = $andisol_instance->get_all_users(TRUE);
+        
+        if (isset($all_users)) {
+            echo('<h3 style="color:green">We got '.count($all_users).' responses to the user search:</h3>');
+            foreach ($all_users as $record) {
+                display_record($record);
+            }
+        }
+    }
+}
+
+function search_test_59($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    search_test_55($in_login, $in_hashed_password, $in_password);
+}
+
+function search_test_60($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $all_users = $andisol_instance->get_all_login_users(TRUE);
+        
+        if (isset($all_users)) {
+            echo('<h3 style="color:green">We got '.count($all_users).' responses to the user search:</h3>');
+            foreach ($all_users as $record) {
+                display_record($record);
+            }
+        }
+    }
+}
+
+function search_test_61($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    search_test_56($in_login, $in_hashed_password, $in_password);
+}
+
+function search_test_62($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $all_users = $andisol_instance->get_all_standalone_users(TRUE);
+        
+        if (isset($all_users) && is_array($all_users) && count($all_users)) {
+            echo('<h3 style="color:green">We got '.count($all_users).' responses to the user search:</h3>');
+            foreach ($all_users as $record) {
+                display_record($record);
+            }
+        } else {
+            echo('<h3 style="color:red">We got NOTHING!</h3>');
+        }
+    }
 }
 
 // -------------------------------- STRUCTURE ---------------------------------------------

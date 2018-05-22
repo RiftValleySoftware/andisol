@@ -182,7 +182,7 @@ class Andisol {
     
     \returns the instance for the requested user.
      */
-    public function get_login_item_by_login_string( $in_login_string_id    ///< The string login ID to check. It must be one that the current user can see.
+    public function get_login_item_by_login_string( $in_login_string_id ///< The string login ID to check. It must be one that the current user can see.
                                                     ) {
         $ret = $this->get_chameleon_instance()->get_login_item_by_login_string($in_login_string_id);
         
@@ -195,7 +195,7 @@ class Andisol {
     /**
     \returns the user collection object for a given login string. If there is no login given, then the current login is assumed. This is subject to security restrictions.
      */
-    public function get_user_from_login_string( $in_login_string_id    ///< The string login ID that is associated with the user collection.   
+    public function get_user_from_login_string( $in_login_string_id ///< The string login ID that is associated with the user collection.   
                                                 ) {
         $ret = NULL;
         
@@ -272,6 +272,40 @@ class Andisol {
     
                                                                             You can specify an array for any one of the values, which allows you to do an OR search for those values ($or_search does not apply. It is only for the combination of main values).
                                                                             If you add an element called 'use_like' ('use_like' => 1) to the end of 'access_class', 'name' or one of the 'tags', then you can use SQL-style "wildcards" (%) in your matches.
+                                                                            If you have 'use_like', and put just a single wildcard in quotes ('%'), then you are saying "not-empty."
+                                                                            
+                                                                            Here are a few examples:
+                                                                            
+                                                                            \code{.php}
+                                                                                Search for records with long/lat set within a 10Km radius circle (centered on Tysons Corner, VA):
+                                                                                    $returned_array = $andisol_instance->generic_search(    // The first parameter is an associative array of main search keys and values:
+                                                                                                                                            Array(  // This is the requested location:
+                                                                                                                                                    'location' => Array('longitude' => -77.2311,
+                                                                                                                                                                        'latitude' => 38.9187,
+                                                                                                                                                                        'radius' => 10
+                                                                                                                                                                        )
+                                                                                                                                                )
+                                                                                                                                        );
+                                                                            \endcode
+                                                                            
+                                                                            \code{.php}
+                                                                                Search for records with an access_class of CO_User_Collection:
+                                                                                    $returned_array = $andisol_instance->generic_search(    // The first parameter is an associative array of main search keys and values:
+                                                                                                                                            Array(  // This is the requested class:
+                                                                                                                                                    'access_class' => 'CO_User_Collection'
+                                                                                                                                                )
+                                                                                                                                        );
+                                                                            \endcode
+                                                                            
+                                                                            \code{.php}
+                                                                                Search for records with an access_class of CO_User_Collection, but this time, specify a wildcard, so you also get subclasses:
+                                                                                    $returned_array = $andisol_instance->generic_search(    // The first parameter is an associative array of main search keys and values:
+                                                                                                                                            Array(  // This is the requested class:
+                                                                                                                                                    'access_class' => '%_User_Collection',
+                                                                                                                                                    'use_like' => 1
+                                                                                                                                                )
+                                                                                                                                        );
+                                                                            \endcode
                                                                     */
                                     $or_search = FALSE,             ///< If TRUE, then the search is very wide (OR), as opposed to narrow (AND), by default. If you specify a location, then that will always be AND, but the other fields can be OR. Tags will always be searched as OR.
                                     $page_size = 0,                 ///< If specified with a 1-based integer, this denotes the size of a "page" of results. NOTE: This is only applicable to MySQL or Postgres, and will be ignored if the DB is not MySQL or Postgres. Default is 0.
@@ -319,11 +353,59 @@ class Andisol {
         
         $temp = $this->generic_search(Array('access_class' => Array('%_User_Collection', 'use_like' => 1)), FALSE, 0, 0, $and_write);
         
-        // We make sure that we don't return the God user, if there is one (unless we are God).
-        foreach ($temp as $user) {
-            $login_instance = $user->get_login_instance();
-            if ($this->god() || !$user->is_god_user()) {
-                array_push($ret, $user);
+        if (isset($temp) && is_array($temp) && count($temp)) {
+            // We make sure that we don't return the God user, if there is one (unless we are God).
+            foreach ($temp as $user) {
+                $login_instance = $user->get_login_instance();
+                if ($this->god() || !$user->is_god_user()) {
+                    array_push($ret, $user);
+                }
+            }
+        }
+        
+        return $ret;
+    }
+    
+    /***********************/
+    /**
+    \returns an array of instances of all the users (not logins) that are visible to the current login. It should be noted that this can return standalone users.
+     */
+    public function get_all_login_users(    $and_write = FALSE  ///< If TRUE (Default is FALSE), then we only want ones we have write access to.
+                                        ) {
+        $ret = Array();
+        
+        $temp = $this->generic_search(Array('access_class' => Array('%_User_Collection', 'use_like' => 1), 'tags' => Array('%', 'use_like' => 1)), FALSE, 0, 0, $and_write);
+        
+        if (isset($temp) && is_array($temp) && count($temp)) {
+            // We make sure that we don't return the God user, if there is one (unless we are God).
+            foreach ($temp as $user) {
+                $login_instance = $user->get_login_instance();
+                if ($this->god() || !$user->is_god_user()) {
+                    array_push($ret, $user);
+                }
+            }
+        }
+        
+        return $ret;
+    }
+    
+    /***********************/
+    /**
+    \returns an array of instances of all the users (not logins) that are visible to the current login. It should be noted that this can return standalone users.
+     */
+    public function get_all_standalone_users(   $and_write = FALSE  ///< If TRUE (Default is FALSE), then we only want ones we have write access to.
+                                            ) {
+        $ret = Array();
+        
+        $temp = $this->generic_search(Array('access_class' => Array('%_User_Collection', 'use_like' => 1), 'tags' => Array('')), FALSE, 0, 0, $and_write);
+        
+        if (isset($temp) && is_array($temp) && count($temp)) {
+            // We make sure that we don't return the God user, if there is one (unless we are God).
+            foreach ($temp as $user) {
+                $login_instance = $user->get_login_instance();
+                if ($this->god() || !$user->is_god_user()) {
+                    array_push($ret, $user);
+                }
             }
         }
         
@@ -390,7 +472,7 @@ class Andisol {
     
     \returns a string, with the login password as cleartext (If an acceptable-length password is supplied in $in_password, that that is returned). If the operation failed, then NULL is returned.
      */
-    public function create_new_user(    $in_login_string_id,                   ///< REQUIRED: The login ID. It must be unique in the Security DB.
+    public function create_new_user(    $in_login_string_id,            ///< REQUIRED: The string login ID. It must be unique in the Security DB.
                                         $in_password = NULL,            ///< OPTIONAL: A new password. It must be at least as long as the minimum password length. If not supplied, an auto-generated password is created and returned as the function return. If too short, then an auto-generated password is created.
                                         $in_display_name = NULL,        ///< OPTIONAL: A string, representing the basic "display name" to be associated with the login and user collection. If not supplied, the $in_login_string_id is used.
                                         $in_security_tokens = NULL,     ///< Any additional security tokens to apply to the new login. These must be a subset of the security tokens available to the logged-in manager. The God admin can set any tokens they want.
