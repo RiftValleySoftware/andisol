@@ -46,10 +46,12 @@ class Andisol {
     /***********************/
     /**
     The constructor.
+    
+    Default for parameters is NULL, but not supplying them will result in a non-logged-in instance of ANDISOL.
      */
-	public function __construct(    $in_login_string_id = NULL, ///< The String login ID
-                                    $in_hashed_password = NULL, ///< The password, crypt-hashed
-                                    $in_raw_password = NULL     ///< The password, cleartext.
+	public function __construct(    $in_login_string_id = NULL, ///< OPTIONAL: The String login ID
+                                    $in_hashed_password = NULL, ///< OPTIONAL: The password, crypt-hashed
+                                    $in_raw_password = NULL     ///< OPTIONAL: The password, cleartext.
 	                            ) {
         $this->class_description = 'The main model interface class.';
 	    $this->version = __ANDISOL_VERSION__;
@@ -165,7 +167,7 @@ class Andisol {
     
     \returns the instance for the requested user.
      */
-    public function get_login_item( $in_login_integer_id = NULL ///< The integer login ID to check. If not-NULL, then the ID of a login instance. It must be one that the current user can see. If NULL, then the current user.
+    public function get_login_item( $in_login_integer_id = NULL ///< OPTIONAL: The integer login ID to check (Default is NULL). If not-NULL, then the ID of a login instance. It must be one that the current user can see. If NULL, then the current user.
                                     ) {
         $ret = $this->get_chameleon_instance()->get_login_item($in_login_integer_id);
         
@@ -182,7 +184,7 @@ class Andisol {
     
     \returns the instance for the requested user.
      */
-    public function get_login_item_by_login_string( $in_login_string_id ///< The string login ID to check. It must be one that the current user can see.
+    public function get_login_item_by_login_string( $in_login_string_id ///< REQUIRED: The string login ID to check. It must be one that the current user can see.
                                                     ) {
         $ret = $this->get_chameleon_instance()->get_login_item_by_login_string($in_login_string_id);
         
@@ -195,7 +197,7 @@ class Andisol {
     /**
     \returns the user collection object for a given login string. If there is no login given, then the current login is assumed. This is subject to security restrictions.
      */
-    public function get_user_from_login_string( $in_login_string_id ///< The string login ID that is associated with the user collection.   
+    public function get_user_from_login_string( $in_login_string_id ///< REQUIRED: The string login ID that is associated with the user collection.   
                                                 ) {
         $ret = NULL;
         
@@ -215,7 +217,7 @@ class Andisol {
     
     \returns an array of instances of CO_Security_Login (Security Database login) items that can read/see the given item. If the read ID is 0 (open), then the function simply returns TRUE. If nothing can see the item, then FALSE is returned.
      */
-    public function who_can_see(    $in_test_target ///< This is a subclass of A_CO_DB_Table_Base (General Database Record).
+    public function who_can_see(    $in_test_target ///< REQUIRED: This is an instance of a subclass of A_CO_DB_Table_Base (General Database Record).
                                 ) {
         $ret = Array();
         
@@ -244,10 +246,77 @@ class Andisol {
     String searches are always case-insensitive.
     
     All parameters are optional, but calling this "blank" will return the entire data databse (that is visible to the user).
+                                                                            
+    Here are a few examples:
+    
+    \code{.php}
+            // Search for records with long/lat set within a 10Km radius circle (centered on Tysons Corner, VA):
+            $returned_array = $andisol_instance->generic_search(    // The first parameter is an associative array of main search keys and values:
+                                                                    Array(  // This is the requested location:
+                                                                            'location' => Array('longitude' => -77.2311,
+                                                                                                'latitude' => 38.9187,
+                                                                                                'radius' => 10
+                                                                                                )
+                                                                        )
+                                                                );
+    \endcode
+    
+    \code{.php}
+            // Search for records with an access_class of CO_User_Collection:
+            $returned_array = $andisol_instance->generic_search(    // The first parameter is an associative array of main search keys and values:
+                                                                    Array(  // This is the requested class:
+                                                                            'access_class' => 'CO_User_Collection'
+                                                                        )
+                                                                );
+    \endcode
+    
+    \code{.php}
+            // Search for records with an access_class of CO_User_Collection, but this time, specify a wildcard, so you also get subclasses:
+            $returned_array = $andisol_instance->generic_search(    // The first parameter is an associative array of main search keys and values:
+                                                                    Array(  // This is the requested class:
+                                                                            'access_class' => '%_User_Collection',
+                                                                            'use_like' => 1
+                                                                        )
+                                                                );
+    \endcode
+    
+    \code{.php}
+            // Search for records with an object_name of "Back to Basics", and a class of CO_US_Place_Collection.
+            $returned_array = $andisol_instance->generic_search(    // The first parameter is an associative array of main search keys and values:
+                                                                    Array(  // This is the requested class:
+                                                                            'access_class' => 'CO_US_Place_Collection',
+                                                                            'Back to Basics'
+                                                                        )
+                                                                );
+    \endcode
+    
+    \code{.php}
+            // Search for records with an object_name of "Back to Basics", and a class of CO_US_Place_Collection. However, this time, we make it an OR search.
+            $returned_array = $andisol_instance->generic_search(    // The first parameter is an associative array of main search keys and values:
+                                                                    Array(  // This is the requested class:
+                                                                            'access_class' => 'CO_US_Place_Collection',
+                                                                            'Back to Basics'
+                                                                        ),
+                                                                    TRUE
+                                                                );
+    \endcode
+    
+    \code{.php}
+            // Search for records with an object_name of "Back to Basics", and a class of CO_US_Place_Collection. However, this time, we make it an OR search, and only the second page, with pages of ten.
+            $returned_array = $andisol_instance->generic_search(    // The first parameter is an associative array of main search keys and values:
+                                                                    Array(  // This is the requested class:
+                                                                            'access_class' => 'CO_US_Place_Collection',
+                                                                            'Back to Basics'
+                                                                        ),
+                                                                    TRUE,
+                                                                    10,
+                                                                    1
+                                                                );
+    \endcode
     
     \returns an array of instances (or integers, if $ids_only is TRUE) that match the search parameters. If $count_only is TRUE, then it will be a single integer, with the count of responses to the search (if a page, then this count will only be the number of items on that page).
      */
-    public function generic_search( $in_search_parameters = NULL,   /**<    This is an associative array of terms to define the search. The keys should be:
+    public function generic_search( $in_search_parameters = NULL,   /**<    OPTIONAL: This is an associative array of terms to define the search. The keys should be:
                                                                                 - 'id'
                                                                                     This should be accompanied by an array of one or more integers, representing specific item IDs.
                                                                                 - 'access_class'
@@ -273,46 +342,14 @@ class Andisol {
                                                                             You can specify an array for any one of the values, which allows you to do an OR search for those values ($or_search does not apply. It is only for the combination of main values).
                                                                             If you add an element called 'use_like' ('use_like' => 1) to the end of 'access_class', 'name' or one of the 'tags', then you can use SQL-style "wildcards" (%) in your matches.
                                                                             If you have 'use_like', and put just a single wildcard in quotes ('%'), then you are saying "not-empty."
-                                                                            
-                                                                            Here are a few examples:
-                                                                            
-                                                                            \code{.php}
-                                                                                Search for records with long/lat set within a 10Km radius circle (centered on Tysons Corner, VA):
-                                                                                    $returned_array = $andisol_instance->generic_search(    // The first parameter is an associative array of main search keys and values:
-                                                                                                                                            Array(  // This is the requested location:
-                                                                                                                                                    'location' => Array('longitude' => -77.2311,
-                                                                                                                                                                        'latitude' => 38.9187,
-                                                                                                                                                                        'radius' => 10
-                                                                                                                                                                        )
-                                                                                                                                                )
-                                                                                                                                        );
-                                                                            \endcode
-                                                                            
-                                                                            \code{.php}
-                                                                                Search for records with an access_class of CO_User_Collection:
-                                                                                    $returned_array = $andisol_instance->generic_search(    // The first parameter is an associative array of main search keys and values:
-                                                                                                                                            Array(  // This is the requested class:
-                                                                                                                                                    'access_class' => 'CO_User_Collection'
-                                                                                                                                                )
-                                                                                                                                        );
-                                                                            \endcode
-                                                                            
-                                                                            \code{.php}
-                                                                                Search for records with an access_class of CO_User_Collection, but this time, specify a wildcard, so you also get subclasses:
-                                                                                    $returned_array = $andisol_instance->generic_search(    // The first parameter is an associative array of main search keys and values:
-                                                                                                                                            Array(  // This is the requested class:
-                                                                                                                                                    'access_class' => '%_User_Collection',
-                                                                                                                                                    'use_like' => 1
-                                                                                                                                                )
-                                                                                                                                        );
-                                                                            \endcode
+                                                                            NOTE: Although this is an optional parameter, failing to provide anything could return the entire readable database.
                                                                     */
-                                    $or_search = FALSE,             ///< If TRUE, then the search is very wide (OR), as opposed to narrow (AND), by default. If you specify a location, then that will always be AND, but the other fields can be OR. Tags will always be searched as OR.
-                                    $page_size = 0,                 ///< If specified with a 1-based integer, this denotes the size of a "page" of results. NOTE: This is only applicable to MySQL or Postgres, and will be ignored if the DB is not MySQL or Postgres. Default is 0.
-                                    $initial_page = 0,              ///< This is ignored unless $page_size is greater than 0. In that case, this 0-based index will specify which page of results to return. Values beyond the maximum number of pages will result in no returned values.
-                                    $and_writeable = FALSE,         ///< If TRUE, then we only want records we can modify.
-                                    $count_only = FALSE,            ///< If TRUE (default is FALSE), then only a single integer will be returned, with the count of items that fit the search.
-                                    $ids_only = FALSE               ///< If TRUE (default is FALSE), then the return array will consist only of integers (the object IDs). If $count_only is TRUE, this is ignored.
+                                    $or_search = FALSE,             ///< OPTIONAL: If TRUE, then the search is very wide (OR), as opposed to narrow (AND), by default. If you specify a location, then that will always be AND, but the other fields can be OR. Tags will always be searched as OR.
+                                    $page_size = 0,                 ///< OPTIONAL: If specified with a 1-based integer, this denotes the size of a "page" of results. NOTE: This is only applicable to MySQL or Postgres, and will be ignored if the DB is not MySQL or Postgres. Default is 0.
+                                    $initial_page = 0,              ///< OPTIONAL: This is ignored unless $page_size is greater than 0. In that case, this 0-based index will specify which page of results to return. Values beyond the maximum number of pages will result in no returned values.
+                                    $and_writeable = FALSE,         ///< OPTIONAL: If TRUE, then we only want records we can modify.
+                                    $count_only = FALSE,            ///< OPTIONAL: If TRUE (default is FALSE), then only a single integer will be returned, with the count of items that fit the search.
+                                    $ids_only = FALSE               ///< OPTIONAL: If TRUE (default is FALSE), then the return array will consist only of integers (the object IDs). If $count_only is TRUE, this is ignored.
                                     ) {
         $ret = $this->get_chameleon_instance()->generic_search($in_search_parameters, $or_search, $page_size, $initial_page, $and_writeable, $count_only, $ids_only);
         
@@ -370,7 +407,7 @@ class Andisol {
     /**
     \returns an array of instances of all the users (not logins) that are visible to the current login. It should be noted that this can return standalone users.
      */
-    public function get_all_login_users(    $and_write = FALSE  ///< If TRUE (Default is FALSE), then we only want ones we have write access to.
+    public function get_all_login_users(    $and_write = FALSE  ///< OPTIONAL: If TRUE (Default is FALSE), then we only want ones we have write access to.
                                         ) {
         $ret = Array();
         
@@ -393,7 +430,7 @@ class Andisol {
     /**
     \returns an array of instances of all the users (not logins) that are visible to the current login. It should be noted that this can return standalone users.
      */
-    public function get_all_standalone_users(   $and_write = FALSE  ///< If TRUE (Default is FALSE), then we only want ones we have write access to.
+    public function get_all_standalone_users(   $and_write = FALSE  ///< OPTIONAL: If TRUE (Default is FALSE), then we only want ones we have write access to.
                                             ) {
         $ret = Array();
         
@@ -445,8 +482,8 @@ class Andisol {
      
     \returns the user collection object for a given login. If there is no login given, then the current login is assumed. This is subject to security restrictions.
      */
-    public function get_user_from_login(    $in_login_integer_id = NULL,        ///< The integer login ID that is associated with the user collection. If NULL, then the current login is used.
-                                            $in_make_user_if_necessary = FALSE  ///< If TRUE (Default is FALSE), then the user will be created if it does not already exist. Ignored, if we are not a Login Manager.
+    public function get_user_from_login(    $in_login_integer_id = NULL,        ///< OPTIONAL: The integer login ID that is associated with the user collection. If NULL (Default), then the current login is used.
+                                            $in_make_user_if_necessary = FALSE  ///< OPTIONAL: If TRUE (Default is FALSE), then the user will be created if it does not already exist. Ignored, if we are not a Login Manager.
                                         ) {
         $ret = NULL;
         
@@ -653,9 +690,9 @@ class Andisol {
     /**
     \returns an array of instances of all the logins that are visible to the current login (or a supplied login, if in "God" mode). The user must be a manager.
      */
-    public function get_all_logins( $and_write = FALSE,         ///< If TRUE, then we only want ones we have write access to.
-                                    $in_login_string_id = NULL, ///< This is ignored, unless this is the God login. If We are logged in as God, then we can select a login via its string login ID, and see what logins are available to it. This trumps the integer ID.
-                                    $in_login_integer_id = NULL ///< This is ignored, unless this is the God login and $in_login_string_id is not specified. If We are logged in as God, then we can select a login via its integer login ID, and see what logins are available to it.
+    public function get_all_logins( $and_write = FALSE,         ///< OPTIONAL: If TRUE (Default is FALSE), then we only want ones we have write access to.
+                                    $in_login_string_id = NULL, ///< OPTIONAL: This is ignored, unless this is the God login. If We are logged in as God, then we can select a login via its string login ID, and see what logins are available to it. This trumps the integer ID.
+                                    $in_login_integer_id = NULL ///< OPTIONAL: This is ignored, unless this is the God login and $in_login_string_id is not specified. If We are logged in as God, then we can select a login via its integer login ID, and see what logins are available to it.
                                     ) {
         $ret = Array();
         
@@ -667,6 +704,65 @@ class Andisol {
             $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_user_not_authorized,
                                             CO_ANDISOL_Lang::$andisol_error_name_user_not_authorized,
                                             CO_ANDISOL_Lang::$andisol_error_desc_user_not_authorized);
+        }
+        
+        return $ret;
+    }
+    
+    /************************************************************************************************************************/    
+    /*                                                DATA MODIFICATION METHODS                                             */
+    /************************************************************************************************************************/    
+    
+    /************************************************************************************************************************/    
+    /*                                                    KEY/VALUE METHODS                                                 */
+    /************************************************************************************************************************/    
+    
+    /***********************/
+    /**
+    \returns the value for a given key. It is dependednt on the class passed in. NULL, if no value or instance for the key.
+     */
+    public function get_value_for_key(  $in_key,                        ///< REQUIRED: This is the key that we are searching for. It must be a string.
+                                        $in_classname = 'CO_KeyValue'   ///< OPTIONAL: This is the class to search for the key. The default is the base class.
+                                    ) {
+        $ret = NULL;
+        
+        if ($this->valid()) {
+            $ret = $this->get_chameleon_instance()->get_value_for_key($in_key, $in_classname);
+            $this->error = $this->get_chameleon_instance()->error;
+        }
+        
+        return $ret;
+    }
+    
+    /***********************/
+    /**
+    This deletes a key (and its associated data).
+    
+    \returns TRUE, if successful.
+     */
+    public function delete_key( $in_key,                        ///< REQUIRED: This is the key that we are deleting. It must be a string.
+                                $in_classname = 'CO_KeyValue'   ///< OPTIONAL: This is the class to search for the key. The default is the base class.
+                                        ) {
+        return $this->set_value_for_key($in_key, NULL, $in_classname);
+    }
+    
+    /***********************/
+    /**
+    This sets a value to a key, creating the record, if need be. Passing in NULL will delete the key (if we have write access).
+    We need to have a login for it to work at all. If the value already exists, then we need to have write access to it, or we will fail.
+    This will only work if we are logged in.
+    
+    \returns TRUE, if successful.
+     */
+    public function set_value_for_key(  $in_key,                        ///< REQUIRED: This is the key that we are setting. It must be a string.
+                                        $in_value,                      ///< REQUIRED: The value to set. If NULL, then we will delete the key.
+                                        $in_classname = 'CO_KeyValue'   ///< OPTIONAL: This is the class to use for the key. The default is the base class.
+                                    ) {
+        $ret = NULL;
+        
+        if ($this->logged_in()) {
+            $ret = $this->get_chameleon_instance()->set_value_for_key($in_key, $in_value, $in_classname);
+            $this->error = $this->get_chameleon_instance()->error;
         }
         
         return $ret;
