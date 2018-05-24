@@ -16,16 +16,68 @@ require_once(dirname(dirname(__FILE__)).'/functions.php');
 // -------------------------------- TEST DISPATCHER ---------------------------------------------
 
 function kvp_small_run_tests() {
-    kvp_run_test(63, 'PASS - Store and Retrieve a Simple Text Value', 'In this test, we log in as a regular user, and store a simple text value to the database, then read it back (not logged in), to make sure we have it.');
-    kvp_run_test(64, 'PASS - Store and Retrieve a Simple Image Value', 'We do the same thing, but this time, we use a small GIF image.');
-    kvp_run_test(65, 'PASS - Change a Simple Text Value', 'We go back in, and change the value we previously stored, and make sure it comes out proper.');
-    kvp_run_test(66, 'PASS - Delete Text Value', 'We simply delete the text value, logged in with the account that created it.', 'norm', '', 'CoreysGoryStory');
-    kvp_run_test(67, 'PASS - Delete Image Value', 'We simply delete the image value, logged in with another account, which has write permissions.', 'asp', '', 'CoreysGoryStory');
+    kvp_run_test(63, 'FAIL - Store and Retrieve a Simple Numerical Value', 'In this test, we do not log in, and attempt to store a simple numeric value to the database.');
+    kvp_run_test(64, 'PASS - Store and Retrieve a Simple Numerical Value', 'Try again, but this time, logged in.', 'norm', '', 'CoreysGoryStory');
+    kvp_run_test(65, 'PASS - Store and Retrieve a Simple Text Value', 'In this test, we log in as a regular user, and store a simple text value to the database, then read it back (not logged in), to make sure we have it.');
+    kvp_run_test(66, 'PASS - Store and Retrieve a Simple Image Value', 'We do the same thing, but this time, we use a small GIF image.');
+    kvp_run_test(67, 'PASS - Change a Simple Text Value', 'We go back in, and change the value we previously stored, and make sure it comes out proper.');
+    kvp_run_test(68, 'PASS - Delete Text Value', 'We simply delete the text value, logged in with the account that created it.', 'norm', '', 'CoreysGoryStory');
+    kvp_run_test(69, 'FAIL - Delete Image Value', 'We try to delete the image value, logged in with another account, which does not have write permissions.', 'king-cobra', '', 'CoreysGoryStory');
+    kvp_run_test(70, 'PASS - Delete Image Value', 'We simply delete the image value, logged in with another account, which has write permissions.', 'asp', '', 'CoreysGoryStory');
+}
+
+function kvp_large_run_tests() {
+    kvp_run_test(71, 'PASS - Store Large Text Value', 'We log in as a legit user, and store a big text item.', 'asp', '', 'CoreysGoryStory');
+    kvp_run_test(72, 'PASS - Store Large Image Value', 'We log in as a legit user, and store a big image item.', 'bob', '', 'CoreysGoryStory');
+    kvp_run_test(73, 'PASS - Store Large Audio Value', 'We log in as a legit user, and store a big audio item.', 'norm', '', 'CoreysGoryStory');
+    kvp_run_test(74, 'PASS - Store Large Video Value', 'We log in as a legit user, and store a big video item. We won\'t display this, because we\'re using data URIs for our elements, and it\'s just too big.', 'asp', '', 'CoreysGoryStory');
 }
 
 // -------------------------------- TESTS ---------------------------------------------
 
-function kvp_test_63() {
+function kvp_test_63($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance1 = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    $key = 'The Answer';
+    $value = 42;
+        
+    if (isset($andisol_instance1) && ($andisol_instance1 instanceof Andisol)) {
+        if ($andisol_instance1->set_value_for_key($key, $value)) {
+            echo('<h3 style="color:green">The value \''.$value .'\' was successfully stored for the key \''.$key.'\'!</h3>');
+        } else {
+            echo('<h3 style="color:red">There was a problem!</h3>');
+            if (isset($andisol_instance1->error)) {
+                echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance1->error->error_code.') '.$andisol_instance1->error->error_name.' ('.$andisol_instance1->error->error_description.')</p>');
+            }
+        }
+        
+    }
+    
+    $andisol_instance2 = make_andisol();
+    
+    if (isset($andisol_instance2) && ($andisol_instance2 instanceof Andisol)) {
+        $fetched_value = intval($andisol_instance1->get_value_for_key($key));
+        if ($fetched_value) {
+            echo('<h3 style="color:green">The text value was successfully fetched!</h3>');
+            if ($fetched_value == $value) {
+                echo('<h3 style="color:green">The values match!</h3>');
+            } else {
+                echo('<h3 style="color:red">There was a problem! The values don\'t match! \''.$fetched_value.'\' is not what we expected to get!</h3>');
+            }
+        } else {
+            echo('<h3 style="color:red">There was a problem!</h3>');
+            if (isset($andisol_instance1->error)) {
+                echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance2->error->error_code.') '.$andisol_instance2->error->error_name.' ('.$andisol_instance2->error->error_description.')</p>');
+            }
+        }
+    }
+}
+
+function kvp_test_64($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    kvp_test_63($in_login, $in_hashed_password, $in_password);
+}
+
+function kvp_test_65() {
     $andisol_instance1 = make_andisol('norm', '', 'CoreysGoryStory');
     
     $key = 'keymaster';
@@ -63,7 +115,7 @@ function kvp_test_63() {
     }
 }
 
-function kvp_test_64() {
+function kvp_test_66() {
     $andisol_instance1 = make_andisol('norm', '', 'CoreysGoryStory');
     
     $key = 'Honey Badger Don\'t Care';
@@ -107,15 +159,16 @@ function kvp_test_64() {
     }
 }
 
-function kvp_test_65() {
+function kvp_test_67() {
     $andisol_instance1 = make_andisol('norm', '', 'CoreysGoryStory');
     
     $key = 'keymaster';
     $value = 'ZOOL\'S BITCH';
         
     if (isset($andisol_instance1) && ($andisol_instance1 instanceof Andisol)) {
+        $original_value = $andisol_instance1->get_value_for_key($key);
         if ($andisol_instance1->set_value_for_key($key, $value)) {
-            echo('<h3 style="color:green">The value \''.$value .'\' was successfully changed for the key \''.$key.'\'!</h3>');
+            echo('<h3 style="color:green">The value \''.$original_value .'\' was successfully changed to \''.$value.'\' for the key \''.$key.'\'!</h3>');
         } else {
             echo('<h3 style="color:red">There was a problem!</h3>');
             if (isset($andisol_instance1->error)) {
@@ -145,7 +198,7 @@ function kvp_test_65() {
     }
 }
 
-function kvp_test_66($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function kvp_test_68($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance1 = make_andisol($in_login, $in_hashed_password, $in_password);
     
     $key = 'keymaster';
@@ -173,7 +226,7 @@ function kvp_test_66($in_login = NULL, $in_hashed_password = NULL, $in_password 
     }
 }
 
-function kvp_test_67($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function kvp_test_69($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance1 = make_andisol($in_login, $in_hashed_password, $in_password);
     
     $key = 'Honey Badger Don\'t Care';
@@ -197,6 +250,176 @@ function kvp_test_67($in_login = NULL, $in_hashed_password = NULL, $in_password 
             echo('<h3 style="color:red">PROBLEM! This should be gone!</h3>');
         } else {
             echo('<h3 style="color:green">The value is gone, as it should be!</h3>');
+        }
+    }
+}
+
+function kvp_test_70($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    kvp_test_69($in_login, $in_hashed_password, $in_password);
+}
+
+function kvp_test_71($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance1 = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    $key = 'The Great Shadow';
+    $value = file_get_contents(dirname(dirname(__FILE__)).'/config/TheGreatShadow.txt');
+        
+    if (isset($andisol_instance1) && ($andisol_instance1 instanceof Andisol)) {
+        if ($andisol_instance1->set_value_for_key($key, $value)) {
+            echo('<h3 style="color:green">The value was successfully stored for the key \''.$key.'\'!</h3>');
+        } else {
+            echo('<h3 style="color:red">There was a problem!</h3>');
+            if (isset($andisol_instance1->error)) {
+                echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance1->error->error_code.') '.$andisol_instance1->error->error_name.' ('.$andisol_instance1->error->error_description.')</p>');
+            }
+        }
+        
+    }
+    
+    $andisol_instance2 = make_andisol();
+    
+    if (isset($andisol_instance2) && ($andisol_instance2 instanceof Andisol)) {
+        $fetched_value = $andisol_instance1->get_value_for_key($key);
+        if ($fetched_value) {
+            echo('<h3 style="color:green">The text value was successfully fetched!</h3>');
+            if ($fetched_value == $value) {
+                echo('<h3 style="color:green">The values match!</h3>');
+                echo('<div id="kvp-the-great-shadow" class="closed">');
+                    echo('<h2 class="header"><a href="javascript:toggle_main_state(\'kvp-the-great-shadow\')">'.$key.'</a></h2>');
+                    echo('<div class="container">');
+                        echo('<pre>');
+                        echo(htmlspecialchars($value));
+                        echo('</pre>');
+                    echo('</div>');
+                echo('</div>');
+            } else {
+                echo('<h3 style="color:red">There was a problem! The values don\'t match!</h3>');
+            }
+        } else {
+            echo('<h3 style="color:red">There was a problem!</h3>');
+            if (isset($andisol_instance1->error)) {
+                echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance2->error->error_code.') '.$andisol_instance2->error->error_name.' ('.$andisol_instance2->error->error_description.')</p>');
+            }
+        }
+    }
+}
+
+function kvp_test_72($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance1 = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    $key = 'Yo! Smitty!';
+    $value = file_get_contents(dirname(dirname(__FILE__)).'/config/Yosemite.jpg');
+        
+    if (isset($andisol_instance1) && ($andisol_instance1 instanceof Andisol)) {
+        if ($andisol_instance1->set_value_for_key($key, $value)) {
+            echo('<h3 style="color:green">The image value was successfully stored for the key \''.$key.'\'!</h3>');
+        } else {
+            echo('<h3 style="color:red">There was a problem!</h3>');
+            if (isset($andisol_instance1->error)) {
+                echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance1->error->error_code.') '.$andisol_instance1->error->error_name.' ('.$andisol_instance1->error->error_description.')</p>');
+            }
+        }
+        
+    }
+    
+    $andisol_instance2 = make_andisol();
+    
+    if (isset($andisol_instance2) && ($andisol_instance2 instanceof Andisol)) {
+        $fetched_value = $andisol_instance1->get_value_for_key($key);
+        if ($fetched_value) {
+            echo('<h3 style="color:green">The image value was successfully fetched!</h3>');
+            if ($fetched_value == $value) {
+                echo('<h3 style="color:green">The values match!</h3>');
+                $image_base64_data = base64_encode ($fetched_value);
+                echo('<img src="data:image/jpeg;base64,'.$image_base64_data.'" alt="Nice View" />');
+            } else {
+                echo('<h3 style="color:red">There was a problem! The values don\'t match!</h3>');
+            }
+        } else {
+            echo('<h3 style="color:red">There was a problem!</h3>');
+            if (isset($andisol_instance1->error)) {
+                echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance2->error->error_code.') '.$andisol_instance2->error->error_name.' ('.$andisol_instance2->error->error_description.')</p>');
+            }
+        }
+    }
+}
+
+function kvp_test_73($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance1 = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    $key = 'The Bricklayer';
+    $value = file_get_contents(dirname(dirname(__FILE__)).'/config/TheBricklayer.mp3');
+        
+    if (isset($andisol_instance1) && ($andisol_instance1 instanceof Andisol)) {
+        if ($andisol_instance1->set_value_for_key($key, $value)) {
+            echo('<h3 style="color:green">The audio value was successfully stored for the key \''.$key.'\'!</h3>');
+        } else {
+            echo('<h3 style="color:red">There was a problem!</h3>');
+            if (isset($andisol_instance1->error)) {
+                echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance1->error->error_code.') '.$andisol_instance1->error->error_name.' ('.$andisol_instance1->error->error_description.')</p>');
+            }
+        }
+        
+    }
+    
+    $andisol_instance2 = make_andisol();
+    
+    if (isset($andisol_instance2) && ($andisol_instance2 instanceof Andisol)) {
+        $fetched_value = $andisol_instance1->get_value_for_key($key);
+        if ($fetched_value) {
+            echo('<h3 style="color:green">The audio value was successfully fetched!</h3>');
+            if ($fetched_value == $value) {
+                echo('<h3 style="color:green">The values match!</h3>');
+                $audio_base64_data = base64_encode ($fetched_value);
+                echo('<audio controls>');
+                echo('<source type="audio/mpeg" src="data:audio/mpeg;base64,'.$audio_base64_data.'" />');
+                echo('</audio>');
+            } else {
+                echo('<h3 style="color:red">There was a problem! The values don\'t match!</h3>');
+            }
+        } else {
+            echo('<h3 style="color:red">There was a problem!</h3>');
+            if (isset($andisol_instance1->error)) {
+                echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance2->error->error_code.') '.$andisol_instance2->error->error_name.' ('.$andisol_instance2->error->error_description.')</p>');
+            }
+        }
+    }
+}
+
+function kvp_test_74($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance1 = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    $key = 'Yankee Doodle Mouse';
+    $value = file_get_contents(dirname(dirname(__FILE__)).'/config/TJ1.mp4');
+        
+    if (isset($andisol_instance1) && ($andisol_instance1 instanceof Andisol)) {
+        if ($andisol_instance1->set_value_for_key($key, $value)) {
+            echo('<h3 style="color:green">The video value was successfully stored for the key \''.$key.'\'!</h3>');
+        } else {
+            echo('<h3 style="color:red">There was a problem!</h3>');
+            if (isset($andisol_instance1->error)) {
+                echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance1->error->error_code.') '.$andisol_instance1->error->error_name.' ('.$andisol_instance1->error->error_description.')</p>');
+            }
+        }
+        
+    }
+    
+    $andisol_instance2 = make_andisol();
+    
+    if (isset($andisol_instance2) && ($andisol_instance2 instanceof Andisol)) {
+        $fetched_value = $andisol_instance1->get_value_for_key($key);
+        if ($fetched_value) {
+            echo('<h3 style="color:green">The video value was successfully fetched!</h3>');
+            if ($fetched_value == $value) {
+                echo('<h3 style="color:green">The values match!</h3>');
+            } else {
+                echo('<h3 style="color:red">There was a problem! The values don\'t match!</h3>');
+            }
+        } else {
+            echo('<h3 style="color:red">There was a problem!</h3>');
+            if (isset($andisol_instance1->error)) {
+                echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance2->error->error_code.') '.$andisol_instance2->error->error_name.' ('.$andisol_instance2->error->error_description.')</p>');
+            }
         }
     }
 }
@@ -233,6 +456,20 @@ ob_start();
                 $start = microtime(TRUE);
                 
                 kvp_small_run_tests();
+                
+                echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(TRUE) - $start) . ' seconds to complete.</h5>');
+                
+            echo('</div>');
+        echo('</div>');
+        
+        echo('<div id="kvp-large-tests" class="closed">');
+            echo('<h2 class="header"><a href="javascript:toggle_main_state(\'kvp-large-tests\')">LARGE VALUE TESTS</a></h2>');
+            echo('<div class="container">');
+                echo('<p class="explain"></p>');
+            
+                $start = microtime(TRUE);
+                
+                kvp_large_run_tests();
                 
                 echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(TRUE) - $start) . ' seconds to complete.</h5>');
                 

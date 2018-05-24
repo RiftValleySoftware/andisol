@@ -763,6 +763,10 @@ class Andisol {
         if ($this->logged_in()) {
             $ret = $this->get_chameleon_instance()->set_value_for_key($in_key, $in_value, $in_classname);
             $this->error = $this->get_chameleon_instance()->error;
+        } else {
+            $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_user_not_authorized,
+                                            CO_ANDISOL_Lang::$andisol_error_name_user_not_authorized,
+                                            CO_ANDISOL_Lang::$andisol_error_desc_user_not_authorized);
         }
         
         return $ret;
