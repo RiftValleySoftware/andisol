@@ -719,7 +719,7 @@ class Andisol {
     
     /***********************/
     /**
-    \returns the value for a given key. It is dependednt on the class passed in. NULL, if no value or instance for the key.
+    \returns the value for a given key. It is dependent on the class passed in. NULL, if no value or instance for the key.
      */
     public function get_value_for_key(  $in_key,                        ///< REQUIRED: This is the key that we are searching for. It must be a string.
                                         $in_classname = 'CO_KeyValue'   ///< OPTIONAL: This is the class to search for the key. The default is the base class.
@@ -729,6 +729,21 @@ class Andisol {
         if ($this->valid()) {
             $ret = $this->get_chameleon_instance()->get_value_for_key($in_key, $in_classname);
             $this->error = $this->get_chameleon_instance()->error;
+        }
+        
+        return $ret;
+    }
+    
+    /***********************/
+    /**
+    \returns the object that stores the given key. NULL, if no value or instance for the key.
+     */
+    public function get_object_for_key( $in_key ///< REQUIRED: This is the key that we are searching for. It must be a string.
+                                        ) {
+        $ret = NULL;
+        
+        if ($this->valid()) {
+            $ret = $this->get_chameleon_instance()->get_object_for_key($in_key);
         }
         
         return $ret;
@@ -770,5 +785,17 @@ class Andisol {
         }
         
         return $ret;
+    }
+    
+    /************************************************************************************************************************/    
+    /*                                                     LOCATION METHODS                                                 */
+    /************************************************************************************************************************/    
+    
+    /***********************/
+    /**
+     */
+    public function create_ll_location( $in_longitude_degrees,  ///< REQUIRED: The longitude, in degrees.
+                                        $in_latitude_degrees    ///< REQUIRED: The latitude, in degrees.
+                                        ) {
     }
 };

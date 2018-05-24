@@ -21,16 +21,19 @@ function kvp_small_run_tests() {
     kvp_run_test(65, 'PASS - Store and Retrieve a Simple Text Value', 'In this test, we log in as a regular user, and store a simple text value to the database, then read it back (not logged in), to make sure we have it.');
     kvp_run_test(66, 'PASS - Store and Retrieve a Simple Image Value', 'We do the same thing, but this time, we use a small GIF image.');
     kvp_run_test(67, 'PASS - Change a Simple Text Value', 'We go back in, and change the value we previously stored, and make sure it comes out proper.');
-    kvp_run_test(68, 'PASS - Delete Text Value', 'We simply delete the text value, logged in with the account that created it.', 'norm', '', 'CoreysGoryStory');
-    kvp_run_test(69, 'FAIL - Delete Image Value', 'We try to delete the image value, logged in with another account, which does not have write permissions.', 'king-cobra', '', 'CoreysGoryStory');
-    kvp_run_test(70, 'PASS - Delete Image Value', 'We simply delete the image value, logged in with another account, which has write permissions.', 'asp', '', 'CoreysGoryStory');
+    kvp_run_test(68, 'FAIL - Get Value', 'No login. We try to retrieve a value for which a key does ot exist.');
+    kvp_run_test(69, 'FAIL - Get KVP Instance Object', 'No login. We try to retrieve an object for which a key does ot exist.');
+    kvp_run_test(70, 'PASS - Get KVP Instance Object', 'No login. We simply make sure that we can retrieve an object via its key.');
+    kvp_run_test(71, 'PASS - Delete Text Value', 'We simply delete the text value, logged in with the account that created it.', 'norm', '', 'CoreysGoryStory');
+    kvp_run_test(72, 'FAIL - Delete Image Value', 'We try to delete the image value, logged in with another account, which does not have write permissions.', 'king-cobra', '', 'CoreysGoryStory');
+    kvp_run_test(73, 'PASS - Delete Image Value', 'We simply delete the image value, logged in with another account, which has write permissions.', 'asp', '', 'CoreysGoryStory');
 }
 
 function kvp_large_run_tests() {
-    kvp_run_test(71, 'PASS - Store Large Text Value', 'We log in as a legit user, and store a big text item.', 'asp', '', 'CoreysGoryStory');
-    kvp_run_test(72, 'PASS - Store Large Image Value', 'We log in as a legit user, and store a big image item.', 'bob', '', 'CoreysGoryStory');
-    kvp_run_test(73, 'PASS - Store Large Audio Value', 'We log in as a legit user, and store a big audio item.', 'norm', '', 'CoreysGoryStory');
-    kvp_run_test(74, 'PASS - Store Large Video Value', 'We log in as a legit user, and store a big video item. We won\'t display this, because we\'re using data URIs for our elements, and it\'s just too big.', 'asp', '', 'CoreysGoryStory');
+    kvp_run_test(74, 'PASS - Store Large Text Value', 'We log in as a legit user, and store a big text item.', 'asp', '', 'CoreysGoryStory');
+    kvp_run_test(75, 'PASS - Store Large Image Value', 'We log in as a legit user, and store a big image item.', 'bob', '', 'CoreysGoryStory');
+    kvp_run_test(76, 'PASS - Store Large Audio Value', 'We log in as a legit user, and store a big audio item.', 'norm', '', 'CoreysGoryStory');
+    kvp_run_test(77, 'PASS - Store Large Video Value', 'We log in as a legit user, and store a big video item. We won\'t display this, because we\'re using data URIs for our elements, and it\'s just too big.', 'asp', '', 'CoreysGoryStory');
 }
 
 // -------------------------------- TESTS ---------------------------------------------
@@ -56,7 +59,7 @@ function kvp_test_63($in_login = NULL, $in_hashed_password = NULL, $in_password 
     $andisol_instance2 = make_andisol();
     
     if (isset($andisol_instance2) && ($andisol_instance2 instanceof Andisol)) {
-        $fetched_value = intval($andisol_instance1->get_value_for_key($key));
+        $fetched_value = intval($andisol_instance2->get_value_for_key($key));
         if ($fetched_value) {
             echo('<h3 style="color:green">The text value was successfully fetched!</h3>');
             if ($fetched_value == $value) {
@@ -66,7 +69,7 @@ function kvp_test_63($in_login = NULL, $in_hashed_password = NULL, $in_password 
             }
         } else {
             echo('<h3 style="color:red">There was a problem!</h3>');
-            if (isset($andisol_instance1->error)) {
+            if (isset($andisol_instance2->error)) {
                 echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance2->error->error_code.') '.$andisol_instance2->error->error_name.' ('.$andisol_instance2->error->error_description.')</p>');
             }
         }
@@ -98,7 +101,7 @@ function kvp_test_65() {
     $andisol_instance2 = make_andisol();
     
     if (isset($andisol_instance2) && ($andisol_instance2 instanceof Andisol)) {
-        $fetched_value = $andisol_instance1->get_value_for_key($key);
+        $fetched_value = $andisol_instance2->get_value_for_key($key);
         if ($fetched_value) {
             echo('<h3 style="color:green">The text value was successfully fetched!</h3>');
             if ($fetched_value == $value) {
@@ -108,7 +111,7 @@ function kvp_test_65() {
             }
         } else {
             echo('<h3 style="color:red">There was a problem!</h3>');
-            if (isset($andisol_instance1->error)) {
+            if (isset($andisol_instance2->error)) {
                 echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance2->error->error_code.') '.$andisol_instance2->error->error_name.' ('.$andisol_instance2->error->error_description.')</p>');
             }
         }
@@ -137,7 +140,7 @@ function kvp_test_66() {
     $andisol_instance2 = make_andisol();
     
     if (isset($andisol_instance2) && ($andisol_instance2 instanceof Andisol)) {
-        $fetched_value = $andisol_instance1->get_value_for_key($key);
+        $fetched_value = $andisol_instance2->get_value_for_key($key);
         if ($fetched_value) {
             echo('<h3 style="color:green">The value was successfully fetched!</h3>');
             if ($fetched_value == $value) {
@@ -152,7 +155,7 @@ function kvp_test_66() {
             }
         } else {
             echo('<h3 style="color:red">There was a problem!</h3>');
-            if (isset($andisol_instance1->error)) {
+            if (isset($andisol_instance2->error)) {
                 echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance2->error->error_code.') '.$andisol_instance2->error->error_name.' ('.$andisol_instance2->error->error_description.')</p>');
             }
         }
@@ -181,7 +184,7 @@ function kvp_test_67() {
     $andisol_instance2 = make_andisol();
     
     if (isset($andisol_instance2) && ($andisol_instance2 instanceof Andisol)) {
-        $fetched_value = $andisol_instance1->get_value_for_key($key);
+        $fetched_value = $andisol_instance2->get_value_for_key($key);
         if ($fetched_value) {
             echo('<h3 style="color:green">The text value was successfully fetched!</h3>');
             if ($fetched_value == $value) {
@@ -191,14 +194,62 @@ function kvp_test_67() {
             }
         } else {
             echo('<h3 style="color:red">There was a problem!</h3>');
-            if (isset($andisol_instance1->error)) {
+            if (isset($andisol_instance2->error)) {
                 echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance2->error->error_code.') '.$andisol_instance2->error->error_name.' ('.$andisol_instance2->error->error_description.')</p>');
             }
         }
     }
 }
 
-function kvp_test_68($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function kvp_test_68() {
+    $key = 'I Don\'t Exist!';
+        
+    $andisol_instance = make_andisol();
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $fetched_value = $andisol_instance->get_value_for_key($key);
+        if ($fetched_value) {
+            echo('<h3 style="color:green">The object for the key \''.$key.'\' has a value of \''.fetched_value.'\'</h3>');
+        } else {
+            echo('<h3 style="color:red">The value for the key \''.$key.'\' was not found!</h3>');
+        }
+    }
+}
+
+function kvp_test_69() {
+    $key = 'I Don\'t Exist!';
+        
+    $andisol_instance = make_andisol();
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $object_instance = $andisol_instance->get_object_for_key($key);
+        if ($object_instance && ($object_instance instanceof CO_KeyValue)) {
+            echo('<h3 style="color:green">The object for the key \''.$key.'\', containing \''.$object_instance->get_value().'\' was successfully fetched!</h3>');
+        } else {
+            echo('<h3 style="color:red">The object for the key \''.$key.'\' was not found!</h3>');
+        }
+    }
+}
+
+function kvp_test_70() {
+    $key = 'keymaster';
+        
+    $andisol_instance = make_andisol();
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $object_instance = $andisol_instance->get_object_for_key($key);
+        if ($object_instance && ($object_instance instanceof CO_KeyValue)) {
+            echo('<h3 style="color:green">The object for the key \''.$key.'\', containing \''.$object_instance->get_value().'\' was successfully fetched!</h3>');
+        } else {
+            echo('<h3 style="color:red">The object for the key \''.$key.'\' was not found!</h3>');
+            if (isset($andisol_instance->error)) {
+                echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance->error->error_code.') '.$andisol_instance->error->error_name.' ('.$andisol_instance->error->error_description.')</p>');
+            }
+        }
+    }
+}
+
+function kvp_test_71($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance1 = make_andisol($in_login, $in_hashed_password, $in_password);
     
     $key = 'keymaster';
@@ -217,7 +268,7 @@ function kvp_test_68($in_login = NULL, $in_hashed_password = NULL, $in_password 
     $andisol_instance2 = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance2) && ($andisol_instance2 instanceof Andisol)) {
-        $fetched_value = $andisol_instance1->get_value_for_key($key);
+        $fetched_value = $andisol_instance2->get_value_for_key($key);
         if ($fetched_value) {
             echo('<h3 style="color:red">PROBLEM! This should be gone!</h3>');
         } else {
@@ -226,7 +277,7 @@ function kvp_test_68($in_login = NULL, $in_hashed_password = NULL, $in_password 
     }
 }
 
-function kvp_test_69($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function kvp_test_72($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance1 = make_andisol($in_login, $in_hashed_password, $in_password);
     
     $key = 'Honey Badger Don\'t Care';
@@ -245,7 +296,7 @@ function kvp_test_69($in_login = NULL, $in_hashed_password = NULL, $in_password 
     $andisol_instance2 = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance2) && ($andisol_instance2 instanceof Andisol)) {
-        $fetched_value = $andisol_instance1->get_value_for_key($key);
+        $fetched_value = $andisol_instance2->get_value_for_key($key);
         if ($fetched_value) {
             echo('<h3 style="color:red">PROBLEM! This should be gone!</h3>');
         } else {
@@ -254,11 +305,11 @@ function kvp_test_69($in_login = NULL, $in_hashed_password = NULL, $in_password 
     }
 }
 
-function kvp_test_70($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
-    kvp_test_69($in_login, $in_hashed_password, $in_password);
+function kvp_test_73($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    kvp_test_72($in_login, $in_hashed_password, $in_password);
 }
 
-function kvp_test_71($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function kvp_test_74($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance1 = make_andisol($in_login, $in_hashed_password, $in_password);
     
     $key = 'The Great Shadow';
@@ -279,7 +330,7 @@ function kvp_test_71($in_login = NULL, $in_hashed_password = NULL, $in_password 
     $andisol_instance2 = make_andisol();
     
     if (isset($andisol_instance2) && ($andisol_instance2 instanceof Andisol)) {
-        $fetched_value = $andisol_instance1->get_value_for_key($key);
+        $fetched_value = $andisol_instance2->get_value_for_key($key);
         if ($fetched_value) {
             echo('<h3 style="color:green">The text value was successfully fetched!</h3>');
             if ($fetched_value == $value) {
@@ -297,14 +348,14 @@ function kvp_test_71($in_login = NULL, $in_hashed_password = NULL, $in_password 
             }
         } else {
             echo('<h3 style="color:red">There was a problem!</h3>');
-            if (isset($andisol_instance1->error)) {
+            if (isset($andisol_instance2->error)) {
                 echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance2->error->error_code.') '.$andisol_instance2->error->error_name.' ('.$andisol_instance2->error->error_description.')</p>');
             }
         }
     }
 }
 
-function kvp_test_72($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function kvp_test_75($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance1 = make_andisol($in_login, $in_hashed_password, $in_password);
     
     $key = 'Yo! Smitty!';
@@ -337,14 +388,14 @@ function kvp_test_72($in_login = NULL, $in_hashed_password = NULL, $in_password 
             }
         } else {
             echo('<h3 style="color:red">There was a problem!</h3>');
-            if (isset($andisol_instance1->error)) {
+            if (isset($andisol_instance2->error)) {
                 echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance2->error->error_code.') '.$andisol_instance2->error->error_name.' ('.$andisol_instance2->error->error_description.')</p>');
             }
         }
     }
 }
 
-function kvp_test_73($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function kvp_test_76($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance1 = make_andisol($in_login, $in_hashed_password, $in_password);
     
     $key = 'The Bricklayer';
@@ -379,14 +430,14 @@ function kvp_test_73($in_login = NULL, $in_hashed_password = NULL, $in_password 
             }
         } else {
             echo('<h3 style="color:red">There was a problem!</h3>');
-            if (isset($andisol_instance1->error)) {
+            if (isset($andisol_instance2->error)) {
                 echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance2->error->error_code.') '.$andisol_instance2->error->error_name.' ('.$andisol_instance2->error->error_description.')</p>');
             }
         }
     }
 }
 
-function kvp_test_74($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function kvp_test_77($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance1 = make_andisol($in_login, $in_hashed_password, $in_password);
     
     $key = 'Yankee Doodle Mouse';
@@ -417,7 +468,7 @@ function kvp_test_74($in_login = NULL, $in_hashed_password = NULL, $in_password 
             }
         } else {
             echo('<h3 style="color:red">There was a problem!</h3>');
-            if (isset($andisol_instance1->error)) {
+            if (isset($andisol_instance2->error)) {
                 echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance2->error->error_code.') '.$andisol_instance2->error->error_name.' ('.$andisol_instance2->error->error_description.')</p>');
             }
         }
