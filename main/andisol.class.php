@@ -793,9 +793,11 @@ class Andisol {
     
     /***********************/
     /**
+    This creates a simple location object.
      */
-    public function create_ll_location( $in_longitude_degrees,  ///< REQUIRED: The longitude, in degrees.
-                                        $in_latitude_degrees    ///< REQUIRED: The latitude, in degrees.
+    public function create_ll_location( $in_longitude_degrees,              ///< REQUIRED: The longitude, in degrees.
+                                        $in_latitude_degrees,               ///< REQUIRED: The latitude, in degrees.
+                                        $in_classname = 'CO_LL_Location'    ///< OPTIONAL: A classname to use, besides the lowest-level class. If NULL, then the CO_LL_Location class is used.
                                         ) {
     }
 };
