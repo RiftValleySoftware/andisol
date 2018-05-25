@@ -41,6 +41,64 @@ class Andisol {
     
     var $version;                           ///< The version indicator.
     var $error;                             ///< Any errors that occured are kept here.
+    
+    /************************************************************************************************************************/    
+    /*                                                     INTERNAL METHODS                                                 */
+    /************************************************************************************************************************/    
+    
+    /***********************/
+    /**
+    This creates an uninitialized object, based upon the passed-in class.
+    
+    \returns a new instance of the class.
+     */
+    protected function _create_db_object(   $in_classname,                  ///< REQUIRED: A classname to use.
+                                            $in_read_security_id = 1,       ///< OPTIONAL: An initial read security ID. If not specified, 1 (open to all logged-in users) will be specified.
+                                            $in_write_security_id = NULL    ///< OPTIONAL: An initial write security ID. If not specified, the current user's integer login ID will be used as the write security token.
+                                        ) {
+        $ret = NULL;
+        
+        if ($this->logged_in()) {
+            $instance = $this->get_chameleon_instance()->make_new_blank_record($in_classname);
+        
+            if (isset($instance) && ($instance instanceof $in_classname)) {
+                // If we did not get a specific write security ID, then we assume the logged-in user ID.
+                if (!isset($in_write_security_id) || !intval($in_write_security_id)) {
+                    $in_write_security_id = $this->get_chameleon_instance()->get_login_id();
+                }
+                
+                if ($instance->set_read_security_id($in_read_security_id)) {
+                    if ($instance->set_write_security_id($in_write_security_id)) {
+                        $ret = $instance;
+                    } elseif (isset($instance) && ($instance instanceof A_CO_DB_Table_Base)) {
+                        if ($instance->error) {
+                            $this->error = $instance->error;
+                        }
+        
+                        $instance->delete_from_db();
+                    }
+                } elseif (isset($instance) && ($instance instanceof A_CO_DB_Table_Base)) {
+                    if ($instance->error) {
+                        $this->error = $instance->error;
+                    }
+    
+                    $instance->delete_from_db();
+                }
+            } elseif (isset($instance) && ($instance instanceof A_CO_DB_Table_Base)) {
+                if ($instance->error) {
+                    $this->error = $instance->error;
+                }
+                
+                $instance->delete_from_db();
+            }
+        } else {
+            $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_user_not_authorized,
+                                            CO_ANDISOL_Lang::$andisol_error_name_user_not_authorized,
+                                            CO_ANDISOL_Lang::$andisol_error_desc_user_not_authorized);
+        }
+        
+        return $ret;
+    }
         
     /************************************************************************************************************************/    
     /***********************/
@@ -472,6 +530,42 @@ class Andisol {
     }
         
     /************************************************************************************************************************/    
+    /*                                                   DATA ACCESS METHODS                                                */
+    /************************************************************************************************************************/
+        
+    /***********************/
+    /**
+    This method queries the "data" databse for multiple records, given a list of IDs.
+    
+    The records will not be returned if the user does not have read permission for them.
+    
+    \returns an array of instances, fetched an initialized from the database.
+     */
+    public function get_multiple_data_records_by_id(    $in_id_array    ///< An array of integers, with the item IDs.
+                                                    ) {
+        $ret = $this->get_chameleon_instance()->get_multiple_data_records_by_id($in_id_array);
+        
+        $this->error = $this->get_chameleon_instance()->error;
+
+        return $ret;
+    }
+
+    /***********************/
+    /**
+    This is a "security-safe" method for fetching a single record from the "data" database, by its ID.
+    
+    \returns a single new instance, initialized from the database.
+     */
+    public function get_single_data_record_by_id(   $in_id  ///< The ID of the record to fetch.
+                                                ) {
+        $ret = $this->get_chameleon_instance()->get_single_data_record_by_id($in_id);
+        
+        $this->error = $this->get_chameleon_instance()->error;
+    
+        return $ret;
+    }
+        
+    /************************************************************************************************************************/    
     /*                                                 USER MANAGEMENT METHODS                                              */
     /************************************************************************************************************************/
         
@@ -793,11 +887,83 @@ class Andisol {
     
     /***********************/
     /**
-    This creates a simple location object.
+    This creates an initialized basic location object, based upon the passed-in class.
+    
+    \returns a new instance of the class.
      */
     public function create_ll_location( $in_longitude_degrees,              ///< REQUIRED: The longitude, in degrees.
                                         $in_latitude_degrees,               ///< REQUIRED: The latitude, in degrees.
+                                        $in_fuzz_factor = NULL,             /**< OPTIONAL: If there is a "fuzz factor" to be applied, it should be sent in as a distance in Kilometers.
+                                                                                           This creates a square, double the fuzz factor to a side, which is filled with a random value whenever the long/lat is queried.
+                                                                                           This is used when we don't want an exact location being returned. It is used to do things like preserve privacy.
+                                                                                           The "fuzzing" is done at an extremely low level, and only God, or IDs with write permission, can "see clearly."
+                                                                                           If you have the ability to "see" the exact location, then you can call special functions.
+                                                                                           Read permissions are not sufficient to "see clearly." You need to have write permissions on the object.
+                                                                                           You can also set a single security token that is allowed to see 
+                                                                                           If NULL (default), or 0.0, no "fuzz factor" is applied, so the location is exact.
+                                                                            */
+                                        $in_see_clearly_id = NULL,          ///< Ignored, if $in_fuzz_factor is not supplied. If $in_fuzz_factor is supplied, then this can be an ID, in addition to the write ID, that has permission to see the exact location. Default is NULL.
+                                        $in_read_security_id = 1,           ///< OPTIONAL: An initial read security ID. If not specified, 1 (open to all logged-in users) will be specified.
+                                        $in_write_security_id = NULL,       ///< OPTIONAL: An initial write security ID. If not specified, the current user's integer login ID will be used as the write security token.
                                         $in_classname = 'CO_LL_Location'    ///< OPTIONAL: A classname to use, besides the lowest-level class. If NULL, then the CO_LL_Location class is used.
                                         ) {
+        $ret = NULL;
+        
+        $instance = $this->_create_db_object($in_classname, $in_read_security_id, $in_write_security_id);
+        
+        // First, make sure we're in the right ballpark.
+        if (isset($instance) && ($instance instanceof CO_LL_Location)) {
+            if ($instance->set_longitude($in_longitude_degrees)) {
+                if ($instance->set_latitude($in_latitude_degrees)) {
+                    if (isset($in_fuzz_factor) && (0.0 < floatval($in_fuzz_factor))) {
+                        if ($instance->set_fuzz_factor($in_fuzz_factor)) {
+                            if (isset($in_see_clearly_id) && (0 < intval($in_see_clearly_id))) {
+                                if ($instance->set_can_see_through_the_fuzz($in_see_clearly_id)) {
+                                    $ret = $instance;
+                                } else {
+                                    if ($instance->error) {
+                                        $this->error = $instance->error;
+                                    }
+            
+                                    $instance->delete_from_db();
+                                }
+                            } else {
+                                $ret = $instance;
+                            }
+                        } else {
+                            if ($instance->error) {
+                                $this->error = $instance->error;
+                            }
+            
+                            $instance->delete_from_db();
+                        }
+                    } else {
+                        $ret = $instance;
+                    }
+                } else {
+                    if ($instance->error) {
+                        $this->error = $instance->error;
+                    }
+            
+                    $instance->delete_from_db();
+                }
+            } else {
+                if ($instance->error) {
+                    $this->error = $instance->error;
+                }
+            
+                $instance->delete_from_db();
+            }
+        } else {
+            if (isset($instance) && ($instance instanceof A_CO_DB_Table_Base)) {
+                if ($instance->error) {
+                    $this->error = $instance->error;
+                }
+            
+                $instance->delete_from_db();
+            }
+        }
+        
+        return $ret;
     }
 };
