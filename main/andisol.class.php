@@ -851,7 +851,7 @@ class Andisol {
      */
     public function delete_key( $in_key,                        ///< REQUIRED: This is the key that we are deleting. It must be a string.
                                 $in_classname = 'CO_KeyValue'   ///< OPTIONAL: This is the class to search for the key. The default is the base class.
-                                        ) {
+                                ) {
         return $this->set_value_for_key($in_key, NULL, $in_classname);
     }
     
@@ -1000,6 +1000,16 @@ class Andisol {
                                     $in_classname = 'CO_Place'          ///< OPTIONAL: A classname to use, besides the lowest-level class. If NULL, then the CO_Place class is used.
                                 ) {
         $ret = NULL;
+        
+        // We can create the special US version of the place, if we know we are US (Only if we are using the generic base class).
+        if (((strtoupper($in_nation) == 'US') || (strtoupper($in_nation) == 'USA')) && ($in_classname == 'CO_Place')) {
+            $class ='CO_US_Place';
+        }
+        
+        // If we know we are US, then we don't need to specify a nation.
+        if ($in_classname == 'CO_US_Place') {
+            $in_nation = NULL;
+        }
         
         // We have to have at least enough basic information to denote a place.
         if((isset($in_longitude_degrees) && isset($in_longitude_degrees))   ||
@@ -1292,5 +1302,72 @@ class Andisol {
                                     $in_classname = 'CO_Place'      ///< OPTIONAL: A classname to use, besides the lowest-level class. If NULL, then the CO_Place class is used.
                                     ) {
         return $this->create_place(TRUE, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, $in_longitude_degrees, $in_latitude_degrees, $in_fuzz_factor, $in_see_clearly_id, $in_read_security_id, $in_write_security_id, $in_classname);
+    }
+    
+    /***********************/
+    /**
+    This creates an initialized basic US place location COLLECTION object. This does not accept a classname. Use the regular function if you want to get fancy.
+    However, this method will take just a long/lat, like creating a long/lat class, and do a geocode to set the address fields.
+    
+    \returns a new instance of the class.
+     */
+    public function create_ll_us_place( $in_longitude_degrees,          ///< REQUIRED: The longitude, in degrees.
+                                        $in_latitude_degrees,           ///< REQUIRED: The latitude, in degrees.
+                                        $in_fuzz_factor = NULL,         /**< OPTIONAL: If there is a "fuzz factor" to be applied, it should be sent in as a distance in Kilometers.
+                                                                                       This creates a square, double the fuzz factor to a side, which is filled with a random value whenever the long/lat is queried.
+                                                                                       This is used when we don't want an exact location being returned. It is used to do things like preserve privacy.
+                                                                                       The "fuzzing" is done at an extremely low level, and only God, or IDs with write permission, can "see clearly."
+                                                                                       If you have the ability to "see" the exact location, then you can call special functions.
+                                                                                       Read permissions are not sufficient to "see clearly." You need to have write permissions on the object.
+                                                                                       You can also set a single security token that is allowed to see 
+                                                                                       If NULL (default), or 0.0, no "fuzz factor" is applied, so the location is exact.
+                                                                        */
+                                        $in_see_clearly_id = NULL,      ///< OPTIONAL: Ignored, if $in_fuzz_factor is not supplied. If $in_fuzz_factor is supplied, then this can be an ID, in addition to the write ID, that has permission to see the exact location. Default is NULL.
+                                        $in_read_security_id = 1,       ///< OPTIONAL: An initial read security ID. If not specified, 1 (open to all logged-in users) will be specified.
+                                        $in_write_security_id = NULL    ///< OPTIONAL: An initial write security ID. If not specified, the current user's integer login ID will be used as the write security token.
+                                        ) {
+        return $this->create_place(TRUE, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, $in_longitude_degrees, $in_latitude_degrees, $in_fuzz_factor, $in_see_clearly_id, $in_read_security_id, $in_write_security_id, 'CO_US_Place');
+    }
+    
+    /***********************/
+    /**
+    This creates an initialized basic place location COLLECTION object. This does not accept a classname. Use the regular function if you want to get fancy.
+    Although all parameters are optional, you need to specify at last enough information to specify a place.
+    
+    \returns a new instance of the class.
+     */
+    public function create_place_collection(    $auto_resolve = TRUE,                   ///< If FALSE (Default is TRUE), then we will not try to "fill in the blanks" with any missing information.
+                                                $in_venue = NULL,                       ///< OPTIONAL: The venue (place/building/establishment name).
+                                                $in_street_address = NULL,              ///< OPTIONAL: The street address (including number).
+                                                $in_municipality = NULL,                ///< OPTIONAL: The town/city.
+                                                $in_county = NULL,                      ///< OPTIONAL: The county/sub-province.
+                                                $in_province = NULL,                    ///< OPTIONAL: The state/province/prefecture.
+                                                $in_postal_code = NULL,                 ///< OPTIONAL: The ZIP/postal code.
+                                                $in_nation = NULL,                      ///< OPTIONAL: The nation.
+                                                $in_extra_info = NULL,                  ///< OPTIONAL: Additional (casual text) address/location/venue information.
+                                                $in_longitude_degrees = NULL,           ///< OPTIONAL: The longitude, in degrees.
+                                                $in_latitude_degrees = NULL,            ///< OPTIONAL: The latitude, in degrees.
+                                                $in_fuzz_factor = NULL,                 /**< OPTIONAL: If there is a "fuzz factor" to be applied, it should be sent in as a distance in Kilometers.
+                                                                                                       This creates a square, double the fuzz factor to a side, which is filled with a random value whenever the long/lat is queried.
+                                                                                                       This is used when we don't want an exact location being returned. It is used to do things like preserve privacy.
+                                                                                                       The "fuzzing" is done at an extremely low level, and only God, or IDs with write permission, can "see clearly."
+                                                                                                       If you have the ability to "see" the exact location, then you can call special functions.
+                                                                                                       Read permissions are not sufficient to "see clearly." You need to have write permissions on the object.
+                                                                                                       You can also set a single security token that is allowed to see 
+                                                                                                       If NULL (default), or 0.0, no "fuzz factor" is applied, so the location is exact.
+                                                                                        */
+                                                $in_see_clearly_id = NULL,              ///< OPTIONAL: Ignored, if $in_fuzz_factor is not supplied. If $in_fuzz_factor is supplied, then this can be an ID, in addition to the write ID, that has permission to see the exact location. Default is NULL.
+                                                $in_read_security_id = 1,               ///< OPTIONAL: An initial read security ID. If not specified, 1 (open to all logged-in users) will be specified.
+                                                $in_write_security_id = NULL            ///< OPTIONAL: An initial write security ID. If not specified, the current user's integer login ID will be used as the write security token.
+                                            ) {
+        $class = 'CO_Place_Collection';
+        
+        // We can create the special US version of the place, if we know we are US.
+        if ((strtoupper($in_nation) == 'US') || (strtoupper($in_nation) == 'USA')) {
+            $class ='CO_US_Place_Collection';
+            $in_nation = NULL;
+        }
+        
+        return $this->create_place($auto_resolve, $in_venue, $in_street_address, $in_municipality, $in_county, $in_province, $in_postal_code, NULL, NULL, $in_longitude_degrees, $in_latitude_degrees, $in_fuzz_factor, $in_see_clearly_id, $in_read_security_id, $in_write_security_id, $class);
     }
 };
