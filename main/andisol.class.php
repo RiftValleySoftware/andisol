@@ -902,7 +902,7 @@ class Andisol {
                                                                                            You can also set a single security token that is allowed to see 
                                                                                            If NULL (default), or 0.0, no "fuzz factor" is applied, so the location is exact.
                                                                             */
-                                        $in_see_clearly_id = NULL,          ///< Ignored, if $in_fuzz_factor is not supplied. If $in_fuzz_factor is supplied, then this can be an ID, in addition to the write ID, that has permission to see the exact location. Default is NULL.
+                                        $in_see_clearly_id = NULL,          ///< OPTIONAL: Ignored, if $in_fuzz_factor is not supplied. If $in_fuzz_factor is supplied, then this can be an ID, in addition to the write ID, that has permission to see the exact location. Default is NULL.
                                         $in_read_security_id = 1,           ///< OPTIONAL: An initial read security ID. If not specified, 1 (open to all logged-in users) will be specified.
                                         $in_write_security_id = NULL,       ///< OPTIONAL: An initial write security ID. If not specified, the current user's integer login ID will be used as the write security token.
                                         $in_classname = 'CO_LL_Location'    ///< OPTIONAL: A classname to use, besides the lowest-level class. If NULL, then the CO_LL_Location class is used.
@@ -965,5 +965,332 @@ class Andisol {
         }
         
         return $ret;
+    }
+    
+    /***********************/
+    /**
+    This creates an initialized basic place location object, based upon the passed-in class.
+    Although all parameters are optional, you need to specify at last enough information to specify a place.
+    
+    \returns a new instance of the class.
+     */
+    public function create_place(   $auto_resolve = TRUE,               ///< If FALSE (Default is TRUE), then we will not try to "fill in the blanks" with any missing information.
+                                    $in_venue = NULL,                   ///< OPTIONAL: The venue (place/building/establishment name).
+                                    $in_street_address = NULL,          ///< OPTIONAL: The street address (including number).
+                                    $in_municipality = NULL,            ///< OPTIONAL: The town/city.
+                                    $in_county = NULL,                  ///< OPTIONAL: The county/sub-province.
+                                    $in_province = NULL,                ///< OPTIONAL: The state/province/prefecture.
+                                    $in_postal_code = NULL,             ///< OPTIONAL: The ZIP/postal code.
+                                    $in_nation = NULL,                  ///< OPTIONAL: The nation.
+                                    $in_extra_info = NULL,              ///< OPTIONAL: Additional (casual text) address/location/venue information.
+                                    $in_longitude_degrees = NULL,       ///< OPTIONAL: The longitude, in degrees.
+                                    $in_latitude_degrees = NULL,        ///< OPTIONAL: The latitude, in degrees.
+                                    $in_fuzz_factor = NULL,             /**< OPTIONAL: If there is a "fuzz factor" to be applied, it should be sent in as a distance in Kilometers.
+                                                                                       This creates a square, double the fuzz factor to a side, which is filled with a random value whenever the long/lat is queried.
+                                                                                       This is used when we don't want an exact location being returned. It is used to do things like preserve privacy.
+                                                                                       The "fuzzing" is done at an extremely low level, and only God, or IDs with write permission, can "see clearly."
+                                                                                       If you have the ability to "see" the exact location, then you can call special functions.
+                                                                                       Read permissions are not sufficient to "see clearly." You need to have write permissions on the object.
+                                                                                       You can also set a single security token that is allowed to see 
+                                                                                       If NULL (default), or 0.0, no "fuzz factor" is applied, so the location is exact.
+                                                                        */
+                                    $in_see_clearly_id = NULL,          ///< OPTIONAL: Ignored, if $in_fuzz_factor is not supplied. If $in_fuzz_factor is supplied, then this can be an ID, in addition to the write ID, that has permission to see the exact location. Default is NULL.
+                                    $in_read_security_id = 1,           ///< OPTIONAL: An initial read security ID. If not specified, 1 (open to all logged-in users) will be specified.
+                                    $in_write_security_id = NULL,       ///< OPTIONAL: An initial write security ID. If not specified, the current user's integer login ID will be used as the write security token.
+                                    $in_classname = 'CO_Place'          ///< OPTIONAL: A classname to use, besides the lowest-level class. If NULL, then the CO_Place class is used.
+                                ) {
+        $ret = NULL;
+        
+        // We have to have at least enough basic information to denote a place.
+        if((isset($in_longitude_degrees) && isset($in_longitude_degrees))   ||
+            isset($in_venue) ||
+            isset($in_street_address) ||
+            isset($in_municipality) ||
+            isset($in_county) ||
+            isset($in_province) ||
+            isset($in_postal_code) ||
+            isset($in_nation)) {
+            $instance = $this->_create_db_object($in_classname, $in_read_security_id, $in_write_security_id);
+        
+            // First, make sure we're in the right ballpark.
+            if (isset($instance) && ($instance instanceof CO_Place)) {
+                $long_lat_explicitly_set = FALSE;   // We use this to figure whether or not to do an initial lookup.
+                $address_explicitly_set = FALSE;    // We use this to figure whether or not to do an initial geocode.
+            
+                // If a long/lat was provided, we start by setting that to our object.
+                if(isset($in_longitude_degrees) && isset($in_longitude_degrees)) {
+                    if ($instance->set_longitude($in_longitude_degrees)) {
+                        if ($instance->set_latitude($in_latitude_degrees)) {
+                            $long_lat_explicitly_set = TRUE;    // This means we won't be needing a lookup.
+                        } else {
+                            if ($instance->error) {
+                                $this->error = $instance->error;
+                            }
+    
+                            $instance->delete_from_db();
+                            $instance = NULL;
+                        }
+                    } else {
+                        if ($instance->error) {
+                            $this->error = $instance->error;
+                        }
+
+                        $instance->delete_from_db();
+                        $instance = NULL;
+                    }
+                }
+                
+                // Next, see if a venue name was provided.
+                if(isset($instance) && isset($in_venue)) {
+                    if ($instance->set_tag(0, $in_venue)) {
+                        $address_explicitly_set = TRUE;
+                    } else {
+                        if ($instance->error) {
+                            $this->error = $instance->error;
+                        }
+
+                        $instance->delete_from_db();
+                        $instance = NULL;
+                    }
+                }
+                
+                // Next, see if a street address was provided.
+                if(isset($instance) && isset($in_street_address)) {
+                    if ($instance->set_tag(1, $in_street_address)) {
+                        $address_explicitly_set = TRUE;
+                    } else {
+                        if ($instance->error) {
+                            $this->error = $instance->error;
+                        }
+
+                        $instance->delete_from_db();
+                        $instance = NULL;
+                    }
+                }
+                
+                // Next, see if a town was provided.
+                if(isset($instance) && isset($in_municipality)) {
+                    if ($instance->set_tag(3, $in_municipality)) {
+                        $address_explicitly_set = TRUE;
+                    } else {
+                        if ($instance->error) {
+                            $this->error = $instance->error;
+                        }
+
+                        $instance->delete_from_db();
+                        $instance = NULL;
+                    }
+                }
+                
+                // Next, see if a county was provided.
+                if(isset($instance) && isset($in_county)) {
+                    if ($instance->set_tag(4, $in_county)) {
+                        $address_explicitly_set = TRUE;
+                    } else {
+                        if ($instance->error) {
+                            $this->error = $instance->error;
+                        }
+
+                        $instance->delete_from_db();
+                        $instance = NULL;
+                    }
+                }
+                
+                // Next, see if a state was provided.
+                if(isset($instance) && isset($in_province)) {
+                    if ($instance->set_tag(5, $in_province)) {
+                        $address_explicitly_set = TRUE;
+                    } else {
+                        if ($instance->error) {
+                            $this->error = $instance->error;
+                        }
+
+                        $instance->delete_from_db();
+                        $instance = NULL;
+                    }
+                }
+                
+                // Next, see if a ZIP code was provided.
+                if(isset($instance) && isset($in_postal_code)) {
+                    if ($instance->set_tag(6, $in_postal_code)) {
+                        $address_explicitly_set = TRUE;
+                    } else {
+                        if ($instance->error) {
+                            $this->error = $instance->error;
+                        }
+
+                        $instance->delete_from_db();
+                        $instance = NULL;
+                    }
+                }
+                
+                // Next, see if a nation was provided.
+                if(isset($instance) && isset($in_nation)) {
+                    if ($instance->set_tag(7, $in_nation)) {
+                        $address_explicitly_set = TRUE;
+                    } else {
+                        if ($instance->error) {
+                            $this->error = $instance->error;
+                        }
+
+                        $instance->delete_from_db();
+                        $instance = NULL;
+                    }
+                }
+                
+                // Next, see if extra info was provided.
+                if(isset($instance) && isset($in_extra_info)) {
+                    if (!$instance->set_tag(2, $in_extra_info)) {
+                        if ($instance->error) {
+                            $this->error = $instance->error;
+                        }
+
+                        $instance->delete_from_db();
+                        $instance = NULL;
+                    }
+                }
+                
+                // Assuming all went well until now, let's work on the "fuzz factor."
+                if (isset($instance) && isset($in_fuzz_factor) && (0.0 < floatval($in_fuzz_factor))) {
+                    if ($instance->set_fuzz_factor($in_fuzz_factor)) {
+                        if (isset($in_see_clearly_id) && (0 < intval($in_see_clearly_id))) {
+                            if (!$instance->set_can_see_through_the_fuzz($in_see_clearly_id)) {
+                                if ($instance->error) {
+                                    $this->error = $instance->error;
+                                }
+        
+                                $instance->delete_from_db();
+                                $instance = NULL;
+                            }
+                        }
+                    } else {
+                        if ($instance->error) {
+                            $this->error = $instance->error;
+                        }
+                        
+                        $instance->delete_from_db();
+                        $instance = NULL;
+                    }
+                }
+
+            // OK. If we are here, and still have a valid instance, then we can "set it in stone," and see if we need to do a geocode.
+            if (isset($instance)) {
+                // If we did not explicitly set a long/lat, and have a Google API key (assumed valid), then let's try a geocode.
+                if ($auto_resolve && !$long_lat_explicitly_set && CO_Config::$google_api_key) {  // If we can do a lookup, and need to, then lets's give that a go.
+                    $long_lat = $ret->lookup_address();
+                    
+                    if (isset($long_lat) && is_array($long_lat) && (1 < count($long_lat))) {
+                        if ($instance->set_longitude($long_lat['longitude'])) {
+                            if ($instance->set_latitude($long_lat['latitude'])) {
+                                $ret = $instance;   // Now we're ready for our close-up, Mr. DeMille...
+                            } else {
+                                if ($instance->error) {
+                                    $this->error = $instance->error;
+                                }
+    
+                                $instance->delete_from_db();
+                                $instance = NULL;
+                            }
+                        } else {
+                            if ($instance->error) {
+                                $this->error = $instance->error;
+                            }
+
+                            $instance->delete_from_db();
+                            $instance = NULL;
+                        }
+                    } else {
+                        if ($instance->error) {
+                            $this->error = $instance->error;
+                        }
+                        
+                        $instance->delete_from_db();
+                        $instance = NULL;
+                    }
+                } else {    // Otherwise, we simply send the current result back.
+                    $ret = $instance;
+                }
+                
+                // If we did not explicitly set an address, and have a Google API key (assumed valid), then let's try a geocode.
+                if ($ret && $auto_resolve && !$address_explicitly_set && CO_Config::$google_api_key) {  // If we can do a lookup, and need to, then lets's give that a go.
+                    $ret = NULL;    // Not so fast, Skippy.
+                    $address = $instance->geocode_long_lat();
+                    
+                    if (isset($address) && is_array($address) && (0 < count($address))) {
+                        for ($i = 0; $i < 8; $i++) {
+                            eval("\$key = CO_CHAMELEON_Lang::\$chameleon_co_place_tag_$i;");
+                            
+                            if (isset($address[$key]) && trim($address[$key])) { // Is there a venue?
+                                if (!$instance->set_tag($i, trim($address[$key]))) {
+                                    if ($instance->error) {
+                                        $this->error = $instance->error;
+                                    }
+
+                                    $instance->delete_from_db();
+                                    $instance = NULL;
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        // OK. Now we can do it.
+                        if (isset($instance)) {
+                            // This sets the object up to what we just sent in.
+                            $instance->set_address_elements($instance->tags(), TRUE);
+                            $ret = $instance;
+                        }
+                    } else {
+                        if ($instance->error) {
+                            $this->error = $instance->error;
+                        }
+                        
+                        $instance->delete_from_db();
+                        $instance = NULL;
+                    }
+                }
+            }
+            
+            } else {
+                if (isset($instance) && ($instance instanceof A_CO_DB_Table_Base)) {
+                    if ($instance->error) {
+                        $this->error = $instance->error;
+                    }
+            
+                    $instance->delete_from_db();
+                }
+            }
+        } else {
+            $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_insufficient_location_information,
+                                            CO_ANDISOL_Lang::$andisol_error_name_insufficient_location_information,
+                                            CO_ANDISOL_Lang::$andisol_error_desc_insufficient_location_information);
+        }
+                
+        return $ret;
+    }
+    
+    /***********************/
+    /**
+    This creates an initialized place location object, based upon the passed-in class.
+    However, this method will take just a long/lat, like creating a long/lat class, and do a geocode to set the address fields.
+    
+    \returns a new instance of the class.
+     */
+    public function create_ll_place($in_longitude_degrees,          ///< REQUIRED: The longitude, in degrees.
+                                    $in_latitude_degrees,           ///< REQUIRED: The latitude, in degrees.
+                                    $in_fuzz_factor = NULL,         /**< OPTIONAL: If there is a "fuzz factor" to be applied, it should be sent in as a distance in Kilometers.
+                                                                                   This creates a square, double the fuzz factor to a side, which is filled with a random value whenever the long/lat is queried.
+                                                                                   This is used when we don't want an exact location being returned. It is used to do things like preserve privacy.
+                                                                                   The "fuzzing" is done at an extremely low level, and only God, or IDs with write permission, can "see clearly."
+                                                                                   If you have the ability to "see" the exact location, then you can call special functions.
+                                                                                   Read permissions are not sufficient to "see clearly." You need to have write permissions on the object.
+                                                                                   You can also set a single security token that is allowed to see 
+                                                                                   If NULL (default), or 0.0, no "fuzz factor" is applied, so the location is exact.
+                                                                    */
+                                    $in_see_clearly_id = NULL,      ///< OPTIONAL: Ignored, if $in_fuzz_factor is not supplied. If $in_fuzz_factor is supplied, then this can be an ID, in addition to the write ID, that has permission to see the exact location. Default is NULL.
+                                    $in_read_security_id = 1,       ///< OPTIONAL: An initial read security ID. If not specified, 1 (open to all logged-in users) will be specified.
+                                    $in_write_security_id = NULL,   ///< OPTIONAL: An initial write security ID. If not specified, the current user's integer login ID will be used as the write security token.
+                                    $in_classname = 'CO_Place'      ///< OPTIONAL: A classname to use, besides the lowest-level class. If NULL, then the CO_Place class is used.
+                                    ) {
+        return $this->create_place(TRUE, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, $in_longitude_degrees, $in_latitude_degrees, $in_fuzz_factor, $in_see_clearly_id, $in_read_security_id, $in_write_security_id, $in_classname);
     }
 };

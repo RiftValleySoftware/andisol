@@ -37,5 +37,6 @@ class CO_ANDISOL_Lang_Common {
     static  $andisol_error_code_user_instance_unavailable = 2003;
     static  $andisol_error_code_user_not_deleted = 2004;
     static  $andisol_error_code_login_not_deleted = 2005;
+    static  $andisol_error_code_insufficient_location_information = 2006;
 }
 ?>
