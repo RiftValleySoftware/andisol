@@ -270,7 +270,7 @@ ob_start();
     prepare_databases('data_storage_tests');
     
     echo('<div class="test-wrapper" style="display:table;margin-left:auto;margin-right:auto;text-align:left">');
-        echo('<h1 class="header">DATA STORAGE TESTS</h1>');
+        echo('<h1 class="header">LOCATION TESTS</h1>');
         echo('<div id="data-storage-basic-ll-tests" class="closed">');
             echo('<h2 class="header"><a href="javascript:toggle_main_state(\'data-storage-basic-ll-tests\')">BASIC LONG/LAT TESTS</a></h2>');
             echo('<div class="container">');
