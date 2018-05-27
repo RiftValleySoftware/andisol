@@ -4,12 +4,16 @@ ANDISOL
 =======
 Part of the Rift Valley Platform
 --------------------------------
+![HISSSSS!](RVPLogo.png)
 
 INTRODUCTION
 ============
 ANDISOL is the "public face" of the lowest levels of the Rift Valley Platform. It encapsulates the model (database or server connections), and provides an object-based, functional model to the implementation layers.
 
-You use it by instantiating an instance of ANDISOL, after setting up a valid database configuration.
+IMPLEMENTATION
+==============
+
+You use ANDISOL by instantiating an instance of the Andisol class, after setting up a valid database configuration.
 
 LICENSE
 =======
