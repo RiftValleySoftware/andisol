@@ -172,6 +172,7 @@
                         }
                     }
             
+                    echo("<p>Class: ".get_class($in_record_object)."</p>");
                     if (isset($in_record_object->name)) {
                         echo("<p>Name: ".$in_record_object->name."</p>");
                     }
