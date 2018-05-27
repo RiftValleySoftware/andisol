@@ -1,10 +1,10 @@
-![HISSSSS!](icon.png)
+![ANDISOL](images/icon.png)
 
 ANDISOL
 =======
 Part of the Rift Valley Platform
 --------------------------------
-![HISSSSS!](RVPLogo.png)
+![Rift Valley Platform](images/RVPLogo.png)
 
 INTRODUCTION
 ============
@@ -18,7 +18,7 @@ You use ANDISOL by instantiating an instance of the Andisol class, after setting
 LICENSE
 =======
 
-![Little Green Viper Software Development LLC](spec/viper.png)
+![Little Green Viper Software Development LLC](images/viper.png)
 © Copyright 2018, [Little Green Viper Software Development LLC](https://littlegreenviper.com).
 This code is ENTIRELY proprietary and not to be reused, unless under specific, written license from [Little Green Viper Software Development LLC](https://littlegreenviper.com).
 
