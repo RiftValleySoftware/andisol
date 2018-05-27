@@ -1021,12 +1021,12 @@ class Andisol {
             isset($in_postal_code) ||
             isset($in_nation)) {
             $instance = $this->_create_db_object($in_classname, $in_read_security_id, $in_write_security_id);
-        
+    
             // First, make sure we're in the right ballpark.
             if (isset($instance) && ($instance instanceof CO_Place)) {
                 $long_lat_explicitly_set = FALSE;   // We use this to figure whether or not to do an initial lookup.
                 $address_explicitly_set = FALSE;    // We use this to figure whether or not to do an initial geocode.
-            
+        
                 // If a long/lat was provided, we start by setting that to our object.
                 if(isset($in_longitude_degrees) && isset($in_longitude_degrees)) {
                     if ($instance->set_longitude($in_longitude_degrees)) {
@@ -1036,7 +1036,7 @@ class Andisol {
                             if ($instance->error) {
                                 $this->error = $instance->error;
                             }
-    
+
                             $instance->delete_from_db();
                             $instance = NULL;
                         }
@@ -1049,7 +1049,7 @@ class Andisol {
                         $instance = NULL;
                     }
                 }
-                
+            
                 // Next, see if a venue name was provided.
                 if(isset($instance) && isset($in_venue)) {
                     if ($instance->set_tag(0, $in_venue)) {
@@ -1063,7 +1063,7 @@ class Andisol {
                         $instance = NULL;
                     }
                 }
-                
+            
                 // Next, see if a street address was provided.
                 if(isset($instance) && isset($in_street_address)) {
                     if ($instance->set_tag(1, $in_street_address)) {
@@ -1077,7 +1077,7 @@ class Andisol {
                         $instance = NULL;
                     }
                 }
-                
+            
                 // Next, see if a town was provided.
                 if(isset($instance) && isset($in_municipality)) {
                     if ($instance->set_tag(3, $in_municipality)) {
@@ -1091,7 +1091,7 @@ class Andisol {
                         $instance = NULL;
                     }
                 }
-                
+            
                 // Next, see if a county was provided.
                 if(isset($instance) && isset($in_county)) {
                     if ($instance->set_tag(4, $in_county)) {
@@ -1105,7 +1105,7 @@ class Andisol {
                         $instance = NULL;
                     }
                 }
-                
+            
                 // Next, see if a state was provided.
                 if(isset($instance) && isset($in_province)) {
                     if ($instance->set_tag(5, $in_province)) {
@@ -1119,7 +1119,7 @@ class Andisol {
                         $instance = NULL;
                     }
                 }
-                
+            
                 // Next, see if a ZIP code was provided.
                 if(isset($instance) && isset($in_postal_code)) {
                     if ($instance->set_tag(6, $in_postal_code)) {
@@ -1133,7 +1133,7 @@ class Andisol {
                         $instance = NULL;
                     }
                 }
-                
+            
                 // Next, see if a nation was provided.
                 if(isset($instance) && isset($in_nation)) {
                     if ($instance->set_tag(7, $in_nation)) {
@@ -1147,7 +1147,7 @@ class Andisol {
                         $instance = NULL;
                     }
                 }
-                
+            
                 // Next, see if extra info was provided.
                 if(isset($instance) && isset($in_extra_info)) {
                     if (!$instance->set_tag(2, $in_extra_info)) {
@@ -1159,7 +1159,7 @@ class Andisol {
                         $instance = NULL;
                     }
                 }
-                
+            
                 // Assuming all went well until now, let's work on the "fuzz factor."
                 if (isset($instance) && isset($in_fuzz_factor) && (0.0 < floatval($in_fuzz_factor))) {
                     if ($instance->set_fuzz_factor($in_fuzz_factor)) {
@@ -1168,7 +1168,7 @@ class Andisol {
                                 if ($instance->error) {
                                     $this->error = $instance->error;
                                 }
-        
+    
                                 $instance->delete_from_db();
                                 $instance = NULL;
                             }
@@ -1177,29 +1177,37 @@ class Andisol {
                         if ($instance->error) {
                             $this->error = $instance->error;
                         }
-                        
+                    
                         $instance->delete_from_db();
                         $instance = NULL;
                     }
                 }
 
-            // OK. If we are here, and still have a valid instance, then we can "set it in stone," and see if we need to do a geocode.
-            if (isset($instance)) {
-                $instance->set_address_elements($instance->tags(), TRUE);
+                // OK. If we are here, and still have a valid instance, then we can "set it in stone," and see if we need to do a geocode.
+                if (isset($instance)) {
+                    $instance->set_address_elements($instance->tags(), TRUE);
 
-                // If we did not explicitly set a long/lat, and have a Google API key (assumed valid), then let's try a geocode.
-                if ($auto_resolve && !$long_lat_explicitly_set && CO_Config::$google_api_key) {  // If we can do a lookup, and need to, then lets's give that a go.
-                    $long_lat = $instance->lookup_address();
-                    
-                    if (isset($long_lat) && is_array($long_lat) && (1 < count($long_lat))) {
-                        if ($instance->set_longitude($long_lat['longitude'])) {
-                            if ($instance->set_latitude($long_lat['latitude'])) {
-                                $ret = $instance;   // Now we're ready for our close-up, Mr. DeMille...
+                    // If we did not explicitly set a long/lat, and have a Google API key (assumed valid), then let's try a geocode.
+                    if ($auto_resolve && !$long_lat_explicitly_set && CO_Config::$google_api_key) {  // If we can do a lookup, and need to, then lets's give that a go.
+                        $long_lat = $instance->lookup_address();
+                
+                        if (isset($long_lat) && is_array($long_lat) && (1 < count($long_lat))) {
+                            if ($instance->set_longitude($long_lat['longitude'])) {
+                                if ($instance->set_latitude($long_lat['latitude'])) {
+                                    $ret = $instance;   // Now we're ready for our close-up, Mr. DeMille...
+                                } else {
+                                    if ($instance->error) {
+                                        $this->error = $instance->error;
+                                    }
+
+                                    $instance->delete_from_db();
+                                    $instance = NULL;
+                                }
                             } else {
                                 if ($instance->error) {
                                     $this->error = $instance->error;
                                 }
-    
+
                                 $instance->delete_from_db();
                                 $instance = NULL;
                             }
@@ -1207,69 +1215,59 @@ class Andisol {
                             if ($instance->error) {
                                 $this->error = $instance->error;
                             }
-
+                    
                             $instance->delete_from_db();
                             $instance = NULL;
                         }
-                    } else {
-                        if ($instance->error) {
-                            $this->error = $instance->error;
-                        }
-                        
-                        $instance->delete_from_db();
-                        $instance = NULL;
+                    } else {    // Otherwise, we simply send the current result back.
+                        $ret = $instance;
                     }
-                } else {    // Otherwise, we simply send the current result back.
-                    $ret = $instance;
-                }
-                
-                // If we did not explicitly set an address, and have a Google API key (assumed valid), then let's try a geocode.
-                if ($ret && $auto_resolve && !$address_explicitly_set && CO_Config::$google_api_key) {  // If we can do a lookup, and need to, then lets's give that a go.
-                    $ret = NULL;    // Not so fast, Skippy.
-                    $address = $instance->geocode_long_lat();
-                    
-                    if (isset($address) && is_array($address) && (0 < count($address))) {
-                        for ($i = 0; $i < 8; $i++) {
-                            eval("\$key = CO_CHAMELEON_Lang::\$chameleon_co_place_tag_$i;");
-                            
-                            if (isset($address[$key]) && trim($address[$key])) { // Is there a venue?
-                                if (!$instance->set_tag($i, trim($address[$key]))) {
-                                    if ($instance->error) {
-                                        $this->error = $instance->error;
-                                    }
+            
+                    // If we did not explicitly set an address, and have a Google API key (assumed valid), then let's try a geocode.
+                    if ($ret && $auto_resolve && !$address_explicitly_set && CO_Config::$google_api_key) {  // If we can do a lookup, and need to, then lets's give that a go.
+                        $ret = NULL;    // Not so fast, Skippy.
+                        $address = $instance->geocode_long_lat();
+                        if (isset($address) && is_array($address) && (0 < count($address))) {
+                            for ($i = 0; $i < 8; $i++) {
+                                eval("\$key = CO_CHAMELEON_Lang::\$chameleon_co_place_tag_$i;");
+                        
+                                if (isset($address[$key]) && trim($address[$key])) { // Is there a venue?
+                                    if (!$instance->set_tag($i, trim($address[$key]))) {
+                                        if ($instance->error) {
+                                            $this->error = $instance->error;
+                                        }
 
-                                    $instance->delete_from_db();
-                                    $instance = NULL;
-                                    break;
+                                        $instance->delete_from_db();
+                                        $instance = NULL;
+                                        break;
+                                    }
                                 }
                             }
+                    
+                            // OK. Now we can do it.
+                            if (isset($instance)) {
+                                // This sets the object up to what we just sent in.
+                                $instance->set_address_elements($instance->tags(), TRUE);
+                                $ret = $instance;
+                            }
+                        } else {
+                            if ($instance->error) {
+                                $this->error = $instance->error;
+                            }
+                    
+                            $instance->delete_from_db();
+                            $instance = NULL;
                         }
-                        
-                        // OK. Now we can do it.
-                        if (isset($instance)) {
-                            // This sets the object up to what we just sent in.
-                            $instance->set_address_elements($instance->tags(), TRUE);
-                            $ret = $instance;
-                        }
-                    } else {
-                        if ($instance->error) {
-                            $this->error = $instance->error;
-                        }
-                        
-                        $instance->delete_from_db();
-                        $instance = NULL;
                     }
+                } else {
+                    $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_location_failed_to_initialize,
+                                                    CO_ANDISOL_Lang::$andisol_error_name_location_failed_to_initialize,
+                                                    CO_ANDISOL_Lang::$andisol_error_desc_location_failed_to_initialize);
                 }
-            }
-            
             } else {
-                if (isset($instance) && ($instance instanceof A_CO_DB_Table_Base)) {
-                    if ($instance->error) {
-                        $this->error = $instance->error;
-                    }
-            
-                    $instance->delete_from_db();
-                }
+                $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_location_failed_to_initialize,
+                                                CO_ANDISOL_Lang::$andisol_error_name_location_failed_to_initialize,
+                                                CO_ANDISOL_Lang::$andisol_error_desc_location_failed_to_initialize);
             }
         } else {
             $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_insufficient_location_information,

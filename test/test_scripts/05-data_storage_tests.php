@@ -23,10 +23,11 @@ function data_storage_run_tests() {
 
 function data_storage_place_run_tests() {
     kvp_run_test(81, 'FAIL - Attempt Create Empty Place', 'In this test, we simply try creating a place, with no parameters, which should fail.', 'norm', '', 'CoreysGoryStory');
-    kvp_run_test(82, 'PASS - Create a Place From Only Long/Lat', 'In this test, we create a place object, giving it only the long/lat of the Empire State Building, in NY, then expect the object to geocode for the address.', 'norm', '', 'CoreysGoryStory');
-    kvp_run_test(83, 'PASS - Create a Place From Only Long/Lat', 'Same thing, but this time, we squash the geocode.', 'norm', '', 'CoreysGoryStory');
-    kvp_run_test(84, 'PASS - Create a Place From Only Address', 'In this test, we create a place object, giving it only the street address of the Empire State Building, in NY, then expect the object to lookup the long/lat.', 'norm', '', 'CoreysGoryStory');
+    kvp_run_test(82, 'PASS - Create a Place From Only Long/Lat (Auto-Geocode)', 'In this test, we create a place object, giving it only the long/lat of the Empire State Building, in NY, then expect the object to auto-geocode for the address.', 'norm', '', 'CoreysGoryStory');
+    kvp_run_test(83, 'PASS - Create a Place From Only Long/Lat', 'Same thing, but this time, we squash the auto-geocode.', 'norm', '', 'CoreysGoryStory');
+    kvp_run_test(84, 'PASS - Create a Place From Only Address (Auto-Lookup)', 'In this test, we create a place object, giving it only the street address of the Empire State Building, in NY, then expect the object to auto-lookup the long/lat.', 'norm', '', 'CoreysGoryStory');
     kvp_run_test(85, 'PASS - Create a Place From Only Address', 'Same thing, but this time, we squash the auto-lookup.', 'norm', '', 'CoreysGoryStory');
+    kvp_run_test(86, 'FAIL - Create a Place From Only Long/Lat (Auto-Geocode)', 'In this test, we create a place object, giving it only the long/lat of the middle of the Atlantic Ocean, then expect the object to auto-geocode for the address (which should fail).', 'norm', '', 'CoreysGoryStory');
 }
 
 // -------------------------------- TESTS ---------------------------------------------
@@ -154,9 +155,9 @@ function kvp_test_82($in_login = NULL, $in_hashed_password = NULL, $in_password 
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
-        $long_lat_dc_empire_state = Array('longitude' => -73.9857, 'latitude' => 40.7484);
+        $long_lat_ny_empire_state = Array('longitude' => -73.9854245, 'latitude' => 40.7484799);
     
-        $place = $andisol_instance->create_ll_place($long_lat_dc_empire_state['longitude'], $long_lat_dc_empire_state['latitude']);
+        $place = $andisol_instance->create_ll_place($long_lat_ny_empire_state['longitude'], $long_lat_ny_empire_state['latitude']);
         
         if (isset($place) && ($place instanceof CO_Place)) {
             echo('<h3 style="color:green">We successfully instantiated a place!</h3>');
@@ -174,9 +175,9 @@ function kvp_test_83($in_login = NULL, $in_hashed_password = NULL, $in_password 
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
-        $long_lat_dc_empire_state = Array('longitude' => -73.9857, 'latitude' => 40.7484);
+        $long_lat_ny_empire_state = Array('longitude' => -73.9854245, 'latitude' => 40.7484799);
     
-        $place = $andisol_instance->create_place(FALSE, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, $long_lat_dc_empire_state['longitude'], $long_lat_dc_empire_state['latitude']);
+        $place = $andisol_instance->create_place(FALSE, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, $long_lat_ny_empire_state['longitude'], $long_lat_ny_empire_state['latitude']);
         
         if (isset($place) && ($place instanceof CO_Place)) {
             echo('<h3 style="color:green">We successfully instantiated a place!</h3>');
@@ -194,8 +195,6 @@ function kvp_test_84($in_login = NULL, $in_hashed_password = NULL, $in_password 
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
-        $long_lat_dc_empire_state = Array('longitude' => -73.9857, 'latitude' => 40.7484);
-    
         $place = $andisol_instance->create_place(TRUE, 'Empire State Building', '350 5th Avenue', 'New York', NULL, 'NY', '10118', 'US');
         
         if (isset($place) && ($place instanceof CO_Place)) {
@@ -214,9 +213,27 @@ function kvp_test_85($in_login = NULL, $in_hashed_password = NULL, $in_password 
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
-        $long_lat_dc_empire_state = Array('longitude' => -73.9857, 'latitude' => 40.7484);
-    
         $place = $andisol_instance->create_place(FALSE, 'Empire State Building', '350 5th Avenue', 'New York', NULL, 'NY', '10118', 'US');
+        
+        if (isset($place) && ($place instanceof CO_Place)) {
+            echo('<h3 style="color:green">We successfully instantiated a place!</h3>');
+            display_record($place);
+        } else {
+            echo('<h3 style="color:red">We could not create a place!</h3>');
+            if (isset($andisol_instance->error)) {
+                echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance->error->error_code.') '.$andisol_instance->error->error_name.' ('.$andisol_instance->error->error_description.')</p>');
+            }
+        }
+    }
+}
+
+function kvp_test_86($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $long_lat_mid_atlantic = Array('longitude' => -39.014456, 'latitude' => 35.025099);
+    
+        $place = $andisol_instance->create_ll_place($long_lat_mid_atlantic['longitude'], $long_lat_mid_atlantic['latitude']);
         
         if (isset($place) && ($place instanceof CO_Place)) {
             echo('<h3 style="color:green">We successfully instantiated a place!</h3>');

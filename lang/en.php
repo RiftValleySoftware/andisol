@@ -30,5 +30,7 @@ class CO_ANDISOL_Lang {
     static  $andisol_error_desc_login_not_deleted = 'The login was not deleted by ANDISOL.';
     static  $andisol_error_name_insufficient_location_information = 'Insufficient Location Information';
     static  $andisol_error_desc_insufficient_location_information = 'The location creator needs more infomation to create the location.';
+    static  $andisol_error_name_location_failed_to_initialize = 'Location Object Failed to Initialize';
+    static  $andisol_error_desc_location_failed_to_initialize = 'The location object was not created.';
 }
 ?>
