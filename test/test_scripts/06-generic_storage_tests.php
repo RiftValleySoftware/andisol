@@ -16,12 +16,12 @@ require_once(dirname(dirname(__FILE__)).'/functions.php');
 // -------------------------------- TEST DISPATCHER ---------------------------------------------
 
 function generic_storage_run_tests() {
-    kvp_run_test(87, 'TEST', 'TEST', 'asp', '', 'CoreysGoryStory');
+    kvp_run_test(88, 'TEST', 'TEST', 'asp', '', 'CoreysGoryStory');
 }
 
 // -------------------------------- TESTS ---------------------------------------------
 
-function kvp_test_87($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function kvp_test_88($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $long_lat_dc_lincoln_memorial = Array('longitude' => -77.0502, 'latitude' => 38.8893);
     
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);

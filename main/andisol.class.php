@@ -223,13 +223,17 @@ class Andisol {
     
     The response is subject to standard security vetting, so there is a possibility that nothing will be returned, when there is an existing login at that ID.
     
-    \returns the instance for the requested user.
+    \returns the instance for the requested user. NULL, if not logged in.
      */
     public function get_login_item( $in_login_integer_id = NULL ///< OPTIONAL: The integer login ID to check (Default is NULL). If not-NULL, then the ID of a login instance. It must be one that the current user can see. If NULL, then the current user.
                                     ) {
-        $ret = $this->get_chameleon_instance()->get_login_item($in_login_integer_id);
+        $ret = NULL;
         
-        $this->error = $this->get_chameleon_instance()->error;
+        if ($this->logged_in()) {
+            $this->get_chameleon_instance()->get_login_item($in_login_integer_id);
+        
+            $this->error = $this->get_chameleon_instance()->error;
+        }
         
         return $ret;
     }
@@ -240,13 +244,17 @@ class Andisol {
     
     The response is subject to standard security vetting, so there is a possibility that nothing will be returned, when there is an existing login at that ID.
     
-    \returns the instance for the requested user.
+    \returns the instance for the requested user. NULL, if not logged in.
      */
     public function get_login_item_by_login_string( $in_login_string_id ///< REQUIRED: The string login ID to check. It must be one that the current user can see.
                                                     ) {
-        $ret = $this->get_chameleon_instance()->get_login_item_by_login_string($in_login_string_id);
+        $ret = NULL;
         
-        $this->error = $this->get_chameleon_instance()->error;
+        if ($this->logged_in()) {
+            $ret = $this->get_chameleon_instance()->get_login_item_by_login_string($in_login_string_id);
+        
+            $this->error = $this->get_chameleon_instance()->error;
+        }
         
         return $ret;
     }
@@ -260,7 +268,8 @@ class Andisol {
         $ret = NULL;
         
         $login_item = $this->get_login_item_by_login_string($in_login_string_id);
-        if ($login_item instanceof CO_Security_Login) {
+        
+        if (isset($login_item) && ($login_item instanceof CO_Security_Login)) {
             $ret = $this->get_user_from_login($login_item->id());
         }
         
@@ -976,12 +985,12 @@ class Andisol {
      */
     public function create_place(   $auto_resolve = TRUE,               ///< If FALSE (Default is TRUE), then we will not try to "fill in the blanks" with any missing information.
                                     $in_venue = NULL,                   ///< OPTIONAL: The venue (place/building/establishment name).
-                                    $in_street_address = NULL,          ///< OPTIONAL: The street address (including number).
-                                    $in_municipality = NULL,            ///< OPTIONAL: The town/city.
-                                    $in_county = NULL,                  ///< OPTIONAL: The county/sub-province.
-                                    $in_province = NULL,                ///< OPTIONAL: The state/province/prefecture.
-                                    $in_postal_code = NULL,             ///< OPTIONAL: The ZIP/postal code.
-                                    $in_nation = NULL,                  ///< OPTIONAL: The nation.
+                                    $in_street_address = NULL,          ///< OPTIONAL: Ignored if $in_fuzz_factor is nonzero. The street address (including number).
+                                    $in_municipality = NULL,            ///< OPTIONAL: Ignored if $in_fuzz_factor is nonzero. The town/city.
+                                    $in_county = NULL,                  ///< OPTIONAL: Ignored if $in_fuzz_factor is nonzero. The county/sub-province.
+                                    $in_province = NULL,                ///< OPTIONAL: Ignored if $in_fuzz_factor is nonzero. The state/province/prefecture.
+                                    $in_postal_code = NULL,             ///< OPTIONAL: Ignored if $in_fuzz_factor is nonzero. The ZIP/postal code.
+                                    $in_nation = NULL,                  ///< OPTIONAL: Ignored if $in_fuzz_factor is nonzero. The nation.
                                     $in_extra_info = NULL,              ///< OPTIONAL: Additional (casual text) address/location/venue information.
                                     $in_longitude_degrees = NULL,       ///< OPTIONAL: The longitude, in degrees.
                                     $in_latitude_degrees = NULL,        ///< OPTIONAL: The latitude, in degrees.
@@ -1049,94 +1058,10 @@ class Andisol {
                         $instance = NULL;
                     }
                 }
-            
+                
                 // Next, see if a venue name was provided.
                 if(isset($instance) && isset($in_venue)) {
                     if ($instance->set_tag(0, $in_venue)) {
-                        $address_explicitly_set = TRUE;
-                    } else {
-                        if ($instance->error) {
-                            $this->error = $instance->error;
-                        }
-
-                        $instance->delete_from_db();
-                        $instance = NULL;
-                    }
-                }
-            
-                // Next, see if a street address was provided.
-                if(isset($instance) && isset($in_street_address)) {
-                    if ($instance->set_tag(1, $in_street_address)) {
-                        $address_explicitly_set = TRUE;
-                    } else {
-                        if ($instance->error) {
-                            $this->error = $instance->error;
-                        }
-
-                        $instance->delete_from_db();
-                        $instance = NULL;
-                    }
-                }
-            
-                // Next, see if a town was provided.
-                if(isset($instance) && isset($in_municipality)) {
-                    if ($instance->set_tag(3, $in_municipality)) {
-                        $address_explicitly_set = TRUE;
-                    } else {
-                        if ($instance->error) {
-                            $this->error = $instance->error;
-                        }
-
-                        $instance->delete_from_db();
-                        $instance = NULL;
-                    }
-                }
-            
-                // Next, see if a county was provided.
-                if(isset($instance) && isset($in_county)) {
-                    if ($instance->set_tag(4, $in_county)) {
-                        $address_explicitly_set = TRUE;
-                    } else {
-                        if ($instance->error) {
-                            $this->error = $instance->error;
-                        }
-
-                        $instance->delete_from_db();
-                        $instance = NULL;
-                    }
-                }
-            
-                // Next, see if a state was provided.
-                if(isset($instance) && isset($in_province)) {
-                    if ($instance->set_tag(5, $in_province)) {
-                        $address_explicitly_set = TRUE;
-                    } else {
-                        if ($instance->error) {
-                            $this->error = $instance->error;
-                        }
-
-                        $instance->delete_from_db();
-                        $instance = NULL;
-                    }
-                }
-            
-                // Next, see if a ZIP code was provided.
-                if(isset($instance) && isset($in_postal_code)) {
-                    if ($instance->set_tag(6, $in_postal_code)) {
-                        $address_explicitly_set = TRUE;
-                    } else {
-                        if ($instance->error) {
-                            $this->error = $instance->error;
-                        }
-
-                        $instance->delete_from_db();
-                        $instance = NULL;
-                    }
-                }
-            
-                // Next, see if a nation was provided.
-                if(isset($instance) && isset($in_nation)) {
-                    if ($instance->set_tag(7, $in_nation)) {
                         $address_explicitly_set = TRUE;
                     } else {
                         if ($instance->error) {
@@ -1159,16 +1084,102 @@ class Andisol {
                         $instance = NULL;
                     }
                 }
+
+                // We only allow a specific address to be entered if this is a "non-fuzzed" location. This is a security measure.
+                if (isset($instance) && (!isset($in_fuzz_factor) || (0.0 == floatval($in_fuzz_factor)))) {
+                    // Next, see if a street address was provided.
+                    if(isset($instance) && isset($in_street_address)) {
+                        if ($instance->set_tag(1, $in_street_address)) {
+                            $address_explicitly_set = TRUE;
+                        } else {
+                            if ($instance->error) {
+                                $this->error = $instance->error;
+                            }
+
+                            $instance->delete_from_db();
+                            $instance = NULL;
+                        }
+                    }
             
-                // Assuming all went well until now, let's work on the "fuzz factor."
-                if (isset($instance) && isset($in_fuzz_factor) && (0.0 < floatval($in_fuzz_factor))) {
+                    // Next, see if a town was provided.
+                    if(isset($instance) && isset($in_municipality)) {
+                        if ($instance->set_tag(3, $in_municipality)) {
+                            $address_explicitly_set = TRUE;
+                        } else {
+                            if ($instance->error) {
+                                $this->error = $instance->error;
+                            }
+
+                            $instance->delete_from_db();
+                            $instance = NULL;
+                        }
+                    }
+            
+                    // Next, see if a county was provided.
+                    if(isset($instance) && isset($in_county)) {
+                        if ($instance->set_tag(4, $in_county)) {
+                            $address_explicitly_set = TRUE;
+                        } else {
+                            if ($instance->error) {
+                                $this->error = $instance->error;
+                            }
+
+                            $instance->delete_from_db();
+                            $instance = NULL;
+                        }
+                    }
+            
+                    // Next, see if a state was provided.
+                    if(isset($instance) && isset($in_province)) {
+                        if ($instance->set_tag(5, $in_province)) {
+                            $address_explicitly_set = TRUE;
+                        } else {
+                            if ($instance->error) {
+                                $this->error = $instance->error;
+                            }
+
+                            $instance->delete_from_db();
+                            $instance = NULL;
+                        }
+                    }
+            
+                    // Next, see if a ZIP code was provided.
+                    if(isset($instance) && isset($in_postal_code)) {
+                        if ($instance->set_tag(6, $in_postal_code)) {
+                            $address_explicitly_set = TRUE;
+                        } else {
+                            if ($instance->error) {
+                                $this->error = $instance->error;
+                            }
+
+                            $instance->delete_from_db();
+                            $instance = NULL;
+                        }
+                    }
+            
+                    // Next, see if a nation was provided.
+                    if(isset($instance) && isset($in_nation)) {
+                        if ($instance->set_tag(7, $in_nation)) {
+                            $address_explicitly_set = TRUE;
+                        } else {
+                            if ($instance->error) {
+                                $this->error = $instance->error;
+                            }
+
+                            $instance->delete_from_db();
+                            $instance = NULL;
+                        }
+                    }
+                } elseif (isset($instance)) {
+                    $auto_resolve = FALSE;  // We do not do an auto-lookup if we are "fuzzy."
+        
                     if ($instance->set_fuzz_factor($in_fuzz_factor)) {
                         if (isset($in_see_clearly_id) && (0 < intval($in_see_clearly_id))) {
                             if (!$instance->set_can_see_through_the_fuzz($in_see_clearly_id)) {
                                 if ($instance->error) {
                                     $this->error = $instance->error;
                                 }
-    
+
                                 $instance->delete_from_db();
                                 $instance = NULL;
                             }
@@ -1177,7 +1188,7 @@ class Andisol {
                         if ($instance->error) {
                             $this->error = $instance->error;
                         }
-                    
+                
                         $instance->delete_from_db();
                         $instance = NULL;
                     }
