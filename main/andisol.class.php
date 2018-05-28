@@ -43,7 +43,7 @@ class Andisol {
     var $error;                             ///< Any errors that occured are kept here.
     
     /************************************************************************************************************************/    
-    /*                                                     INTERNAL METHODS                                                 */
+    /*#################################################### INTERNAL METHODS ################################################*/
     /************************************************************************************************************************/    
     
     /***********************/
@@ -58,9 +58,9 @@ class Andisol {
                                         ) {
         $ret = NULL;
         
-        if ($this->logged_in()) {
+        if ($this->manager()) {
             $instance = $this->get_chameleon_instance()->make_new_blank_record($in_classname);
-        
+            
             if (isset($instance) && ($instance instanceof $in_classname)) {
                 // If we did not get a specific write security ID, then we assume the logged-in user ID.
                 if (!isset($in_write_security_id) || !intval($in_write_security_id)) {
@@ -90,6 +90,30 @@ class Andisol {
                 }
                 
                 $instance->delete_from_db();
+            }
+        } else {
+            $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_user_not_authorized,
+                                            CO_ANDISOL_Lang::$andisol_error_name_user_not_authorized,
+                                            CO_ANDISOL_Lang::$andisol_error_desc_user_not_authorized);
+        }
+        
+        return $ret;
+    }
+    
+    /***********************/
+    /**
+    This creates a new security token.
+    Only managers or God can do this.
+    
+    \returns an integer, with the new token. NULL, if this did not work.
+     */
+    protected function _make_security_token() {
+        $ret = NULL;
+        
+        if ($this->logged_in()) {
+            $ret = $this->get_cobra_instance()->make_security_token();
+            if (0 == $ret) {
+                $ret = NULL;
             }
         } else {
             $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_user_not_authorized,
@@ -142,7 +166,7 @@ class Andisol {
     }
     
     /************************************************************************************************************************/    
-    /*                                                COMPONENT ACCESS METHODS                                              */
+    /*############################################### COMPONENT ACCESS METHODS #############################################*/
     /************************************************************************************************************************/    
 
     /***********************/
@@ -162,7 +186,7 @@ class Andisol {
     }
     
     /************************************************************************************************************************/    
-    /*                                              BASIC LOGIN STATUS QUERIES                                              */
+    /*############################################# BASIC LOGIN STATUS QUERIES #############################################*/
     /************************************************************************************************************************/    
 
     /***********************/
@@ -214,7 +238,7 @@ class Andisol {
     }
     
     /************************************************************************************************************************/    
-    /*                                                  USER ACCESS METHODS                                                 */
+    /*################################################# USER ACCESS METHODS ################################################*/
     /************************************************************************************************************************/    
 
     /***********************/
@@ -302,7 +326,7 @@ class Andisol {
     }
     
     /************************************************************************************************************************/    
-    /*                                                   DATA SEARCH METHODS                                                */
+    /*################################################## DATA SEARCH METHODS ###############################################*/
     /************************************************************************************************************************/    
 
     /***********************/
@@ -539,43 +563,7 @@ class Andisol {
     }
         
     /************************************************************************************************************************/    
-    /*                                                   DATA ACCESS METHODS                                                */
-    /************************************************************************************************************************/
-        
-    /***********************/
-    /**
-    This method queries the "data" databse for multiple records, given a list of IDs.
-    
-    The records will not be returned if the user does not have read permission for them.
-    
-    \returns an array of instances, fetched an initialized from the database.
-     */
-    public function get_multiple_data_records_by_id(    $in_id_array    ///< An array of integers, with the item IDs.
-                                                    ) {
-        $ret = $this->get_chameleon_instance()->get_multiple_data_records_by_id($in_id_array);
-        
-        $this->error = $this->get_chameleon_instance()->error;
-
-        return $ret;
-    }
-
-    /***********************/
-    /**
-    This is a "security-safe" method for fetching a single record from the "data" database, by its ID.
-    
-    \returns a single new instance, initialized from the database.
-     */
-    public function get_single_data_record_by_id(   $in_id  ///< The ID of the record to fetch.
-                                                ) {
-        $ret = $this->get_chameleon_instance()->get_single_data_record_by_id($in_id);
-        
-        $this->error = $this->get_chameleon_instance()->error;
-    
-        return $ret;
-    }
-        
-    /************************************************************************************************************************/    
-    /*                                                 USER MANAGEMENT METHODS                                              */
+    /*################################################ USER MANAGEMENT METHODS #############################################*/
     /************************************************************************************************************************/
         
     /***********************/
@@ -812,9 +800,73 @@ class Andisol {
         return $ret;
     }
     
+    /***********************/
+    /**
+    This creates a new security token.
+    Only managers or God can do this.
+    
+    \returns an integer, with the new token. NULL, if this did not work.
+     */
+    public function make_security_token() {
+        return $this->_make_security_token();
+    }
+        
     /************************************************************************************************************************/    
-    /*                                                DATA MODIFICATION METHODS                                             */
+    /*################################################## DATA ACCESS METHODS ###############################################*/
+    /************************************************************************************************************************/
+        
+    /***********************/
+    /**
+    This method queries the "data" databse for multiple records, given a list of IDs.
+    
+    The records will not be returned if the user does not have read permission for them.
+    
+    \returns an array of instances, fetched an initialized from the database.
+     */
+    public function get_multiple_data_records_by_id(    $in_id_array    ///< An array of integers, with the item IDs.
+                                                    ) {
+        $ret = $this->get_chameleon_instance()->get_multiple_data_records_by_id($in_id_array);
+        
+        $this->error = $this->get_chameleon_instance()->error;
+
+        return $ret;
+    }
+
+    /***********************/
+    /**
+    This is a "security-safe" method for fetching a single record from the "data" database, by its ID.
+    
+    \returns a single new instance, initialized from the database.
+     */
+    public function get_single_data_record_by_id(   $in_id  ///< The ID of the record to fetch.
+                                                ) {
+        $ret = $this->get_chameleon_instance()->get_single_data_record_by_id($in_id);
+        
+        $this->error = $this->get_chameleon_instance()->error;
+    
+        return $ret;
+    }
+    
     /************************************************************************************************************************/    
+    /*############################################### DATA MODIFICATION METHODS ############################################*/
+    /************************************************************************************************************************/    
+    
+    /************************************************************************************************************************/    
+    /*                                                     GENERIC METHODS                                                  */
+    /************************************************************************************************************************/    
+    
+    /***********************/
+    /**
+    This creates an uninitialized object, based upon the passed-in class.
+    
+    \returns a new instance of the class.
+     */
+    public function create_general_data_item(   $in_classname = 'CO_Main_DB_Record',    ///< OPTIONAL: This is the name of the class we want to create. It's optional, but leaving it out will give only the most basic data record.
+                                                $in_read_security_id = 1,               ///< OPTIONAL: An initial read security ID. If not specified, 1 (open to all logged-in users) will be specified.
+                                                $in_write_security_id = NULL            ///< OPTIONAL: An initial write security ID. If not specified, the current user's integer login ID will be used as the write security token.
+                                            ) {
+        return $this->_create_db_object($in_classname, $in_read_security_id, $in_write_security_id);
+    }
     
     /************************************************************************************************************************/    
     /*                                                    KEY/VALUE METHODS                                                 */
@@ -918,7 +970,7 @@ class Andisol {
                                         ) {
         $ret = NULL;
         
-        $instance = $this->_create_db_object($in_classname, $in_read_security_id, $in_write_security_id);
+        $instance = $this->create_general_data_item($in_classname, $in_read_security_id, $in_write_security_id);
         
         // First, make sure we're in the right ballpark.
         if (isset($instance) && ($instance instanceof CO_LL_Location)) {
@@ -1029,7 +1081,7 @@ class Andisol {
             isset($in_province) ||
             isset($in_postal_code) ||
             isset($in_nation)) {
-            $instance = $this->_create_db_object($in_classname, $in_read_security_id, $in_write_security_id);
+            $instance = $this->create_general_data_item($in_classname, $in_read_security_id, $in_write_security_id);
     
             // First, make sure we're in the right ballpark.
             if (isset($instance) && ($instance instanceof CO_Place)) {
@@ -1347,29 +1399,29 @@ class Andisol {
     
     \returns a new instance of the class.
      */
-    public function create_place_collection($auto_resolve = true,                   ///< If false (Default is true), then we will not try to "fill in the blanks" with any missing information.
-                                            $in_venue = NULL,                       ///< OPTIONAL: The venue (place/building/establishment name).
-                                            $in_street_address = NULL,              ///< OPTIONAL: The street address (including number).
-                                            $in_municipality = NULL,                ///< OPTIONAL: The town/city.
-                                            $in_county = NULL,                      ///< OPTIONAL: The county/sub-province.
-                                            $in_province = NULL,                    ///< OPTIONAL: The state/province/prefecture.
-                                            $in_postal_code = NULL,                 ///< OPTIONAL: The ZIP/postal code.
-                                            $in_nation = NULL,                      ///< OPTIONAL: The nation.
-                                            $in_extra_info = NULL,                  ///< OPTIONAL: Additional (casual text) address/location/venue information.
-                                            $in_longitude_degrees = NULL,           ///< OPTIONAL: The longitude, in degrees.
-                                            $in_latitude_degrees = NULL,            ///< OPTIONAL: The latitude, in degrees.
-                                            $in_fuzz_factor = NULL,                 /**< OPTIONAL: If there is a "fuzz factor" to be applied, it should be sent in as a distance in Kilometers.
-                                                                                                   This creates a square, double the fuzz factor to a side, which is filled with a random value whenever the long/lat is queried.
-                                                                                                   This is used when we don't want an exact location being returned. It is used to do things like preserve privacy.
-                                                                                                   The "fuzzing" is done at an extremely low level, and only God, or IDs with write permission, can "see clearly."
-                                                                                                   If you have the ability to "see" the exact location, then you can call special functions.
-                                                                                                   Read permissions are not sufficient to "see clearly." You need to have write permissions on the object.
-                                                                                                   You can also set a single security token that is allowed to see 
-                                                                                                   If NULL (default), or 0.0, no "fuzz factor" is applied, so the location is exact.
-                                                                                    */
-                                            $in_see_clearly_id = NULL,              ///< OPTIONAL: Ignored, if $in_fuzz_factor is not supplied. If $in_fuzz_factor is supplied, then this can be an ID, in addition to the write ID, that has permission to see the exact location. Default is NULL.
-                                            $in_read_security_id = 1,               ///< OPTIONAL: An initial read security ID. If not specified, 1 (open to all logged-in users) will be specified.
-                                            $in_write_security_id = NULL            ///< OPTIONAL: An initial write security ID. If not specified, the current user's integer login ID will be used as the write security token.
+    public function create_place_collection($auto_resolve = true,           ///< If false (Default is true), then we will not try to "fill in the blanks" with any missing information.
+                                            $in_venue = NULL,               ///< OPTIONAL: The venue (place/building/establishment name).
+                                            $in_street_address = NULL,      ///< OPTIONAL: The street address (including number).
+                                            $in_municipality = NULL,        ///< OPTIONAL: The town/city.
+                                            $in_county = NULL,              ///< OPTIONAL: The county/sub-province.
+                                            $in_province = NULL,            ///< OPTIONAL: The state/province/prefecture.
+                                            $in_postal_code = NULL,         ///< OPTIONAL: The ZIP/postal code.
+                                            $in_nation = NULL,              ///< OPTIONAL: The nation.
+                                            $in_extra_info = NULL,          ///< OPTIONAL: Additional (casual text) address/location/venue information.
+                                            $in_longitude_degrees = NULL,   ///< OPTIONAL: The longitude, in degrees.
+                                            $in_latitude_degrees = NULL,    ///< OPTIONAL: The latitude, in degrees.
+                                            $in_fuzz_factor = NULL,         /**< OPTIONAL: If there is a "fuzz factor" to be applied, it should be sent in as a distance in Kilometers.
+                                                                                           This creates a square, double the fuzz factor to a side, which is filled with a random value whenever the long/lat is queried.
+                                                                                           This is used when we don't want an exact location being returned. It is used to do things like preserve privacy.
+                                                                                           The "fuzzing" is done at an extremely low level, and only God, or IDs with write permission, can "see clearly."
+                                                                                           If you have the ability to "see" the exact location, then you can call special functions.
+                                                                                           Read permissions are not sufficient to "see clearly." You need to have write permissions on the object.
+                                                                                           You can also set a single security token that is allowed to see 
+                                                                                           If NULL (default), or 0.0, no "fuzz factor" is applied, so the location is exact.
+                                                                            */
+                                            $in_see_clearly_id = NULL,      ///< OPTIONAL: Ignored, if $in_fuzz_factor is not supplied. If $in_fuzz_factor is supplied, then this can be an ID, in addition to the write ID, that has permission to see the exact location. Default is NULL.
+                                            $in_read_security_id = 1,       ///< OPTIONAL: An initial read security ID. If not specified, 1 (open to all logged-in users) will be specified.
+                                            $in_write_security_id = NULL    ///< OPTIONAL: An initial write security ID. If not specified, the current user's integer login ID will be used as the write security token.
                                             ) {
         $class = 'CO_Place_Collection';
         
