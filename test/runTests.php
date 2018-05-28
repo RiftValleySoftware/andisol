@@ -169,7 +169,7 @@ if (isset($test_name_array) && is_array($test_name_array) && count($test_name_ar
                 <img src="../icon.png" alt="icon" style="position:absolute;width:128px;top:50%;left:50%;margin-top:-64px;margin-left:-64px" />
             </div>
             <?php
-            $start_time = microtime(TRUE);
+            $start_time = microtime(true);
             ?>
             <div id="tests-wrapped-up" style="display:none">
                 <img src="../icon.png" style="display:block;margin:auto;width:80px" alt="" />

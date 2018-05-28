@@ -141,7 +141,7 @@ function kvp_test_81($in_login = NULL, $in_hashed_password = NULL, $in_password 
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
         $long_lat_ny_empire_state = Array('longitude' => -73.9854245, 'latitude' => 40.7484799);
     
-        $place = $andisol_instance->create_place(TRUE, 'Empire State Building', '350 5th Avenue', 'New York', NULL, 'NY', '10118', 'US', 'This here\'s a big building. Can\'t miss it.', $long_lat_ny_empire_state['longitude'], $long_lat_ny_empire_state['latitude'], 10);
+        $place = $andisol_instance->create_place(true, 'Empire State Building', '350 5th Avenue', 'New York', NULL, 'NY', '10118', 'US', 'This here\'s a big building. Can\'t miss it.', $long_lat_ny_empire_state['longitude'], $long_lat_ny_empire_state['latitude'], 10);
 
         if (isset($place) && ($place instanceof CO_Place)) {
             echo('<h3 style="color:green">We successfully instantiated a place!</h3>');
@@ -198,7 +198,7 @@ function kvp_test_84($in_login = NULL, $in_hashed_password = NULL, $in_password 
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
         $long_lat_ny_empire_state = Array('longitude' => -73.9854245, 'latitude' => 40.7484799);
     
-        $place = $andisol_instance->create_place(FALSE, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, $long_lat_ny_empire_state['longitude'], $long_lat_ny_empire_state['latitude']);
+        $place = $andisol_instance->create_place(false, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, $long_lat_ny_empire_state['longitude'], $long_lat_ny_empire_state['latitude']);
         
         if (isset($place) && ($place instanceof CO_Place)) {
             echo('<h3 style="color:green">We successfully instantiated a place!</h3>');
@@ -216,7 +216,7 @@ function kvp_test_85($in_login = NULL, $in_hashed_password = NULL, $in_password 
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
-        $place = $andisol_instance->create_place(TRUE, 'Empire State Building', '350 5th Avenue', 'New York', NULL, 'NY', '10118', 'US');
+        $place = $andisol_instance->create_place(true, 'Empire State Building', '350 5th Avenue', 'New York', NULL, 'NY', '10118', 'US');
         
         if (isset($place) && ($place instanceof CO_Place)) {
             echo('<h3 style="color:green">We successfully instantiated a place!</h3>');
@@ -234,7 +234,7 @@ function kvp_test_86($in_login = NULL, $in_hashed_password = NULL, $in_password 
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
-        $place = $andisol_instance->create_place(FALSE, 'Empire State Building', '350 5th Avenue', 'New York', NULL, 'NY', '10118', 'US');
+        $place = $andisol_instance->create_place(false, 'Empire State Building', '350 5th Avenue', 'New York', NULL, 'NY', '10118', 'US');
         
         if (isset($place) && ($place instanceof CO_Place)) {
             echo('<h3 style="color:green">We successfully instantiated a place!</h3>');
@@ -278,10 +278,10 @@ function kvp_run_test($in_num, $in_title, $in_explain, $in_login = NULL, $in_has
             echo('<div class="main_div" style="margin-right:2em">');
                 echo('<p class="explain">'.$in_explain.'</p>');
             echo('</div>');
-            $st1 = microtime(TRUE);
+            $st1 = microtime(true);
             $function_name = sprintf('kvp_test_%02d', $in_num);
             $function_name($in_login, $in_hashed_password, $in_password);
-            $fetchTime = sprintf('%01.3f', microtime(TRUE) - $st1);
+            $fetchTime = sprintf('%01.3f', microtime(true) - $st1);
             echo("<h4>The test took $fetchTime seconds to complete.</h4>");
         echo('</div>');
     echo('</div>');
@@ -297,11 +297,11 @@ ob_start();
             echo('<div class="container">');
                 echo('<p class="explain"></p>');
             
-                $start = microtime(TRUE);
+                $start = microtime(true);
                 
                 data_storage_run_tests();
                 
-                echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(TRUE) - $start) . ' seconds to complete.</h5>');
+                echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(true) - $start) . ' seconds to complete.</h5>');
                 
             echo('</div>');
         echo('</div>');
@@ -311,11 +311,11 @@ ob_start();
             echo('<div class="container">');
                 echo('<p class="explain"></p>');
             
-                $start = microtime(TRUE);
+                $start = microtime(true);
                 
                 data_storage_place_run_tests();
                 
-                echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(TRUE) - $start) . ' seconds to complete.</h5>');
+                echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(true) - $start) . ' seconds to complete.</h5>');
                 
             echo('</div>');
         echo('</div>');

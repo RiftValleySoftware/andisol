@@ -131,7 +131,7 @@
         }
     }
             
-    function hierarchicalDisplayRecord($in_record, $in_hierarchy_level = 0, $in_parent_object = NULL, $shorty = FALSE) {
+    function hierarchicalDisplayRecord($in_record, $in_hierarchy_level = 0, $in_parent_object = NULL, $shorty = false) {
         $daddy = isset($in_parent_object) && $in_parent_object ? $in_parent_object->whosYourDaddy($in_record) : NULL;
     
         if ($in_hierarchy_level) {
@@ -156,7 +156,7 @@
         echo('</div>');
     }
     
-    function display_record($in_record_object, $in_hierarchy_level = 0, $shorty = FALSE) {
+    function display_record($in_record_object, $in_hierarchy_level = 0, $shorty = false) {
         echo("<h5 style=\"margin-top:0.5em\">ITEM ".$in_record_object->id().":</h5>");
         if (isset($in_record_object) && $in_record_object) {
             echo('<div class="inner_div">');

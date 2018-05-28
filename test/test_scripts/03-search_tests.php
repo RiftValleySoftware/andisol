@@ -141,7 +141,7 @@ function search_test_49($in_login = NULL, $in_hashed_password = NULL, $in_passwo
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
-        $returned_integer = $andisol_instance->location_search(-77.0502, 38.8893, 5.0, 0, 0, FALSE, TRUE);
+        $returned_integer = $andisol_instance->location_search(-77.0502, 38.8893, 5.0, 0, 0, false, true);
         
         if (isset($returned_integer) && $returned_integer) {
             echo('<h3 style="color:green">We got '.$returned_integer.' responses to the location search.</h3>');
@@ -155,7 +155,7 @@ function search_test_50($in_login = NULL, $in_hashed_password = NULL, $in_passwo
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
-        $returned_array = $andisol_instance->location_search(-77.0502, 38.8893, 5.0, 0, 0, FALSE, FALSE, TRUE);
+        $returned_array = $andisol_instance->location_search(-77.0502, 38.8893, 5.0, 0, 0, false, false, true);
         
         if (isset($returned_array) && is_array($returned_array) && count($returned_array)) {
             echo('<h3 style="color:green">We got '.count($returned_array).' responses to the location search:</h3>');
@@ -172,7 +172,7 @@ function search_test_51($in_login = NULL, $in_hashed_password = NULL, $in_passwo
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
-        $returned_integer = $andisol_instance->location_search(-77.0502, 38.8893, 5.0, 10, 6, FALSE, TRUE);
+        $returned_integer = $andisol_instance->location_search(-77.0502, 38.8893, 5.0, 10, 6, false, true);
         
         if (isset($returned_integer) && $returned_integer) {
             echo('<h3 style="color:green">We got '.$returned_integer.' responses to the location search.</h3>');
@@ -186,7 +186,7 @@ function search_test_52($in_login = NULL, $in_hashed_password = NULL, $in_passwo
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
-        $returned_array = $andisol_instance->location_search(-77.0502, 38.8893, 5.0, 10, 6, FALSE, FALSE, TRUE);
+        $returned_array = $andisol_instance->location_search(-77.0502, 38.8893, 5.0, 10, 6, false, false, true);
         
         if (isset($returned_array) && is_array($returned_array) && count($returned_array)) {
             echo('<h3 style="color:green">We got '.count($returned_array).' responses to the location search:</h3>');
@@ -262,7 +262,7 @@ function search_test_58($in_login = NULL, $in_hashed_password = NULL, $in_passwo
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
-        $all_users = $andisol_instance->get_all_users(TRUE);
+        $all_users = $andisol_instance->get_all_users(true);
         
         if (isset($all_users) && is_array($all_users) && count($all_users)) {
             echo('<h3 style="color:green">We got '.count($all_users).' responses to the user search:</h3>');
@@ -283,7 +283,7 @@ function search_test_60($in_login = NULL, $in_hashed_password = NULL, $in_passwo
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
-        $all_users = $andisol_instance->get_all_login_users(TRUE);
+        $all_users = $andisol_instance->get_all_login_users(true);
         
         if (isset($all_users) && is_array($all_users) && count($all_users)) {
             echo('<h3 style="color:green">We got '.count($all_users).' responses to the user search:</h3>');
@@ -304,7 +304,7 @@ function search_test_62($in_login = NULL, $in_hashed_password = NULL, $in_passwo
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
-        $all_users = $andisol_instance->get_all_standalone_users(TRUE);
+        $all_users = $andisol_instance->get_all_standalone_users(true);
         
         if (isset($all_users) && is_array($all_users) && count($all_users)) {
             echo('<h3 style="color:green">We got '.count($all_users).' responses to the user search:</h3>');
@@ -327,10 +327,10 @@ function search_run_test($in_num, $in_title, $in_explain, $in_login = NULL, $in_
             echo('<div class="main_div" style="margin-right:2em">');
                 echo('<p class="explain">'.$in_explain.'</p>');
             echo('</div>');
-            $st1 = microtime(TRUE);
+            $st1 = microtime(true);
             $function_name = sprintf('search_test_%02d', $in_num);
             $function_name($in_login, $in_hashed_password, $in_password);
-            $fetchTime = sprintf('%01.3f', microtime(TRUE) - $st1);
+            $fetchTime = sprintf('%01.3f', microtime(true) - $st1);
             echo("<h4>The test took $fetchTime seconds to complete.</h4>");
         echo('</div>');
     echo('</div>');
@@ -346,11 +346,11 @@ ob_start();
             echo('<div class="container">');
                 echo('<p class="explain"></p>');
             
-                $start = microtime(TRUE);
+                $start = microtime(true);
                 
                 search_run_tests();
                 
-                echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(TRUE) - $start) . ' seconds to complete.</h5>');
+                echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(true) - $start) . ' seconds to complete.</h5>');
                 
             echo('</div>');
         echo('</div>');
@@ -360,11 +360,11 @@ ob_start();
             echo('<div class="container">');
                 echo('<p class="explain"></p>');
             
-                $start = microtime(TRUE);
+                $start = microtime(true);
                 
                 user_search_run_tests();
                 
-                echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(TRUE) - $start) . ' seconds to complete.</h5>');
+                echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(true) - $start) . ' seconds to complete.</h5>');
                 
             echo('</div>');
         echo('</div>');

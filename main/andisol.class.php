@@ -167,7 +167,7 @@ class Andisol {
 
     /***********************/
     /**
-    \returns TRUE, if we have an active database connection (as represented by an active CHAMELEON instance).
+    \returns true, if we have an active database connection (as represented by an active CHAMELEON instance).
      */
     public function valid() {
         return (NULL != $this->get_chameleon_instance()) && ($this->get_chameleon_instance() instanceof CO_Chameleon);
@@ -175,7 +175,7 @@ class Andisol {
     
     /***********************/
     /**
-    \returns TRUE, if we have actually logged into the CHAMELEON instance.
+    \returns true, if we have actually logged into the CHAMELEON instance.
      */
     public function logged_in() {
         return $this->valid() && ($this->get_chameleon_instance()->get_login_item() instanceof CO_Security_Login);
@@ -183,7 +183,7 @@ class Andisol {
     
     /***********************/
     /**
-    \returns TRUE, if we are logged in as a COBRA Login Manager or as God.
+    \returns true, if we are logged in as a COBRA Login Manager or as God.
      */
     public function manager() {
         return (NULL != $this->get_cobra_instance()) && ($this->get_cobra_instance() instanceof CO_Cobra);
@@ -191,7 +191,7 @@ class Andisol {
     
     /***********************/
     /**
-    \returns TRUE, if we are logged in as the "God" admin ID.
+    \returns true, if we are logged in as the "God" admin ID.
      */
     public function god() {
         return $this->valid() && $this->get_chameleon_instance()->god_mode();
@@ -282,7 +282,7 @@ class Andisol {
     
     This is security-limited.
     
-    \returns an array of instances of CO_Security_Login (Security Database login) items that can read/see the given item. If the read ID is 0 (open), then the function simply returns TRUE. If nothing can see the item, then FALSE is returned.
+    \returns an array of instances of CO_Security_Login (Security Database login) items that can read/see the given item. If the read ID is 0 (open), then the function simply returns true. If nothing can see the item, then false is returned.
      */
     public function who_can_see(    $in_test_target ///< REQUIRED: This is an instance of a subclass of A_CO_DB_Table_Base (General Database Record).
                                 ) {
@@ -364,7 +364,7 @@ class Andisol {
                                                                             'access_class' => 'CO_US_Place_Collection',
                                                                             'Back to Basics'
                                                                         ),
-                                                                    TRUE
+                                                                    true
                                                                 );
     \endcode
     
@@ -375,13 +375,13 @@ class Andisol {
                                                                             'access_class' => 'CO_US_Place_Collection',
                                                                             'Back to Basics'
                                                                         ),
-                                                                    TRUE,
+                                                                    true,
                                                                     10,
                                                                     1
                                                                 );
     \endcode
     
-    \returns an array of instances (or integers, if $ids_only is TRUE) that match the search parameters. If $count_only is TRUE, then it will be a single integer, with the count of responses to the search (if a page, then this count will only be the number of items on that page).
+    \returns an array of instances (or integers, if $ids_only is true) that match the search parameters. If $count_only is true, then it will be a single integer, with the count of responses to the search (if a page, then this count will only be the number of items on that page).
      */
     public function generic_search( $in_search_parameters = NULL,   /**<    OPTIONAL: This is an associative array of terms to define the search. The keys should be:
                                                                                 - 'id'
@@ -411,12 +411,12 @@ class Andisol {
                                                                             If you have 'use_like', and put just a single wildcard in quotes ('%'), then you are saying "not-empty."
                                                                             NOTE: Although this is an optional parameter, failing to provide anything could return the entire readable database.
                                                                     */
-                                    $or_search = FALSE,             ///< OPTIONAL: If TRUE, then the search is very wide (OR), as opposed to narrow (AND), by default. If you specify a location, then that will always be AND, but the other fields can be OR. Tags will always be searched as OR.
+                                    $or_search = false,             ///< OPTIONAL: If true, then the search is very wide (OR), as opposed to narrow (AND), by default. If you specify a location, then that will always be AND, but the other fields can be OR. Tags will always be searched as OR.
                                     $page_size = 0,                 ///< OPTIONAL: If specified with a 1-based integer, this denotes the size of a "page" of results. NOTE: This is only applicable to MySQL or Postgres, and will be ignored if the DB is not MySQL or Postgres. Default is 0.
                                     $initial_page = 0,              ///< OPTIONAL: This is ignored unless $page_size is greater than 0. In that case, this 0-based index will specify which page of results to return. Values beyond the maximum number of pages will result in no returned values.
-                                    $and_writeable = FALSE,         ///< OPTIONAL: If TRUE, then we only want records we can modify.
-                                    $count_only = FALSE,            ///< OPTIONAL: If TRUE (default is FALSE), then only a single integer will be returned, with the count of items that fit the search.
-                                    $ids_only = FALSE               ///< OPTIONAL: If TRUE (default is FALSE), then the return array will consist only of integers (the object IDs). If $count_only is TRUE, this is ignored.
+                                    $and_writeable = false,         ///< OPTIONAL: If true, then we only want records we can modify.
+                                    $count_only = false,            ///< OPTIONAL: If true (default is false), then only a single integer will be returned, with the count of items that fit the search.
+                                    $ids_only = false               ///< OPTIONAL: If true (default is false), then the return array will consist only of integers (the object IDs). If $count_only is true, this is ignored.
                                     ) {
         $ret = $this->get_chameleon_instance()->generic_search($in_search_parameters, $or_search, $page_size, $initial_page, $and_writeable, $count_only, $ids_only);
         
@@ -431,18 +431,18 @@ class Andisol {
     Only objects that have a longitude and latitude that fall within the radius will be returned.
     All visible classes and instances will be returned. Only location and security filtering are applied.
     
-    \returns an array of instances (or integers, if $ids_only is TRUE) that fit within the location center and radius. If $count_only is TRUE, then it will be a single integer, with the count of responses to the search (if a page, then this count will only be the number of items on that page).
+    \returns an array of instances (or integers, if $ids_only is true) that fit within the location center and radius. If $count_only is true, then it will be a single integer, with the count of responses to the search (if a page, then this count will only be the number of items on that page).
      */
     public function location_search(    $in_longitude_degrees,  ///< REQUIRED: The latitude of the center, in degrees.
                                         $in_latitude_degrees,   ///< REQUIRED: The logitude of the center, in degrees.
                                         $in_radius_kilometers,  ///< REQUIRED: The search radius, in Kilomters.
                                         $page_size = 0,         ///< OPTIONAL: If specified with a 1-based integer, this denotes the size of a "page" of results. NOTE: This is only applicable to MySQL or Postgres, and will be ignored if the DB is not MySQL or Postgres. Default is 0.
                                         $initial_page = 0,      ///< OPTIONAL: This is ignored unless $page_size is greater than 0. If so, then this 0-based index will specify which page of results to return. Values beyond the maximum number of pages will result in no returned values.
-                                        $and_writeable = FALSE, ///< OPTIONAL: If TRUE, then we only want records we can modify.
-                                        $count_only = FALSE,    ///< OPTIONAL: If TRUE (default is FALSE), then only a single integer will be returned, with the count of items that fit the search.
-                                        $ids_only = FALSE       ///< OPTIONAL: If TRUE (default is FALSE), then the return array will consist only of integers (the object IDs). If $count_only is TRUE, this is ignored.
+                                        $and_writeable = false, ///< OPTIONAL: If true, then we only want records we can modify.
+                                        $count_only = false,    ///< OPTIONAL: If true (default is false), then only a single integer will be returned, with the count of items that fit the search.
+                                        $ids_only = false       ///< OPTIONAL: If true (default is false), then the return array will consist only of integers (the object IDs). If $count_only is true, this is ignored.
                                     ) {
-        $ret = $this->generic_search(Array('location' => Array('longitude' => $in_longitude_degrees, 'latitude' => $in_latitude_degrees, 'radius' => $in_radius_kilometers)), FALSE, $page_size, $initial_page, $and_writeable, $count_only, $ids_only);
+        $ret = $this->generic_search(Array('location' => Array('longitude' => $in_longitude_degrees, 'latitude' => $in_latitude_degrees, 'radius' => $in_radius_kilometers)), false, $page_size, $initial_page, $and_writeable, $count_only, $ids_only);
         
         return $ret;
     }
@@ -451,11 +451,11 @@ class Andisol {
     /**
     \returns an array of instances of all the users (not logins) that are visible to the current login. It should be noted that this can return standalone users.
      */
-    public function get_all_users(  $and_write = FALSE  ///< If TRUE (Default is FALSE), then we only want ones we have write access to.
+    public function get_all_users(  $and_write = false  ///< If true (Default is false), then we only want ones we have write access to.
                                     ) {
         $ret = Array();
         
-        $temp = $this->generic_search(Array('access_class' => Array('%_User_Collection', 'use_like' => 1)), FALSE, 0, 0, $and_write);
+        $temp = $this->generic_search(Array('access_class' => Array('%_User_Collection', 'use_like' => 1)), false, 0, 0, $and_write);
         
         if (isset($temp) && is_array($temp) && count($temp)) {
             // We make sure that we don't return the God user, if there is one (unless we are God).
@@ -474,11 +474,11 @@ class Andisol {
     /**
     \returns an array of instances of all the users (not logins) that are visible to the current login. It should be noted that this can return standalone users.
      */
-    public function get_all_login_users(    $and_write = FALSE  ///< OPTIONAL: If TRUE (Default is FALSE), then we only want ones we have write access to.
+    public function get_all_login_users(    $and_write = false  ///< OPTIONAL: If true (Default is false), then we only want ones we have write access to.
                                         ) {
         $ret = Array();
         
-        $temp = $this->generic_search(Array('access_class' => Array('%_User_Collection', 'use_like' => 1), 'tags' => Array('%', 'use_like' => 1)), FALSE, 0, 0, $and_write);
+        $temp = $this->generic_search(Array('access_class' => Array('%_User_Collection', 'use_like' => 1), 'tags' => Array('%', 'use_like' => 1)), false, 0, 0, $and_write);
         
         if (isset($temp) && is_array($temp) && count($temp)) {
             // We make sure that we don't return the God user, if there is one (unless we are God).
@@ -497,11 +497,11 @@ class Andisol {
     /**
     \returns an array of instances of all the users (not logins) that are visible to the current login. It should be noted that this can return standalone users.
      */
-    public function get_all_standalone_users(   $and_write = FALSE  ///< OPTIONAL: If TRUE (Default is FALSE), then we only want ones we have write access to.
+    public function get_all_standalone_users(   $and_write = false  ///< OPTIONAL: If true (Default is false), then we only want ones we have write access to.
                                             ) {
         $ret = Array();
         
-        $temp = $this->generic_search(Array('access_class' => Array('%_User_Collection', 'use_like' => 1), 'tags' => Array('')), FALSE, 0, 0, $and_write);
+        $temp = $this->generic_search(Array('access_class' => Array('%_User_Collection', 'use_like' => 1), 'tags' => Array('')), false, 0, 0, $and_write);
         
         if (isset($temp) && is_array($temp) && count($temp)) {
             // We make sure that we don't return the God user, if there is one (unless we are God).
@@ -518,19 +518,19 @@ class Andisol {
     
     /***********************/
     /**
-    \returns an array of instances (or integers, if $ids_only is TRUE) that match the requested tag values. If $count_only is TRUE, then it will be a single integer, with the count of responses to the search (if a page, then this count will only be the number of items on that page).
+    \returns an array of instances (or integers, if $ids_only is true) that match the requested tag values. If $count_only is true, then it will be a single integer, with the count of responses to the search (if a page, then this count will only be the number of items on that page).
      */
     public function tag_search( $in_tags_associative_array, /**< REQUIRED:  This is an associative array, with the keys being "0" through "9". Each element will have a requested value for that element.
                                                                             Leaving an element out will remove it as a search factor. Adding it, but leaving it NULL or blank, means that this tag MUST be null or blank.
                                                                             If you add an element called 'use_like' ('use_like' => 1) to the array, then you can use SQL-style "wildcards" (%) in your matches.
-                                                                            Unless $in_or_search is set to TRUE, the search will be an AND search; meaning that ALL the tag values must match, in order to result in a record being returned.
+                                                                            Unless $in_or_search is set to true, the search will be an AND search; meaning that ALL the tag values must match, in order to result in a record being returned.
                                                             */
-                                $in_or_search = FALSE,      ///< OPTIONAL: If TRUE (Default is FALSE), then the search will be an "OR" search (any of the values).
+                                $in_or_search = false,      ///< OPTIONAL: If true (Default is false), then the search will be an "OR" search (any of the values).
                                 $page_size = 0,             ///< OPTIONAL: If specified with a 1-based integer, this denotes the size of a "page" of results. NOTE: This is only applicable to MySQL or Postgres, and will be ignored if the DB is not MySQL or Postgres. Default is 0.
                                 $initial_page = 0,          ///< OPTIONAL: This is ignored unless $page_size is greater than 0. If so, then this 0-based index will specify which page of results to return. Values beyond the maximum number of pages will result in no returned values.
-                                $and_writeable = FALSE,     ///< OPTIONAL: If TRUE, then we only want records we can modify.
-                                $count_only = FALSE,        ///< OPTIONAL: If TRUE (default is FALSE), then only a single integer will be returned, with the count of items that fit the search.
-                                $ids_only = FALSE           ///< OPTIONAL: If TRUE (default is FALSE), then the return array will consist only of integers (the object IDs). If $count_only is TRUE, this is ignored.
+                                $and_writeable = false,     ///< OPTIONAL: If true, then we only want records we can modify.
+                                $count_only = false,        ///< OPTIONAL: If true (default is false), then only a single integer will be returned, with the count of items that fit the search.
+                                $ids_only = false           ///< OPTIONAL: If true (default is false), then the return array will consist only of integers (the object IDs). If $count_only is true, this is ignored.
                             ) {
         $tags_array = Array();
         $ret = Array();
@@ -581,12 +581,12 @@ class Andisol {
     /***********************/
     /**
     This is a special function for returning the user for a login, with the possibility of creating one, if one was not already in place.
-    In order to potentially create a user, the current login must be a manager, $in_make_user_if_necessary must be TRUE, and the user must not already exist (even if the current login cannot see that user).
+    In order to potentially create a user, the current login must be a manager, $in_make_user_if_necessary must be true, and the user must not already exist (even if the current login cannot see that user).
      
     \returns the user collection object for a given login. If there is no login given, then the current login is assumed. This is subject to security restrictions.
      */
     public function get_user_from_login(    $in_login_integer_id = NULL,        ///< OPTIONAL: The integer login ID that is associated with the user collection. If NULL (Default), then the current login is used.
-                                            $in_make_user_if_necessary = FALSE  ///< OPTIONAL: If TRUE (Default is FALSE), then the user will be created if it does not already exist. Ignored, if we are not a Login Manager.
+                                            $in_make_user_if_necessary = false  ///< OPTIONAL: If true (Default is false), then the user will be created if it does not already exist. Ignored, if we are not a Login Manager.
                                         ) {
         $ret = NULL;
         
@@ -617,7 +617,7 @@ class Andisol {
                                         $in_display_name = NULL,        ///< OPTIONAL: A string, representing the basic "display name" to be associated with the login and user collection. If not supplied, the $in_login_string_id is used.
                                         $in_security_tokens = NULL,     ///< Any additional security tokens to apply to the new login. These must be a subset of the security tokens available to the logged-in manager. The God admin can set any tokens they want.
                                         $in_read_security_id = NULL,    ///< An optional read security ID. If not supplied, then ID 1 (logged-in users) is set. The write security ID is always set to the ID of the login.
-                                        $is_manager = FALSE             ///< If TRUE (default is FALSE), then the new user will be a CO_Login_Manager object.
+                                        $is_manager = false             ///< If true (default is false), then the new user will be a CO_Login_Manager object.
                                     ) {
         $ret = NULL;
         
@@ -729,14 +729,14 @@ class Andisol {
     /**
     This method can only be called if the user is logged in as a Login Manager (or God).
     This will delete both the login and the user collection for the given login ID.
-    It should be noted that deleting a collection does not delete the data associated with that collection, unless $with_extreme_prejudice is TRUE, and even then, only the records this manager can see will be deleted.
+    It should be noted that deleting a collection does not delete the data associated with that collection, unless $with_extreme_prejudice is true, and even then, only the records this manager can see will be deleted.
     
-    \returns TRUE, if the operation was successful.
+    \returns true, if the operation was successful.
      */
     public function delete_user(    $in_login_string_id,            ///< REQUIRED: The string login ID of the user to delete.
-                                    $with_extreme_prejudice = FALSE ///< OPTIONAL: If TRUE (Default is FALSE), then the manager will delete as many of the user data points as possible (It may not be possible for the manager to delete all data, unless the manager is God).
+                                    $with_extreme_prejudice = false ///< OPTIONAL: If true (Default is false), then the manager will delete as many of the user data points as possible (It may not be possible for the manager to delete all data, unless the manager is God).
                                 ) {
-        $ret = FALSE;
+        $ret = false;
         
         if ($in_login_string_id) {
             if ($this->manager()) { // Don't even bother unless we're a manager.
@@ -748,8 +748,8 @@ class Andisol {
                     if ($user_item) {
                         // We have to have both the login and the user. Now, we make sure that we have write perms on both.
                         if ($login_item->user_can_write() && $user_item->user_can_write()) {
-                            if ($user_item->delete_from_db($with_extreme_prejudice, TRUE)) {
-                                $ret = TRUE;
+                            if ($user_item->delete_from_db($with_extreme_prejudice, true)) {
+                                $ret = true;
                             } else {
                                 $this->error = $user_item->error;
                                 if (!$this->error) {
@@ -793,7 +793,7 @@ class Andisol {
     /**
     \returns an array of instances of all the logins that are visible to the current login (or a supplied login, if in "God" mode). The user must be a manager.
      */
-    public function get_all_logins( $and_write = FALSE,         ///< OPTIONAL: If TRUE (Default is FALSE), then we only want ones we have write access to.
+    public function get_all_logins( $and_write = false,         ///< OPTIONAL: If true (Default is false), then we only want ones we have write access to.
                                     $in_login_string_id = NULL, ///< OPTIONAL: This is ignored, unless this is the God login. If We are logged in as God, then we can select a login via its string login ID, and see what logins are available to it. This trumps the integer ID.
                                     $in_login_integer_id = NULL ///< OPTIONAL: This is ignored, unless this is the God login and $in_login_string_id is not specified. If We are logged in as God, then we can select a login via its integer login ID, and see what logins are available to it.
                                     ) {
@@ -856,7 +856,7 @@ class Andisol {
     /**
     This deletes a key (and its associated data).
     
-    \returns TRUE, if successful.
+    \returns true, if successful.
      */
     public function delete_key( $in_key,                        ///< REQUIRED: This is the key that we are deleting. It must be a string.
                                 $in_classname = 'CO_KeyValue'   ///< OPTIONAL: This is the class to search for the key. The default is the base class.
@@ -870,7 +870,7 @@ class Andisol {
     We need to have a login for it to work at all. If the value already exists, then we need to have write access to it, or we will fail.
     This will only work if we are logged in.
     
-    \returns TRUE, if successful.
+    \returns true, if successful.
      */
     public function set_value_for_key(  $in_key,                        ///< REQUIRED: This is the key that we are setting. It must be a string.
                                         $in_value,                      ///< REQUIRED: The value to set. If NULL, then we will delete the key.
@@ -983,7 +983,7 @@ class Andisol {
     
     \returns a new instance of the class.
      */
-    public function create_place(   $auto_resolve = TRUE,               ///< If FALSE (Default is TRUE), then we will not try to "fill in the blanks" with any missing information.
+    public function create_place(   $auto_resolve = true,               ///< If false (Default is true), then we will not try to "fill in the blanks" with any missing information.
                                     $in_venue = NULL,                   ///< OPTIONAL: The venue (place/building/establishment name).
                                     $in_street_address = NULL,          ///< OPTIONAL: Ignored if $in_fuzz_factor is nonzero. The street address (including number).
                                     $in_municipality = NULL,            ///< OPTIONAL: Ignored if $in_fuzz_factor is nonzero. The town/city.
@@ -1033,14 +1033,14 @@ class Andisol {
     
             // First, make sure we're in the right ballpark.
             if (isset($instance) && ($instance instanceof CO_Place)) {
-                $long_lat_explicitly_set = FALSE;   // We use this to figure whether or not to do an initial lookup.
-                $address_explicitly_set = FALSE;    // We use this to figure whether or not to do an initial geocode.
+                $long_lat_explicitly_set = false;   // We use this to figure whether or not to do an initial lookup.
+                $address_explicitly_set = false;    // We use this to figure whether or not to do an initial geocode.
         
                 // If a long/lat was provided, we start by setting that to our object.
                 if(isset($in_longitude_degrees) && isset($in_longitude_degrees)) {
                     if ($instance->set_longitude($in_longitude_degrees)) {
                         if ($instance->set_latitude($in_latitude_degrees)) {
-                            $long_lat_explicitly_set = TRUE;    // This means we won't be needing a lookup.
+                            $long_lat_explicitly_set = true;    // This means we won't be needing a lookup.
                         } else {
                             if ($instance->error) {
                                 $this->error = $instance->error;
@@ -1062,7 +1062,7 @@ class Andisol {
                 // Next, see if a venue name was provided.
                 if(isset($instance) && isset($in_venue)) {
                     if ($instance->set_tag(0, $in_venue)) {
-                        $address_explicitly_set = TRUE;
+                        $address_explicitly_set = true;
                     } else {
                         if ($instance->error) {
                             $this->error = $instance->error;
@@ -1090,7 +1090,7 @@ class Andisol {
                     // Next, see if a street address was provided.
                     if(isset($instance) && isset($in_street_address)) {
                         if ($instance->set_tag(1, $in_street_address)) {
-                            $address_explicitly_set = TRUE;
+                            $address_explicitly_set = true;
                         } else {
                             if ($instance->error) {
                                 $this->error = $instance->error;
@@ -1104,7 +1104,7 @@ class Andisol {
                     // Next, see if a town was provided.
                     if(isset($instance) && isset($in_municipality)) {
                         if ($instance->set_tag(3, $in_municipality)) {
-                            $address_explicitly_set = TRUE;
+                            $address_explicitly_set = true;
                         } else {
                             if ($instance->error) {
                                 $this->error = $instance->error;
@@ -1118,7 +1118,7 @@ class Andisol {
                     // Next, see if a county was provided.
                     if(isset($instance) && isset($in_county)) {
                         if ($instance->set_tag(4, $in_county)) {
-                            $address_explicitly_set = TRUE;
+                            $address_explicitly_set = true;
                         } else {
                             if ($instance->error) {
                                 $this->error = $instance->error;
@@ -1132,7 +1132,7 @@ class Andisol {
                     // Next, see if a state was provided.
                     if(isset($instance) && isset($in_province)) {
                         if ($instance->set_tag(5, $in_province)) {
-                            $address_explicitly_set = TRUE;
+                            $address_explicitly_set = true;
                         } else {
                             if ($instance->error) {
                                 $this->error = $instance->error;
@@ -1146,7 +1146,7 @@ class Andisol {
                     // Next, see if a ZIP code was provided.
                     if(isset($instance) && isset($in_postal_code)) {
                         if ($instance->set_tag(6, $in_postal_code)) {
-                            $address_explicitly_set = TRUE;
+                            $address_explicitly_set = true;
                         } else {
                             if ($instance->error) {
                                 $this->error = $instance->error;
@@ -1160,7 +1160,7 @@ class Andisol {
                     // Next, see if a nation was provided.
                     if(isset($instance) && isset($in_nation)) {
                         if ($instance->set_tag(7, $in_nation)) {
-                            $address_explicitly_set = TRUE;
+                            $address_explicitly_set = true;
                         } else {
                             if ($instance->error) {
                                 $this->error = $instance->error;
@@ -1171,7 +1171,7 @@ class Andisol {
                         }
                     }
                 } elseif (isset($instance)) {
-                    $auto_resolve = FALSE;  // We do not do an auto-lookup if we are "fuzzy."
+                    $auto_resolve = false;  // We do not do an auto-lookup if we are "fuzzy."
         
                     if ($instance->set_fuzz_factor($in_fuzz_factor)) {
                         if (isset($in_see_clearly_id) && (0 < intval($in_see_clearly_id))) {
@@ -1196,7 +1196,7 @@ class Andisol {
 
                 // OK. If we are here, and still have a valid instance, then we can "set it in stone," and see if we need to do a geocode.
                 if (isset($instance)) {
-                    $instance->set_address_elements($instance->tags(), TRUE);
+                    $instance->set_address_elements($instance->tags(), true);
 
                     // If we did not explicitly set a long/lat, and have a Google API key (assumed valid), then let's try a geocode.
                     if ($auto_resolve && !$long_lat_explicitly_set && CO_Config::$google_api_key) {  // If we can do a lookup, and need to, then lets's give that a go.
@@ -1258,7 +1258,7 @@ class Andisol {
                             // OK. Now we can do it.
                             if (isset($instance)) {
                                 // This sets the object up to what we just sent in.
-                                $instance->set_address_elements($instance->tags(), TRUE);
+                                $instance->set_address_elements($instance->tags(), true);
                                 $ret = $instance;
                             }
                         } else {
@@ -1312,7 +1312,7 @@ class Andisol {
                                     $in_write_security_id = NULL,   ///< OPTIONAL: An initial write security ID. If not specified, the current user's integer login ID will be used as the write security token.
                                     $in_classname = 'CO_Place'      ///< OPTIONAL: A classname to use, besides the lowest-level class. If NULL, then the CO_Place class is used.
                                     ) {
-        return $this->create_place(TRUE, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, $in_longitude_degrees, $in_latitude_degrees, $in_fuzz_factor, $in_see_clearly_id, $in_read_security_id, $in_write_security_id, $in_classname);
+        return $this->create_place(true, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, $in_longitude_degrees, $in_latitude_degrees, $in_fuzz_factor, $in_see_clearly_id, $in_read_security_id, $in_write_security_id, $in_classname);
     }
     
     /***********************/
@@ -1337,7 +1337,7 @@ class Andisol {
                                         $in_read_security_id = 1,       ///< OPTIONAL: An initial read security ID. If not specified, 1 (open to all logged-in users) will be specified.
                                         $in_write_security_id = NULL    ///< OPTIONAL: An initial write security ID. If not specified, the current user's integer login ID will be used as the write security token.
                                         ) {
-        return $this->create_place(TRUE, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, $in_longitude_degrees, $in_latitude_degrees, $in_fuzz_factor, $in_see_clearly_id, $in_read_security_id, $in_write_security_id, 'CO_US_Place');
+        return $this->create_place(true, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, $in_longitude_degrees, $in_latitude_degrees, $in_fuzz_factor, $in_see_clearly_id, $in_read_security_id, $in_write_security_id, 'CO_US_Place');
     }
     
     /***********************/
@@ -1347,7 +1347,7 @@ class Andisol {
     
     \returns a new instance of the class.
      */
-    public function create_place_collection($auto_resolve = TRUE,                   ///< If FALSE (Default is TRUE), then we will not try to "fill in the blanks" with any missing information.
+    public function create_place_collection($auto_resolve = true,                   ///< If false (Default is true), then we will not try to "fill in the blanks" with any missing information.
                                             $in_venue = NULL,                       ///< OPTIONAL: The venue (place/building/establishment name).
                                             $in_street_address = NULL,              ///< OPTIONAL: The street address (including number).
                                             $in_municipality = NULL,                ///< OPTIONAL: The town/city.
