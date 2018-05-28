@@ -251,7 +251,6 @@ function user_access_test_31($in_login = NULL, $in_hashed_password = NULL, $in_p
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
         $andisol_login = $andisol_instance->get_login_item();
-        
         $ids = array_filter($andisol_login->ids(), function($in){return $in != 7;});
         
         $password = $andisol_instance->create_new_user('crocodile', 'CoreysGoryStory', 'Croc O\'Dial', $ids);

@@ -16,14 +16,12 @@ require_once(dirname(dirname(__FILE__)).'/functions.php');
 // -------------------------------- TEST DISPATCHER ---------------------------------------------
 
 function generic_storage_run_tests() {
-    kvp_run_test(88, 'TEST', 'TEST', 'asp', '', 'CoreysGoryStory');
+    generic_storage_run_test(88, 'TEST', 'TEST', 'asp', '', 'CoreysGoryStory');
 }
 
 // -------------------------------- TESTS ---------------------------------------------
 
-function kvp_test_88($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
-    $long_lat_dc_lincoln_memorial = Array('longitude' => -77.0502, 'latitude' => 38.8893);
-    
+function generic_storage_test_088($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
@@ -32,7 +30,7 @@ function kvp_test_88($in_login = NULL, $in_hashed_password = NULL, $in_password 
 
 // -------------------------------- STRUCTURE ---------------------------------------------
 
-function kvp_run_test($in_num, $in_title, $in_explain, $in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function generic_storage_run_test($in_num, $in_title, $in_explain, $in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $test_num_string = sprintf("%03d", $in_num);
     echo('<div id="test-'.$test_num_string.'" class="inner_closed">');
         echo('<h3 class="inner_header"><a href="javascript:toggle_inner_state(\'test-'.$test_num_string.'\')">TEST '.$in_num.': '.$in_title.'</a></h3>');
@@ -41,7 +39,7 @@ function kvp_run_test($in_num, $in_title, $in_explain, $in_login = NULL, $in_has
                 echo('<p class="explain">'.$in_explain.'</p>');
             echo('</div>');
             $st1 = microtime(TRUE);
-            $function_name = sprintf('kvp_test_%02d', $in_num);
+            $function_name = sprintf('generic_storage_test_%03d', $in_num);
             $function_name($in_login, $in_hashed_password, $in_password);
             $fetchTime = sprintf('%01.3f', microtime(TRUE) - $st1);
             echo("<h4>The test took $fetchTime seconds to complete.</h4>");
@@ -50,7 +48,7 @@ function kvp_run_test($in_num, $in_title, $in_explain, $in_login = NULL, $in_has
 }
 
 ob_start();
-    prepare_databases('data_storage_tests');
+    prepare_databases('generic_storage_tests');
     
     echo('<div class="test-wrapper" style="display:table;margin-left:auto;margin-right:auto;text-align:left">');
         echo('<h1 class="header">GENERIC STORAGE TESTS</h1>');

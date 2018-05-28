@@ -230,7 +230,7 @@ class Andisol {
         $ret = NULL;
         
         if ($this->logged_in()) {
-            $this->get_chameleon_instance()->get_login_item($in_login_integer_id);
+            $ret = $this->get_chameleon_instance()->get_login_item($in_login_integer_id);
         
             $this->error = $this->get_chameleon_instance()->error;
         }
