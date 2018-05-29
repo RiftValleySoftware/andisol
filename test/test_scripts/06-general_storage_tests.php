@@ -17,10 +17,10 @@ require_once(dirname(dirname(__FILE__)).'/functions.php');
 
 function generic_storage_run_tests() {
     generic_storage_run_test(88, 'FAIL -Try to Create a Blank Generic Data Record (Not Logged In)', 'We don\'t log in, and try to create a generic record.');
-    generic_storage_run_test(89, 'PASS -Try to Create a Blank Generic Data Record (Not Logged In)', 'We now log in, and try it again.', 'asp', '', 'CoreysGoryStory');
-    generic_storage_run_test(90, 'FAIL -Try to Delete the Record We Just Created With No Login', 'We don\'t log in, and try a deletion.');
-    generic_storage_run_test(91, 'FAIL -Try to Delete the Record We Just Created With Another Login', 'We now log in with an ID that has read access, but no write access, and try to delete the new record.', 'norm', '', 'CoreysGoryStory');
-    generic_storage_run_test(92, 'PASS -Try to Delete the Record We Just Created With Another Login', 'We now log in with an ID that has write access to the record, and try the deletion again.', 'bob', '', 'CoreysGoryStory');
+    generic_storage_run_test(89, 'PASS -Try to Create a Blank Generic Data Record (Logged In)', 'We now log in, and try it again.', 'asp', '', 'CoreysGoryStory');
+    generic_storage_run_test(90, 'FAIL -Try to Delete the Record We Just Created (Not Logged In)', 'We don\'t log in, and try a deletion.');
+    generic_storage_run_test(91, 'FAIL -Try to Delete the Record We Just Created With A Read-Only Login', 'We now log in with an ID that has read access, but no write access, and try to delete the new record.', 'norm', '', 'CoreysGoryStory');
+    generic_storage_run_test(92, 'PASS -Try to Delete the Record We Just Created With Another Write-Capable Login', 'We now log in with an ID that has write access to the record, and try the deletion again.', 'bob', '', 'CoreysGoryStory');
 }
 
 // -------------------------------- TESTS ---------------------------------------------
