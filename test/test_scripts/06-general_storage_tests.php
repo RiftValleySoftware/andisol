@@ -20,7 +20,7 @@ function generic_storage_run_tests() {
     generic_storage_run_test(89, 'PASS -Try to Create a Blank Generic Data Record (Logged In)', 'We now log in, and try it again.', 'asp', '', 'CoreysGoryStory');
     generic_storage_run_test(90, 'FAIL -Try to Delete the Record We Just Created (Not Logged In)', 'We don\'t log in, and try a deletion.');
     generic_storage_run_test(91, 'FAIL -Try to Delete the Record We Just Created With A Read-Only Login', 'We now log in with an ID that has read access, but no write access, and try to delete the new record.', 'norm', '', 'CoreysGoryStory');
-    generic_storage_run_test(92, 'PASS -Try to Delete the Record We Just Created With Another Write-Capable Login', 'We now log in with an ID that has write access to the record, and try the deletion again.', 'bob', '', 'CoreysGoryStory');
+    generic_storage_run_test(92, 'PASS -Try to Delete the Record We Just Created With Another Write-Capable Login', 'We now log in with an ID that has write access to the record, and try the deletion again. If the deletion is successful, it will try to resurrect the object from its old data record object.', 'bob', '', 'CoreysGoryStory');
 }
 
 // -------------------------------- TESTS ---------------------------------------------
@@ -80,6 +80,16 @@ function generic_storage_test_090($in_login = NULL, $in_hashed_password = NULL, 
                     echo('</div>');
                 } else {
                     echo('<h3 style="color:green">The record was properly deleted!</h3>');
+                    echo('<h4 style="color:green">Throw the switch, Igor!</h4>');
+                    if ($generic_object->update_db()) {
+                        echo('<h4 style="color:green">They laughed at me at Hiedelberg! They said I was mad -MAD! BWUHA-HA-HAAAH!!</h4>');
+                        display_record($generic_object);
+                    } else {
+                        echo('<h3 style="color:red">Igor failed to throw the switch!</h3>');
+                        if (isset($andisol_instance->error)) {
+                            echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance->error->error_code.') '.$andisol_instance->error->error_name.' ('.$andisol_instance->error->error_description.')</p>');
+                        }
+                    }
                 }
             } else {
                 echo('<h3 style="color:red">The deletion failed!</h3>');
