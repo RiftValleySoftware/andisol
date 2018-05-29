@@ -67,6 +67,7 @@ function generic_storage_test_090($in_login = NULL, $in_hashed_password = NULL, 
         
         if (isset($generic_object) && ($generic_object instanceof CO_Main_DB_Record)) {
             echo('<h3 style="color:green">We found the new record!</h3>');
+            echo('<h5 style="color:green;font-style:italic">This is the object before the delete attempt:</h5>');
             display_record($generic_object);
             if ($andisol_instance->delete_item_by_id(6)) {
                 $generic_object2 = $andisol_instance->get_single_data_record_by_id(6);
@@ -80,9 +81,12 @@ function generic_storage_test_090($in_login = NULL, $in_hashed_password = NULL, 
                     echo('</div>');
                 } else {
                     echo('<h3 style="color:green">The record was properly deleted!</h3>');
+                    echo('<h5 style="color:green;font-style:italic">Note that the ID of our local copy of the record is now 0, as it is no longer in the database:</h5>');
+                        display_record($generic_object);
                     echo('<h4 style="color:green">Throw the switch, Igor!</h4>');
                     if ($generic_object->update_db()) {
                         echo('<h4 style="color:green">They laughed at me at Hiedelberg! They said I was mad -MAD! BWUHA-HA-HAAAH!!</h4>');
+                        echo('<h5 style="color:green;font-style:italic">This is the resurrected object. Note that it has a new ID:</h5>');
                         display_record($generic_object);
                     } else {
                         echo('<h3 style="color:red">Igor failed to throw the switch!</h3>');
