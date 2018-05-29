@@ -868,6 +868,24 @@ class Andisol {
         return $this->_create_db_object($in_classname, $in_read_security_id, $in_write_security_id);
     }
     
+    /***********************/
+    /**
+    Deletes a data item, given its integer ID.
+    
+    \returns true, if successful.
+     */
+    public function delete_item_by_id(  $in_item_id_integer ///< REQUIRED: This is the key that we are deleting. It must be a string.
+                                    ) {
+        $ret = false;
+        
+        if ($this->valid()) {
+            $ret = $this->get_chameleon_instance()->delete_data_record($in_item_id_integer);
+            $this->error = $this->get_chameleon_instance()->error;
+        }
+        
+        return $ret;
+    }
+    
     /************************************************************************************************************************/    
     /*                                                    KEY/VALUE METHODS                                                 */
     /************************************************************************************************************************/    
