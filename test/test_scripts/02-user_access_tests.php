@@ -17,7 +17,7 @@ require_once(dirname(dirname(__FILE__)).'/functions.php');
 
 function user_access_run_tests() {
     user_access_run_test(11, 'FAIL - No Login', 'We create an instance of ANDISOL with no login, and make sure its valid, but we will have no login or user.');
-    user_access_run_test(12, 'PASS - Fundamental Login', 'We create an instance of ANDISOL with a "fundamental" (BADGER-level) login, and make sure its valid.', 'norm', '', 'CoreysGoryStory');
+    user_access_run_test(12, 'PASS - Fundamental Login', 'We create an instance of ANDISOL with a "fundamental" (BADGER-level) login, and make sure its valid. We display both the login (security) and the user (data)', 'norm', '', 'CoreysGoryStory');
     user_access_run_test(13, 'PASS - Basic Login', 'We create an instance of ANDISOL with a basic COBRA login, and make sure its valid.', 'krait', '', 'CoreysGoryStory');
     user_access_run_test(14, 'PASS - Manager Login', 'We create an instance of ANDISOL with a COBRA Login manager login, and make sure its valid.', 'asp', '', 'CoreysGoryStory');
     user_access_run_test(15, 'PASS - God Login', 'We create an instance of ANDISOL with the "God" login, and make sure its valid.', 'admin', '', CO_COnfig::god_mode_password());

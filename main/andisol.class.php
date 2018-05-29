@@ -36,8 +36,8 @@ to the lower level data storage and security infrastructure.
 You are to use this class for ALL access to the lower level functionality.
  */
 class Andisol {
-    private $_chameleon_instance = NULL;    ///< This is the CHAMELEON instance.
-    private $_cobra_instance = NULL;        ///< This is the COBRA instance.
+    protected $_chameleon_instance = NULL;  ///< This is the CHAMELEON instance.
+    protected $_cobra_instance = NULL;      ///< This is the COBRA instance.
     
     var $version;                           ///< The version indicator.
     var $error;                             ///< Any errors that occured are kept here.
@@ -408,27 +408,27 @@ class Andisol {
     \returns an array of instances (or integers, if $ids_only is true) that match the search parameters. If $count_only is true, then it will be a single integer, with the count of responses to the search (if a page, then this count will only be the number of items on that page).
      */
     public function generic_search( $in_search_parameters = NULL,   /**<    OPTIONAL: This is an associative array of terms to define the search. The keys should be:
-                                                                                - 'id'
-                                                                                    This should be accompanied by an array of one or more integers, representing specific item IDs.
-                                                                                - 'access_class'
-                                                                                    This should be accompanied by an array, containing one or more PHP class names.
-                                                                                - 'name'
-                                                                                    This will contain a case-insensitive array of strings to check against the object_name column.
-                                                                                - 'owner'
-                                                                                    This should be accompanied by an array of one or more integers, representing specific item IDs for "owner" objects.
-                                                                                - 'tags'
-                                                                                    This should be accompanied by an array (up to 10 elements) of one or more case-insensitive strings, representing specific tag values.
-                                                                                    The position in the array denotes which tag to match, so unchecked tags should still be in the array, but empty. You don't match empty tags.
-                                                                                    You can specify an array for the values, which allows you to do an OR search for the values.
-                                                                                - 'location'
-                                                                                    This is only relevant if we are searching for subclasses (or instances) of CO_LL_Location
-                                                                                    This requires that the parameter be a 3-element associative array of floating-point numbers:
-                                                                                        - 'longitude'
-                                                                                            This is the search center location longitude, in degrees.
-                                                                                        - 'latitude'
-                                                                                            This is the search center location latitude, in degrees.
-                                                                                        - 'radius'
-                                                                                            This is the search radius, in Kilometers.
+                                                                            - 'id'
+                                                                                This should be accompanied by an array of one or more integers, representing specific item IDs.
+                                                                            - 'access_class'
+                                                                                This should be accompanied by an array, containing one or more PHP class names.
+                                                                            - 'name'
+                                                                                This will contain a case-insensitive array of strings to check against the object_name column.
+                                                                            - 'owner'
+                                                                                This should be accompanied by an array of one or more integers, representing specific item IDs for "owner" objects.
+                                                                            - 'tags'
+                                                                                This should be accompanied by an array (up to 10 elements) of one or more case-insensitive strings, representing specific tag values.
+                                                                                The position in the array denotes which tag to match, so unchecked tags should still be in the array, but empty. You don't match empty tags.
+                                                                                You can specify an array for the values, which allows you to do an OR search for the values.
+                                                                            - 'location'
+                                                                                This is only relevant if we are searching for subclasses (or instances) of CO_LL_Location
+                                                                                This requires that the parameter be a 3-element associative array of floating-point numbers:
+                                                                                    - 'longitude'
+                                                                                        This is the search center location longitude, in degrees.
+                                                                                    - 'latitude'
+                                                                                        This is the search center location latitude, in degrees.
+                                                                                    - 'radius'
+                                                                                        This is the search radius, in Kilometers.
     
                                                                             You can specify an array for any one of the values, which allows you to do an OR search for those values ($or_search does not apply. It is only for the combination of main values).
                                                                             If you add an element called 'use_like' ('use_like' => 1) to the end of 'access_class', 'name' or one of the 'tags', then you can use SQL-style "wildcards" (%) in your matches.
@@ -475,7 +475,7 @@ class Andisol {
     /**
     \returns an array of instances of all the users (not logins) that are visible to the current login. It should be noted that this can return standalone users.
      */
-    public function get_all_users(  $and_write = false  ///< If true (Default is false), then we only want ones we have write access to.
+    public function get_all_users(  $and_write = false  ///< OPTIONAL: If true (Default is false), then we only want ones we have write access to.
                                     ) {
         $ret = Array();
         
@@ -823,7 +823,7 @@ class Andisol {
     
     \returns an array of instances, fetched an initialized from the database.
      */
-    public function get_multiple_data_records_by_id(    $in_id_array    ///< An array of integers, with the item IDs.
+    public function get_multiple_data_records_by_id(    $in_id_array    ///< REQUIRED: An array of integers, with the item IDs.
                                                     ) {
         $ret = $this->get_chameleon_instance()->get_multiple_data_records_by_id($in_id_array);
         
@@ -838,7 +838,7 @@ class Andisol {
     
     \returns a single new instance, initialized from the database.
      */
-    public function get_single_data_record_by_id(   $in_id  ///< The ID of the record to fetch.
+    public function get_single_data_record_by_id(   $in_id  ///< REQUIRED: The ID of the record to fetch.
                                                 ) {
         $ret = $this->get_chameleon_instance()->get_single_data_record_by_id($in_id);
         
@@ -878,9 +878,13 @@ class Andisol {
                                     ) {
         $ret = false;
         
-        if ($this->valid()) {
+        if ($this->logged_in()) {
             $ret = $this->get_chameleon_instance()->delete_data_record($in_item_id_integer);
             $this->error = $this->get_chameleon_instance()->error;
+        } else {
+            $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_user_not_authorized,
+                                            CO_ANDISOL_Lang::$andisol_error_name_user_not_authorized,
+                                            CO_ANDISOL_Lang::$andisol_error_desc_user_not_authorized);
         }
         
         return $ret;
@@ -1053,7 +1057,7 @@ class Andisol {
     
     \returns a new instance of the class.
      */
-    public function create_place(   $auto_resolve = true,               ///< If false (Default is true), then we will not try to "fill in the blanks" with any missing information.
+    public function create_place(   $auto_resolve = true,               ///< OPTIONAL: If false (Default is true), then we will not try to "fill in the blanks" with any missing information.
                                     $in_venue = NULL,                   ///< OPTIONAL: The venue (place/building/establishment name).
                                     $in_street_address = NULL,          ///< OPTIONAL: Ignored if $in_fuzz_factor is nonzero. The street address (including number).
                                     $in_municipality = NULL,            ///< OPTIONAL: Ignored if $in_fuzz_factor is nonzero. The town/city.
@@ -1417,7 +1421,7 @@ class Andisol {
     
     \returns a new instance of the class.
      */
-    public function create_place_collection($auto_resolve = true,           ///< If false (Default is true), then we will not try to "fill in the blanks" with any missing information.
+    public function create_place_collection($auto_resolve = true,           ///< OPTIONAL: If false (Default is true), then we will not try to "fill in the blanks" with any missing information.
                                             $in_venue = NULL,               ///< OPTIONAL: The venue (place/building/establishment name).
                                             $in_street_address = NULL,      ///< OPTIONAL: The street address (including number).
                                             $in_municipality = NULL,        ///< OPTIONAL: The town/city.
