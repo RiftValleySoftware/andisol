@@ -57,11 +57,15 @@ class Andisol {
                                             $in_write_security_id = NULL    ///< OPTIONAL: An initial write security ID. If not specified, the current user's integer login ID will be used as the write security token.
                                         ) {
         $ret = NULL;
-        
-        if ($this->manager()) {
+        if ($this->logged_in()) {
             $instance = $this->get_chameleon_instance()->make_new_blank_record($in_classname);
-            
+
             if (isset($instance) && ($instance instanceof $in_classname)) {
+                // If we did not get a specific read security ID, then we assume 1.
+                if (!isset($in_read_security_id) || !intval($in_read_security_id)) {
+                    $in_read_security_id = 1;
+                }
+            
                 // If we did not get a specific write security ID, then we assume the logged-in user ID.
                 if (!isset($in_write_security_id) || !intval($in_write_security_id)) {
                     $in_write_security_id = $this->get_chameleon_instance()->get_login_id();
@@ -110,7 +114,7 @@ class Andisol {
     protected function _make_security_token() {
         $ret = NULL;
         
-        if ($this->logged_in()) {
+        if ($this->manager()) {
             $ret = $this->get_cobra_instance()->make_security_token();
             if (0 == $ret) {
                 $ret = NULL;
@@ -861,11 +865,43 @@ class Andisol {
     
     \returns a new instance of the class.
      */
-    public function create_general_data_item(   $in_classname = 'CO_Main_DB_Record',    ///< OPTIONAL: This is the name of the class we want to create. It's optional, but leaving it out will give only the most basic data record.
-                                                $in_read_security_id = 1,               ///< OPTIONAL: An initial read security ID. If not specified, 1 (open to all logged-in users) will be specified.
-                                                $in_write_security_id = NULL            ///< OPTIONAL: An initial write security ID. If not specified, the current user's integer login ID will be used as the write security token.
+    public function create_general_data_item(   $in_read_security_id = 1,           ///< OPTIONAL: An initial read security ID. If not specified, 1 (open to all logged-in users) will be specified.
+                                                $in_write_security_id = NULL,       ///< OPTIONAL: An initial write security ID. If not specified, the current user's integer login ID will be used as the write security token.
+                                                $in_classname = 'CO_Main_DB_Record' ///< OPTIONAL: This is the name of the class we want to create. It's optional, but leaving it out will give only the most basic data record.
                                             ) {
         return $this->_create_db_object($in_classname, $in_read_security_id, $in_write_security_id);
+    }
+    
+    /***********************/
+    /**
+    This creates new generic collection object.
+    
+    \returns a new instance of the class.
+     */
+    public function create_collection(  $in_initial_item_ids = [],      ///< OPTIONAL: An array of integers, containing the data database IDs of existing items that are to be added to the collection. Default is empty.
+                                        $in_read_security_id = 1,       ///< OPTIONAL: An initial read security ID. If not specified, 1 (open to all logged-in users) will be specified.
+                                        $in_write_security_id = NULL,   ///< OPTIONAL: An initial write security ID. If not specified, the current user's integer login ID will be used as the write security token.
+                                        $in_classname = 'CO_Collection' ///< OPTIONAL: This is the name of the class we want to create. It's optional, but leaving it out will give only the most basic collection record.
+                                    ) {
+        $ret = $this->create_general_data_item($in_read_security_id, $in_write_security_id, $in_classname);
+        
+        if (isset($in_initial_item_ids) && is_array($in_initial_item_ids) && count($in_initial_item_ids) && isset($ret) && ($ret instanceof CO_Collection)) {
+            $elements = $this->get_chameleon_instance()->get_multiple_data_records_by_id($in_initial_item_ids);
+            $this->error = $this->get_chameleon_instance()->error;
+            
+            if (isset($elements) && is_array($elements) && count($elements) && !isset($this->error)) {
+                if (!$ret->appendElements($elements)) {
+                    $this->error = $ret->error;
+                    $ret->delete_from_db();
+                    $ret = NULL;
+                }
+            } else {
+                $ret->delete_from_db();
+                $ret = NULL;
+            }
+        }
+        
+        return $ret;
     }
     
     /***********************/
@@ -992,7 +1028,7 @@ class Andisol {
                                         ) {
         $ret = NULL;
         
-        $instance = $this->create_general_data_item($in_classname, $in_read_security_id, $in_write_security_id);
+        $instance = $this->create_general_data_item($in_read_security_id, $in_write_security_id, $in_classname);
         
         // First, make sure we're in the right ballpark.
         if (isset($instance) && ($instance instanceof CO_LL_Location)) {
@@ -1103,7 +1139,7 @@ class Andisol {
             isset($in_province) ||
             isset($in_postal_code) ||
             isset($in_nation)) {
-            $instance = $this->create_general_data_item($in_classname, $in_read_security_id, $in_write_security_id);
+            $instance = $this->create_general_data_item($in_read_security_id, $in_write_security_id, $in_classname);
     
             // First, make sure we're in the right ballpark.
             if (isset($instance) && ($instance instanceof CO_Place)) {

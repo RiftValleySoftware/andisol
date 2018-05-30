@@ -132,14 +132,8 @@
     }
             
     function hierarchicalDisplayRecord($in_record, $in_hierarchy_level = 0, $in_parent_object = NULL, $shorty = false) {
-        $daddy = isset($in_parent_object) && $in_parent_object ? $in_parent_object->whosYourDaddy($in_record) : NULL;
-    
         if ($in_hierarchy_level) {
             echo('<div style="margin-left:'.strval($in_hierarchy_level + 2).'em;margin-top:1em;border:'.strval($in_hierarchy_level + 1).'px dashed black;padding:0.125em">');
-            
-            if (NULL != $daddy) {
-                echo("<p>Ancestry is ".(($daddy == $in_parent_object) ? '' : 'un')."confirmed</p>");
-            }
 
             echo("<p>Hierarchy level: $in_hierarchy_level</p>");
             
