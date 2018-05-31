@@ -12,6 +12,7 @@
     Little Green Viper Software Development: https://littlegreenviper.com
 */
 require_once(dirname(dirname(__FILE__)).'/functions.php');
+set_time_limit ( 60 * 60 * 2 );
     
 // -------------------------------- TEST DISPATCHER ---------------------------------------------
 
@@ -21,6 +22,10 @@ function basic_collection_run_tests() {
     collection_run_test(95, 'PASS -Create Initialized Generic Collection', 'We log in, and attempt to create a collection with a bunch of existing children records.', 'asp', '', 'CoreysGoryStory');
     collection_run_test(96, 'PASS -Create Nested Initialized Generic Collection', 'We log in, and attempt to create a collection with a bunch of existing children records. However, this time, we create a small nested hierarchy.', 'asp', '', 'CoreysGoryStory');
     collection_run_test(97, 'PASS -Observe Resricted Collection', 'In this one, we change the read ID of one of the children (item 9) to be one that the \'norm\' ID can\'t see, then make sure it\'s gone.', 'norm', '', 'CoreysGoryStory');
+}
+
+function more_collection_run_tests() {
+    collection_run_test(98, 'PASS -Create A Deep, Wide Collection Hierarchy', 'We log in as the \'asp\' login, and create a fairly substantial little hierarchy that will be used for the following tests. This will create about 3,000 collection records.', 'asp', '', 'CoreysGoryStory');
 }
 
 // -------------------------------- TESTS ---------------------------------------------
@@ -150,6 +155,49 @@ function collection_test_097($in_login = NULL, $in_hashed_password = NULL, $in_p
     }
 }
 
+function create_hierarchy_node($depth, $andisol_instance, $collection) {
+    $ret = FALSE;
+    
+    if (0 < $depth) {
+        for ($i = 1; $i < 6; $i++) {
+            $collection_instance = $andisol_instance->create_collection();
+            if (isset($collection_instance) && ($collection_instance instanceof CO_Collection)) {
+                $d = 6 - $depth;
+                $collection_instance->set_name($collection->name."->$d->$i");
+                $collection->appendElement($collection_instance);
+                create_hierarchy_node($depth - 1, $andisol_instance, $collection_instance);
+            } else {
+                echo('<h3 style="color:red">Error Setting Up Collections!</h3>');
+                if (isset($andisol_instance->error)) {
+                    echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance->error->error_code.') '.$andisol_instance->error->error_name.' ('.$andisol_instance->error->error_description.')</p>');
+                }
+                
+                break;
+            }
+        }
+    }
+ 
+    return $ret;
+}
+
+function collection_test_098($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $collection = $andisol_instance->create_collection();
+    
+        if (isset($collection) && ($collection instanceof CO_Collection)) {
+            $collection->set_name("0");
+            create_hierarchy_node(5, $andisol_instance, $collection);
+            
+            $collection->reload_collection();
+            $hierarchy = $collection->getHierarchy();
+            $modifier = '';
+            display_raw_hierarchy($hierarchy, $modifier);
+        }
+    }
+}
+
 // -------------------------------- STRUCTURE ---------------------------------------------
 
 function collection_run_test($in_num, $in_title, $in_explain, $in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
@@ -175,13 +223,27 @@ ob_start();
     echo('<div class="test-wrapper" style="display:table;margin-left:auto;margin-right:auto;text-align:left">');
         echo('<h1 class="header">COLLECTION TESTS</h1>');
         echo('<div id="basic-storage-collection-tests" class="closed">');
-            echo('<h2 class="header"><a href="javascript:toggle_main_state(\'basic-storage-collection-tests\')">BASIC INSTANTIATION AND DELETION TESTS</a></h2>');
+            echo('<h2 class="header"><a href="javascript:toggle_main_state(\'basic-storage-collection-tests\')">BASIC INSTANTIATION AND CONCEALING TESTS</a></h2>');
             echo('<div class="container">');
                 echo('<p class="explain"></p>');
             
                 $start = microtime(true);
                 
                 basic_collection_run_tests();
+                
+                echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(true) - $start) . ' seconds to complete.</h5>');
+                
+            echo('</div>');
+        echo('</div>');
+        
+        echo('<div id="more-storage-collection-tests" class="closed">');
+            echo('<h2 class="header"><a href="javascript:toggle_main_state(\'more-storage-collection-tests\')">HIERARCHY AND DELETION TESTS</a></h2>');
+            echo('<div class="container">');
+                echo('<p class="explain"></p>');
+            
+                $start = microtime(true);
+                
+                more_collection_run_tests();
                 
                 echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(true) - $start) . ' seconds to complete.</h5>');
                 
