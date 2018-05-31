@@ -26,6 +26,8 @@ function basic_collection_run_tests() {
 
 function more_collection_run_tests() {
     collection_run_test(98, 'PASS -Create A Deep, Wide Collection Hierarchy', 'We log in as the \'asp\' login, and create a fairly substantial little hierarchy that will be used for the following tests. This will create about 3,000 collection records.', 'asp', '', 'CoreysGoryStory');
+    collection_run_test(99, 'PASS -Log In With A Limited Visibility Login', 'We log in as the \'norm\' login, and see what reords we can see.', 'norm', '', 'CoreysGoryStory');
+    collection_run_test(100, 'PASS -Log In With A Different Limited Visibility Login', 'We log in as the \'bob\' login, and see what reords we can see (many more than norm).', 'bob', '', 'CoreysGoryStory');
 }
 
 // -------------------------------- TESTS ---------------------------------------------
@@ -164,6 +166,7 @@ function create_hierarchy_node($depth, $andisol_instance, $collection) {
             if (isset($collection_instance) && ($collection_instance instanceof CO_Collection)) {
                 $d = 6 - $depth;
                 $collection_instance->set_name($collection->name."->$d->$i");
+                $collection_instance->set_read_security_id($i + 1);
                 $collection->appendElement($collection_instance);
                 create_hierarchy_node($depth - 1, $andisol_instance, $collection_instance);
             } else {
@@ -187,13 +190,57 @@ function collection_test_098($in_login = NULL, $in_hashed_password = NULL, $in_p
         $collection = $andisol_instance->create_collection();
     
         if (isset($collection) && ($collection instanceof CO_Collection)) {
-            $collection->set_name("0");
-            create_hierarchy_node(5, $andisol_instance, $collection);
+            if ($collection->set_name("0")) {
+                create_hierarchy_node(5, $andisol_instance, $collection);
             
-            $collection->reload_collection();
+                $collection->reload_collection();
+                $hierarchy = $collection->getHierarchy();
+                $modifier = 'original';
+                display_raw_hierarchy($hierarchy, $modifier);
+            } else {
+                echo('<h3 style="color:red">Error Setting Up Collections!</h3>');
+                if (isset($collection->error)) {
+                    echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$collection->error->error_code.') '.$collection->error->error_name.' ('.$collection->error->error_description.')</p>');
+                }
+            }
+        }
+    }
+}
+
+function collection_test_099($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $collection = $andisol_instance->get_single_data_record_by_id(11);
+    
+        if (isset($collection) && ($collection instanceof CO_Collection)) {
             $hierarchy = $collection->getHierarchy();
-            $modifier = '';
+            $modifier = 'test-1';
             display_raw_hierarchy($hierarchy, $modifier);
+        } else {
+            echo('<h3 style="color:red">Error Accessing Collections!</h3>');
+            if (isset($andisol_instance->error)) {
+                echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance->error->error_code.') '.$andisol_instance->error->error_name.' ('.$andisol_instance->error->error_description.')</p>');
+            }
+        }
+    }
+}
+
+function collection_test_100($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $collection = $andisol_instance->get_single_data_record_by_id(11);
+    
+        if (isset($collection) && ($collection instanceof CO_Collection)) {
+            $hierarchy = $collection->getHierarchy();
+            $modifier = 'test-2';
+            display_raw_hierarchy($hierarchy, $modifier);
+        } else {
+            echo('<h3 style="color:red">Error Accessing Collections!</h3>');
+            if (isset($andisol_instance->error)) {
+                echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance->error->error_code.') '.$andisol_instance->error->error_name.' ('.$andisol_instance->error->error_description.')</p>');
+            }
         }
     }
 }
