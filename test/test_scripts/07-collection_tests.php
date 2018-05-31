@@ -115,7 +115,7 @@ function collection_test_097($in_login = NULL, $in_hashed_password = NULL, $in_p
         
         if (isset($collection) && ($collection instanceof CO_Collection)) {
             echo('<h3 style="color:green">We have a collection!</h3>');
-            echo('<h5 style="color:green;font-style:italic">This is the hierarchy before we change the read ID of item 9. Note that we cannot see item 3. This is because the \'norm\' ID does not have that token:</h5>');
+            echo('<h4 style="color:green;font-style:italic">This is the hierarchy before we change the read ID of item 9. Note that we cannot see item 3. This is because the \'norm\' ID does not have that token:</h4>');
             display_record($collection);
             $andisol_instance2 = make_andisol('asp', '', 'CoreysGoryStory');
             $item_9 = $andisol_instance2->get_single_data_record_by_id(9);
@@ -130,13 +130,19 @@ function collection_test_097($in_login = NULL, $in_hashed_password = NULL, $in_p
                 }
             }
             
+            echo('<h4 style="color:green;font-style:italic">This is the hierarchy after we change the read ID of item 9 to one we can\'t see:</h4>');
+
             echo('<h5 style="color:green;font-style:italic">This is the cached copy. Note that we still see item 9:</h5>');
+            display_record($collection);
+            
+            $collection->reload_collection();
+            
+            echo('<h5 style="color:green;font-style:italic">This is the cached copy, but after we reload the collection. Note that we no longer see item 9:</h5>');
             display_record($collection);
             
             $collection2 = $andisol_instance->get_single_data_record_by_id(10);
         
             if (isset($collection2) && ($collection2 instanceof CO_Collection)) {
-                echo('<h5 style="color:green;font-style:italic">This is the hierarchy after we change the read ID of item 9:</h5>');
                 echo('<h5 style="color:green;font-style:italic">This is another copy that was loaded in (also was cached, but we don\'t know that):</h5>');
                 display_record($collection2);
             }
