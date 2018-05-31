@@ -20,7 +20,7 @@ ANDISOL enforces a strict security regimen.
 TWO DATABASES
 -------------
 
-The first layer of security is that secure login information, and security tokens (more on that later) are all stored ina totally separate security database, while the main data items are stored in a data database.
+The first layer of security is that secure login information, and security tokens (more on that later) are all stored in an isolated security database, while the main data items are stored in a data database.
 
 LOGINS
 ------
@@ -49,7 +49,7 @@ There are three special tokens:
 
 Integers over 1 are security tokens, and define access on a fairly granular level.
 
-Every record in the Rift Valley Platform dataset has two single tokens: read and write. Each login can have a list of tokens. If one of the tokens in a login matches the read or write token of a record, then the user has access to that record; either read or write (which includes read).
+Every record in the Rift Valley Platform dataset has two single tokens: read and write. Each login can have a list of tokens, in addition to the login ID of the login (remember, all security database item IDs double as security tokens). If one of the tokens in a login matches the read or write token of a record, then the user has access to that record; either read or write (which includes read).
 
 If a login does not have an access token for a record, then that record will not be accessible. It will be "invisible" to the user, at a very low level (won't even be accessed at the database level). The security tokens are enforced at the SQL level.
 
