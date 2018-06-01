@@ -150,22 +150,25 @@
         echo('</div>');
     }
     
+    function display_login_report($in_record_object) {
+        $access_object = $in_record_object->get_access_object();
+        if ($access_object) {
+            $login_item = $access_object->get_login_item();
+            if ($login_item) {
+                echo('<p style="font-style:italic;margin-top:0.25em;margin-bottom:0.25em">'.'This user ("'.$login_item->name.'"), is logged in as "'.$login_item->login_id.'" ('.implode(', ', $login_item->ids()).').</p>');
+                if ($in_record_object->user_can_write()) {
+                    echo('<p style="color: green;font-weight:bold;font-size:large;font-style:italic;margin-bottom:0.25em">This user can modify this record.</p>');
+                }
+            }
+        }
+    }
+    
     function display_record($in_record_object, $in_hierarchy_level = 0, $shorty = false) {
         echo("<h5 style=\"margin-top:0.5em\">ITEM ".$in_record_object->id().":</h5>");
         if (isset($in_record_object) && $in_record_object) {
             echo('<div class="inner_div">');
                 if (!$shorty) {
-                    $access_object = $in_record_object->get_access_object();
-                    if ($access_object) {
-                        $login_item = $access_object->get_login_item();
-                        if ($login_item) {
-                            echo('<p style="font-style:italic;margin-top:0.25em;margin-bottom:0.25em">'.'This user ("'.$login_item->name.'"), is logged in as "'.$login_item->login_id.'" ('.implode(', ', $login_item->ids()).').</p>');
-                            if ($in_record_object->user_can_write()) {
-                                echo('<p style="color: green;font-weight:bold;font-size:large;font-style:italic;margin-bottom:0.25em">This user can modify this record.</p>');
-                            }
-                        }
-                    }
-            
+                    display_login_report($in_record_object);
                     echo("<p>Class: ".get_class($in_record_object)."</p>");
                     if (isset($in_record_object->name)) {
                         echo("<p>Name: ".$in_record_object->name."</p>");

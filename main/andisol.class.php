@@ -13,7 +13,7 @@
 */
 defined( 'LGV_ANDISOL_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__ANDISOL_VERSION__', '1.0.0.1000');
+define('__ANDISOL_VERSION__', '1.0.0.2000');
 
 if (!defined('LGV_ACCESS_CATCHER')) {
     define('LGV_ACCESS_CATCHER', 1);
@@ -585,11 +585,11 @@ class Andisol {
         if ($in_make_user_if_necessary && $this->manager()) {   // See if we are a manager, and they want to maybe create a new user.
             $ret = $this->get_cobra_instance()->get_user_from_login($in_login_integer_id, $in_make_user_if_necessary);
         
-            $this->error = $this->get_cobra_instance()->error;
+            $this->error = isset($this->get_cobra_instance()->error) ? $this->get_cobra_instance()->error : NULL;
         } else {
             $ret = $this->get_chameleon_instance()->get_user_from_login($in_login_integer_id);
         
-            $this->error = $this->get_chameleon_instance()->error;
+            $this->error = isset($this->get_chameleon_instance()->error) ? $this->get_chameleon_instance()->error : NULL;
         }
         
         return $ret;

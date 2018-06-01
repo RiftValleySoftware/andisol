@@ -26,8 +26,9 @@ function basic_collection_run_tests() {
 
 function more_collection_run_tests() {
     collection_run_test(98, 'PASS -Create A Deep, Wide Collection Hierarchy', 'We log in as the \'asp\' login, and create a fairly substantial little hierarchy that will be used for the following tests. This will create about 3,000 collection records.', 'asp', '', 'CoreysGoryStory');
-    collection_run_test(99, 'PASS -Log In With A Limited Visibility Login', 'We log in as the \'norm\' login, and see what reords we can see.', 'norm', '', 'CoreysGoryStory');
-    collection_run_test(100, 'PASS -Log In With A Different Limited Visibility Login', 'We log in as the \'bob\' login, and see what reords we can see (many more than norm).', 'bob', '', 'CoreysGoryStory');
+    collection_run_test(99, 'PASS -Log In With God', 'We log in as the \'God\' login, and see what records we can see.', 'admin', '', CO_Config::god_mode_password());
+    collection_run_test(100, 'PASS -Log In With A Limited Visibility Login', 'We log in as the \'norm\' login, and see what records we can see.', 'norm', '', 'CoreysGoryStory');
+    collection_run_test(101, 'PASS -Log In With A Different Limited Visibility Login', 'We log in as the \'bob\' login, and see what records we can see (different ones from \'norm\').', 'bob', '', 'CoreysGoryStory');
 }
 
 // -------------------------------- TESTS ---------------------------------------------
@@ -183,7 +184,7 @@ function create_hierarchy_node($depth, $andisol_instance, $collection) {
     return $ret;
 }
 
-function collection_test_098($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function collection_test_098($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL, $tag) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
@@ -191,12 +192,10 @@ function collection_test_098($in_login = NULL, $in_hashed_password = NULL, $in_p
     
         if (isset($collection) && ($collection instanceof CO_Collection)) {
             if ($collection->set_name("0")) {
+                $st1 = microtime(true);
                 create_hierarchy_node(5, $andisol_instance, $collection);
-            
-                $collection->reload_collection();
-                $hierarchy = $collection->getHierarchy();
-                $modifier = 'original';
-                display_raw_hierarchy($hierarchy, $modifier);
+                $fetchTime = sprintf('%01.4f', microtime(true) - $st1);
+                echo("<h4>The test took $fetchTime seconds to create the hierarchy.</h4>");
             } else {
                 echo('<h3 style="color:red">Error Setting Up Collections!</h3>');
                 if (isset($collection->error)) {
@@ -207,16 +206,22 @@ function collection_test_098($in_login = NULL, $in_hashed_password = NULL, $in_p
     }
 }
 
-function collection_test_099($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+function collection_test_099($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL, $tag) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
     if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        $st1 = microtime(true);
         $collection = $andisol_instance->get_single_data_record_by_id(11);
+        $fetchTime = sprintf('%01.4f', microtime(true) - $st1);
+        echo("<h4>The test took $fetchTime seconds to get the collection object.</h4>");
     
         if (isset($collection) && ($collection instanceof CO_Collection)) {
+            $st1 = microtime(true);
             $hierarchy = $collection->getHierarchy();
-            $modifier = 'test-1';
-            display_raw_hierarchy($hierarchy, $modifier);
+            $fetchTime = sprintf('%01.4f', microtime(true) - $st1);
+            echo("<h4>The test took $fetchTime seconds to get the hierarchy.</h4>");
+            display_login_report($collection);
+            display_raw_hierarchy($hierarchy, $tag);
         } else {
             echo('<h3 style="color:red">Error Accessing Collections!</h3>');
             if (isset($andisol_instance->error)) {
@@ -227,22 +232,11 @@ function collection_test_099($in_login = NULL, $in_hashed_password = NULL, $in_p
 }
 
 function collection_test_100($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
-    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
-    
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
-        $collection = $andisol_instance->get_single_data_record_by_id(11);
-    
-        if (isset($collection) && ($collection instanceof CO_Collection)) {
-            $hierarchy = $collection->getHierarchy();
-            $modifier = 'test-2';
-            display_raw_hierarchy($hierarchy, $modifier);
-        } else {
-            echo('<h3 style="color:red">Error Accessing Collections!</h3>');
-            if (isset($andisol_instance->error)) {
-                echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance->error->error_code.') '.$andisol_instance->error->error_name.' ('.$andisol_instance->error->error_description.')</p>');
-            }
-        }
-    }
+    collection_test_099($in_login, $in_hashed_password, $in_password, 'test-2');
+}
+
+function collection_test_101($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    collection_test_099($in_login, $in_hashed_password, $in_password, 'test-3');
 }
 
 // -------------------------------- STRUCTURE ---------------------------------------------
@@ -257,7 +251,7 @@ function collection_run_test($in_num, $in_title, $in_explain, $in_login = NULL, 
             echo('</div>');
             $st1 = microtime(true);
             $function_name = sprintf('collection_test_%03d', $in_num);
-            $function_name($in_login, $in_hashed_password, $in_password);
+            $function_name($in_login, $in_hashed_password, $in_password, 'original');
             $fetchTime = sprintf('%01.3f', microtime(true) - $st1);
             echo("<h4>The test took $fetchTime seconds to complete.</h4>");
         echo('</div>');
@@ -269,6 +263,7 @@ ob_start();
     
     echo('<div class="test-wrapper" style="display:table;margin-left:auto;margin-right:auto;text-align:left">');
         echo('<h1 class="header">COLLECTION TESTS</h1>');
+        
         echo('<div id="basic-storage-collection-tests" class="closed">');
             echo('<h2 class="header"><a href="javascript:toggle_main_state(\'basic-storage-collection-tests\')">BASIC INSTANTIATION AND CONCEALING TESTS</a></h2>');
             echo('<div class="container">');
