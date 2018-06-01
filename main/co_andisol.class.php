@@ -35,7 +35,7 @@ to the lower level data storage and security infrastructure.
 
 You are to use this class for ALL access to the lower level functionality.
  */
-class Andisol {
+class CO_Andisol {
     protected $_chameleon_instance = NULL;  ///< This is the CHAMELEON instance.
     protected $_cobra_instance = NULL;      ///< This is the COBRA instance.
     

@@ -44,7 +44,7 @@ function user_search_run_tests() {
 function search_test_45($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $returned_array = $andisol_instance->location_search(-77.0502, 38.8893, 5.0);
         
         if (isset($returned_array) && is_array($returned_array) && count($returned_array)) {
@@ -61,7 +61,7 @@ function search_test_45($in_login = NULL, $in_hashed_password = NULL, $in_passwo
 function search_test_46($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $returned_array = $andisol_instance->location_search(-87.621887, 41.876465, 5.0);
         
         if (isset($returned_array) && is_array($returned_array) && count($returned_array)) {
@@ -78,7 +78,7 @@ function search_test_46($in_login = NULL, $in_hashed_password = NULL, $in_passwo
 function search_test_47($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $page = 0;
         $total = 0;
         
@@ -109,7 +109,7 @@ function search_test_47($in_login = NULL, $in_hashed_password = NULL, $in_passwo
 function search_test_48($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $page = 0;
         $total = 0;
         
@@ -140,7 +140,7 @@ function search_test_48($in_login = NULL, $in_hashed_password = NULL, $in_passwo
 function search_test_49($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $returned_integer = $andisol_instance->location_search(-77.0502, 38.8893, 5.0, 0, 0, false, true);
         
         if (isset($returned_integer) && $returned_integer) {
@@ -154,7 +154,7 @@ function search_test_49($in_login = NULL, $in_hashed_password = NULL, $in_passwo
 function search_test_50($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $returned_array = $andisol_instance->location_search(-77.0502, 38.8893, 5.0, 0, 0, false, false, true);
         
         if (isset($returned_array) && is_array($returned_array) && count($returned_array)) {
@@ -171,7 +171,7 @@ function search_test_50($in_login = NULL, $in_hashed_password = NULL, $in_passwo
 function search_test_51($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $returned_integer = $andisol_instance->location_search(-77.0502, 38.8893, 5.0, 10, 6, false, true);
         
         if (isset($returned_integer) && $returned_integer) {
@@ -185,7 +185,7 @@ function search_test_51($in_login = NULL, $in_hashed_password = NULL, $in_passwo
 function search_test_52($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $returned_array = $andisol_instance->location_search(-77.0502, 38.8893, 5.0, 10, 6, false, false, true);
         
         if (isset($returned_array) && is_array($returned_array) && count($returned_array)) {
@@ -202,7 +202,7 @@ function search_test_52($in_login = NULL, $in_hashed_password = NULL, $in_passwo
 function search_test_53($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $all_users = $andisol_instance->get_all_users();
         
         if (isset($all_users) && is_array($all_users) && count($all_users)) {
@@ -223,7 +223,7 @@ function search_test_54($in_login = NULL, $in_hashed_password = NULL, $in_passwo
 function search_test_55($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $all_users = $andisol_instance->get_all_login_users();
         
         if (isset($all_users) && is_array($all_users) && count($all_users)) {
@@ -240,7 +240,7 @@ function search_test_55($in_login = NULL, $in_hashed_password = NULL, $in_passwo
 function search_test_56($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $all_users = $andisol_instance->get_all_standalone_users();
         
         if (isset($all_users) && is_array($all_users) && count($all_users)) {
@@ -261,7 +261,7 @@ function search_test_57($in_login = NULL, $in_hashed_password = NULL, $in_passwo
 function search_test_58($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $all_users = $andisol_instance->get_all_users(true);
         
         if (isset($all_users) && is_array($all_users) && count($all_users)) {
@@ -282,7 +282,7 @@ function search_test_59($in_login = NULL, $in_hashed_password = NULL, $in_passwo
 function search_test_60($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $all_users = $andisol_instance->get_all_login_users(true);
         
         if (isset($all_users) && is_array($all_users) && count($all_users)) {
@@ -303,7 +303,7 @@ function search_test_61($in_login = NULL, $in_hashed_password = NULL, $in_passwo
 function search_test_62($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $all_users = $andisol_instance->get_all_standalone_users(true);
         
         if (isset($all_users) && is_array($all_users) && count($all_users)) {

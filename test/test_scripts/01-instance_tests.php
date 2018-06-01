@@ -37,7 +37,7 @@ function instance_test_01($in_login = NULL, $in_hashed_password = NULL, $in_pass
 function instance_test_02($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = instance_test_01($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         if ($andisol_instance->logged_in()) {
             echo('<h4 style="color:green">The ANDISOL instance is logged in.</h4>');
         } else {
@@ -51,7 +51,7 @@ function instance_test_02($in_login = NULL, $in_hashed_password = NULL, $in_pass
 function instance_test_03($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = instance_test_02($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         if ($andisol_instance->manager()) {
             echo('<h4 style="color:green">The ANDISOL instance is logged in as a manager.</h4>');
         } else {
@@ -65,7 +65,7 @@ function instance_test_03($in_login = NULL, $in_hashed_password = NULL, $in_pass
 function instance_test_04($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = instance_test_03($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         if ($andisol_instance->god()) {
             echo('<h4 style="color:green">The ANDISOL instance is logged in as a God.</h4>');
         } else {

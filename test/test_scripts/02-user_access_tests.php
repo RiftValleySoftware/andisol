@@ -69,7 +69,7 @@ function create_delete_run_tests() {
 function user_access_test_11($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $login_item = $andisol_instance->current_login();
         $user_item = $andisol_instance->current_user();
         
@@ -110,7 +110,7 @@ function user_access_test_16($in_login = NULL, $in_hashed_password = NULL, $in_p
 function user_access_test_17($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $user_item = $andisol_instance->get_user_from_login(2);
         
         if ($user_item) {
@@ -152,7 +152,7 @@ function user_access_test_20($in_login = NULL, $in_hashed_password = NULL, $in_p
 function user_access_test_21($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $login_item = $andisol_instance->get_login_item(2);
         
         if ($login_item) {
@@ -206,7 +206,7 @@ function user_access_test_25($in_login = NULL, $in_hashed_password = NULL, $in_p
 function user_access_test_26($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $user_item = $andisol_instance->get_user_from_login(4, true);
         
         if ($user_item) {
@@ -232,7 +232,7 @@ function user_access_test_29($in_login = NULL, $in_hashed_password = NULL, $in_p
 function user_access_test_30($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $user_item = $andisol_instance->get_user_from_login(5, true);
         
         if ($user_item) {
@@ -249,7 +249,7 @@ function user_access_test_30($in_login = NULL, $in_hashed_password = NULL, $in_p
 function user_access_test_31($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $andisol_login = $andisol_instance->get_login_item();
         $ids = array_filter($andisol_login->ids(), function($in){return $in != 7;});
         
@@ -299,7 +299,7 @@ function user_access_test_31($in_login = NULL, $in_hashed_password = NULL, $in_p
 function user_access_test_32($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $password = $andisol_instance->create_new_user('python');
         if ($password) {
             echo('<h3 style="color:green">The User (\'python\') Was Created, and the auto-generated password is '.htmlspecialchars($password).'</h3>');
@@ -333,7 +333,7 @@ function user_access_test_33($in_login = NULL, $in_hashed_password = NULL, $in_p
 function user_access_test_34($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $andisol_login = $andisol_instance->get_login_item();
         
         $ids = array_filter($andisol_login->ids(), function($in){return $in != 7;});
@@ -384,7 +384,7 @@ function user_access_test_34($in_login = NULL, $in_hashed_password = NULL, $in_p
 function user_access_test_35($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $password = $andisol_instance->create_new_user('mamba');
         if ($password) {
             echo('<h3 style="color:green">The User Was Created, and the auto-generated password is '.htmlspecialchars($password).'</h3>');
@@ -419,7 +419,7 @@ function user_access_test_36($in_login = NULL, $in_hashed_password = NULL, $in_p
 function user_access_test_37($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $user_from_andisol = $andisol_instance->get_user_from_login_string('python');
         
         if ($user_from_andisol) {
@@ -455,7 +455,7 @@ function user_access_test_38($in_login = NULL, $in_hashed_password = NULL, $in_p
 function user_access_test_39($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $cobra = $andisol_instance->get_cobra_instance();
         if ($cobra) {
             $login_item = $cobra->create_new_standard_login('puff-adder', 'CoreysGoryStory');
@@ -480,7 +480,7 @@ function user_access_test_39($in_login = NULL, $in_hashed_password = NULL, $in_p
 function user_access_test_40($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $login_instance = $andisol_instance->get_login_item_by_login_string('puff-adder');
         if ($login_instance) {
             if ($login_instance->delete_from_db()) {
@@ -498,7 +498,7 @@ function user_access_test_40($in_login = NULL, $in_hashed_password = NULL, $in_p
 function user_access_test_41($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $user_from_andisol = $andisol_instance->get_user_from_login_string('krait');
         
         if ($user_from_andisol) {
@@ -522,7 +522,7 @@ function user_access_test_42($in_login = NULL, $in_hashed_password = NULL, $in_p
 function user_access_test_43($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $login_instance = $andisol_instance->get_login_item_by_login_string('mamba');
         if ($login_instance) {
             $user_object = $login_instance->get_user_object();

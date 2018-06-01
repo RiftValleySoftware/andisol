@@ -44,7 +44,7 @@ function kvp_test_63($in_login = NULL, $in_hashed_password = NULL, $in_password 
     $key = 'The Answer';
     $value = 42;
         
-    if (isset($andisol_instance1) && ($andisol_instance1 instanceof Andisol)) {
+    if (isset($andisol_instance1) && ($andisol_instance1 instanceof CO_Andisol)) {
         if ($andisol_instance1->set_value_for_key($key, $value)) {
             echo('<h3 style="color:green">The value \''.$value .'\' was successfully stored for the key \''.$key.'\'!</h3>');
         } else {
@@ -58,7 +58,7 @@ function kvp_test_63($in_login = NULL, $in_hashed_password = NULL, $in_password 
     
     $andisol_instance2 = make_andisol();
     
-    if (isset($andisol_instance2) && ($andisol_instance2 instanceof Andisol)) {
+    if (isset($andisol_instance2) && ($andisol_instance2 instanceof CO_Andisol)) {
         $fetched_value = intval($andisol_instance2->get_value_for_key($key));
         if ($fetched_value) {
             echo('<h3 style="color:green">The text value was successfully fetched!</h3>');
@@ -86,7 +86,7 @@ function kvp_test_65() {
     $key = 'keymaster';
     $value = 'Rick Moranis';
         
-    if (isset($andisol_instance1) && ($andisol_instance1 instanceof Andisol)) {
+    if (isset($andisol_instance1) && ($andisol_instance1 instanceof CO_Andisol)) {
         if ($andisol_instance1->set_value_for_key($key, $value)) {
             echo('<h3 style="color:green">The value \''.$value .'\' was successfully stored for the key \''.$key.'\'!</h3>');
         } else {
@@ -100,7 +100,7 @@ function kvp_test_65() {
     
     $andisol_instance2 = make_andisol();
     
-    if (isset($andisol_instance2) && ($andisol_instance2 instanceof Andisol)) {
+    if (isset($andisol_instance2) && ($andisol_instance2 instanceof CO_Andisol)) {
         $fetched_value = $andisol_instance2->get_value_for_key($key);
         if ($fetched_value) {
             echo('<h3 style="color:green">The text value was successfully fetched!</h3>');
@@ -125,7 +125,7 @@ function kvp_test_66() {
     $value = file_get_contents(dirname(dirname(__FILE__)).'/config/honey_badger_dont_care.gif');
     $image_1_base64_data = base64_encode ($value);
         
-    if (isset($andisol_instance1) && ($andisol_instance1 instanceof Andisol)) {
+    if (isset($andisol_instance1) && ($andisol_instance1 instanceof CO_Andisol)) {
         if ($andisol_instance1->set_value_for_key($key, $value)) {
             echo('<h3 style="color:green">The image was successfully stored for the key \''.$key.'\'!</h3>');
         } else {
@@ -139,7 +139,7 @@ function kvp_test_66() {
     
     $andisol_instance2 = make_andisol();
     
-    if (isset($andisol_instance2) && ($andisol_instance2 instanceof Andisol)) {
+    if (isset($andisol_instance2) && ($andisol_instance2 instanceof CO_Andisol)) {
         $fetched_value = $andisol_instance2->get_value_for_key($key);
         if ($fetched_value) {
             echo('<h3 style="color:green">The value was successfully fetched!</h3>');
@@ -168,7 +168,7 @@ function kvp_test_67() {
     $key = 'keymaster';
     $value = 'ZOOL\'S BITCH';
         
-    if (isset($andisol_instance1) && ($andisol_instance1 instanceof Andisol)) {
+    if (isset($andisol_instance1) && ($andisol_instance1 instanceof CO_Andisol)) {
         $original_value = $andisol_instance1->get_value_for_key($key);
         if ($andisol_instance1->set_value_for_key($key, $value)) {
             echo('<h3 style="color:green">The value \''.$original_value .'\' was successfully changed to \''.$value.'\' for the key \''.$key.'\'!</h3>');
@@ -183,7 +183,7 @@ function kvp_test_67() {
     
     $andisol_instance2 = make_andisol();
     
-    if (isset($andisol_instance2) && ($andisol_instance2 instanceof Andisol)) {
+    if (isset($andisol_instance2) && ($andisol_instance2 instanceof CO_Andisol)) {
         $fetched_value = $andisol_instance2->get_value_for_key($key);
         if ($fetched_value) {
             echo('<h3 style="color:green">The text value was successfully fetched!</h3>');
@@ -206,7 +206,7 @@ function kvp_test_68() {
         
     $andisol_instance = make_andisol();
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $fetched_value = $andisol_instance->get_value_for_key($key);
         if ($fetched_value) {
             echo('<h3 style="color:green">The object for the key \''.$key.'\' has a value of \''.fetched_value.'\'</h3>');
@@ -221,7 +221,7 @@ function kvp_test_69() {
         
     $andisol_instance = make_andisol();
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $object_instance = $andisol_instance->get_object_for_key($key);
         if ($object_instance && ($object_instance instanceof CO_KeyValue)) {
             echo('<h3 style="color:green">The object for the key \''.$key.'\', containing \''.$object_instance->get_value().'\' was successfully fetched!</h3>');
@@ -236,7 +236,7 @@ function kvp_test_70() {
         
     $andisol_instance = make_andisol();
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $object_instance = $andisol_instance->get_object_for_key($key);
         if ($object_instance && ($object_instance instanceof CO_KeyValue)) {
             echo('<h3 style="color:green">The object for the key \''.$key.'\', containing \''.$object_instance->get_value().'\' was successfully fetched!</h3>');
@@ -254,7 +254,7 @@ function kvp_test_71($in_login = NULL, $in_hashed_password = NULL, $in_password 
     
     $key = 'keymaster';
         
-    if (isset($andisol_instance1) && ($andisol_instance1 instanceof Andisol)) {
+    if (isset($andisol_instance1) && ($andisol_instance1 instanceof CO_Andisol)) {
         if ($andisol_instance1->delete_key($key)) {
             echo('<h3 style="color:green">The value was successfully deleted!</h3>');
         } else {
@@ -267,7 +267,7 @@ function kvp_test_71($in_login = NULL, $in_hashed_password = NULL, $in_password 
     
     $andisol_instance2 = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance2) && ($andisol_instance2 instanceof Andisol)) {
+    if (isset($andisol_instance2) && ($andisol_instance2 instanceof CO_Andisol)) {
         $fetched_value = $andisol_instance2->get_value_for_key($key);
         if ($fetched_value) {
             echo('<h3 style="color:red">PROBLEM! This should be gone!</h3>');
@@ -282,7 +282,7 @@ function kvp_test_72($in_login = NULL, $in_hashed_password = NULL, $in_password 
     
     $key = 'Honey Badger Don\'t Care';
         
-    if (isset($andisol_instance1) && ($andisol_instance1 instanceof Andisol)) {
+    if (isset($andisol_instance1) && ($andisol_instance1 instanceof CO_Andisol)) {
         if ($andisol_instance1->delete_key($key)) {
             echo('<h3 style="color:green">The value was successfully deleted!</h3>');
         } else {
@@ -295,7 +295,7 @@ function kvp_test_72($in_login = NULL, $in_hashed_password = NULL, $in_password 
     
     $andisol_instance2 = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance2) && ($andisol_instance2 instanceof Andisol)) {
+    if (isset($andisol_instance2) && ($andisol_instance2 instanceof CO_Andisol)) {
         $fetched_value = $andisol_instance2->get_value_for_key($key);
         if ($fetched_value) {
             echo('<h3 style="color:red">PROBLEM! This should be gone!</h3>');
@@ -315,7 +315,7 @@ function kvp_test_74($in_login = NULL, $in_hashed_password = NULL, $in_password 
     $key = 'The Great Shadow';
     $value = file_get_contents(dirname(dirname(__FILE__)).'/config/TheGreatShadow.txt');
         
-    if (isset($andisol_instance1) && ($andisol_instance1 instanceof Andisol)) {
+    if (isset($andisol_instance1) && ($andisol_instance1 instanceof CO_Andisol)) {
         if ($andisol_instance1->set_value_for_key($key, $value)) {
             echo('<h3 style="color:green">The value was successfully stored for the key \''.$key.'\'!</h3>');
         } else {
@@ -329,7 +329,7 @@ function kvp_test_74($in_login = NULL, $in_hashed_password = NULL, $in_password 
     
     $andisol_instance2 = make_andisol();
     
-    if (isset($andisol_instance2) && ($andisol_instance2 instanceof Andisol)) {
+    if (isset($andisol_instance2) && ($andisol_instance2 instanceof CO_Andisol)) {
         $fetched_value = $andisol_instance2->get_value_for_key($key);
         if ($fetched_value) {
             echo('<h3 style="color:green">The text value was successfully fetched!</h3>');
@@ -361,7 +361,7 @@ function kvp_test_75($in_login = NULL, $in_hashed_password = NULL, $in_password 
     $key = 'Yo! Smitty!';
     $value = file_get_contents(dirname(dirname(__FILE__)).'/config/Yosemite.jpg');
         
-    if (isset($andisol_instance1) && ($andisol_instance1 instanceof Andisol)) {
+    if (isset($andisol_instance1) && ($andisol_instance1 instanceof CO_Andisol)) {
         if ($andisol_instance1->set_value_for_key($key, $value)) {
             echo('<h3 style="color:green">The image value was successfully stored for the key \''.$key.'\'!</h3>');
         } else {
@@ -375,7 +375,7 @@ function kvp_test_75($in_login = NULL, $in_hashed_password = NULL, $in_password 
     
     $andisol_instance2 = make_andisol();
     
-    if (isset($andisol_instance2) && ($andisol_instance2 instanceof Andisol)) {
+    if (isset($andisol_instance2) && ($andisol_instance2 instanceof CO_Andisol)) {
         $fetched_value = $andisol_instance1->get_value_for_key($key);
         if ($fetched_value) {
             echo('<h3 style="color:green">The image value was successfully fetched!</h3>');
@@ -401,7 +401,7 @@ function kvp_test_76($in_login = NULL, $in_hashed_password = NULL, $in_password 
     $key = 'The Bricklayer';
     $value = file_get_contents(dirname(dirname(__FILE__)).'/config/TheBricklayer.mp3');
         
-    if (isset($andisol_instance1) && ($andisol_instance1 instanceof Andisol)) {
+    if (isset($andisol_instance1) && ($andisol_instance1 instanceof CO_Andisol)) {
         if ($andisol_instance1->set_value_for_key($key, $value)) {
             echo('<h3 style="color:green">The audio value was successfully stored for the key \''.$key.'\'!</h3>');
         } else {
@@ -415,7 +415,7 @@ function kvp_test_76($in_login = NULL, $in_hashed_password = NULL, $in_password 
     
     $andisol_instance2 = make_andisol();
     
-    if (isset($andisol_instance2) && ($andisol_instance2 instanceof Andisol)) {
+    if (isset($andisol_instance2) && ($andisol_instance2 instanceof CO_Andisol)) {
         $fetched_value = $andisol_instance1->get_value_for_key($key);
         if ($fetched_value) {
             echo('<h3 style="color:green">The audio value was successfully fetched!</h3>');
@@ -443,7 +443,7 @@ function kvp_test_77($in_login = NULL, $in_hashed_password = NULL, $in_password 
     $key = 'Yankee Doodle Mouse';
     $value = file_get_contents(dirname(dirname(__FILE__)).'/config/TJ1.mp4');
         
-    if (isset($andisol_instance1) && ($andisol_instance1 instanceof Andisol)) {
+    if (isset($andisol_instance1) && ($andisol_instance1 instanceof CO_Andisol)) {
         if ($andisol_instance1->set_value_for_key($key, $value)) {
             echo('<h3 style="color:green">The video value was successfully stored for the key \''.$key.'\'!</h3>');
         } else {
@@ -457,7 +457,7 @@ function kvp_test_77($in_login = NULL, $in_hashed_password = NULL, $in_password 
     
     $andisol_instance2 = make_andisol();
     
-    if (isset($andisol_instance2) && ($andisol_instance2 instanceof Andisol)) {
+    if (isset($andisol_instance2) && ($andisol_instance2 instanceof CO_Andisol)) {
         $fetched_value = $andisol_instance1->get_value_for_key($key);
         if ($fetched_value) {
             echo('<h3 style="color:green">The video value was successfully fetched!</h3>');

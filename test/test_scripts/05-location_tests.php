@@ -38,7 +38,7 @@ function kvp_test_78($in_login = NULL, $in_hashed_password = NULL, $in_password 
     
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $long_lat_instance = $andisol_instance->create_ll_location($long_lat_dc_lincoln_memorial['longitude'], $long_lat_dc_lincoln_memorial['latitude']);
         
         if (isset($long_lat_instance) && ($long_lat_instance instanceof CO_LL_Location)) {
@@ -63,7 +63,7 @@ function kvp_test_79($in_login = NULL, $in_hashed_password = NULL, $in_password 
     
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $long_lat_instance = $andisol_instance->create_ll_location($long_lat_dc_lincoln_memorial['longitude'], $long_lat_dc_lincoln_memorial['latitude'], 10.0);
         
         if (isset($long_lat_instance) && ($long_lat_instance instanceof CO_LL_Location)) {
@@ -95,7 +95,7 @@ function kvp_test_80($in_login = NULL, $in_hashed_password = NULL, $in_password 
     
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $long_lat_instance = $andisol_instance->create_ll_location($long_lat_dc_lincoln_memorial['longitude'], $long_lat_dc_lincoln_memorial['latitude'], 10.0, NULL, 0);
         
         if (isset($long_lat_instance) && ($long_lat_instance instanceof CO_LL_Location)) {
@@ -107,7 +107,7 @@ function kvp_test_80($in_login = NULL, $in_hashed_password = NULL, $in_password 
             for ($test = 1; $test < 11; $test++) {
                 $andisol_instance = make_andisol();
     
-                if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+                if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
                     $long_lat_instance = $andisol_instance->get_single_data_record_by_id($instance_id);
                     if (isset($long_lat_instance) && ($long_lat_instance instanceof CO_LL_Location)) {
                         $test_long = $long_lat_instance->longitude();
@@ -145,7 +145,7 @@ function kvp_test_80($in_login = NULL, $in_hashed_password = NULL, $in_password 
 function kvp_test_81($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $long_lat_ny_empire_state = Array('longitude' => -73.9854245, 'latitude' => 40.7484799);
     
         $place = $andisol_instance->create_place(true, 'Empire State Building', '350 5th Avenue', 'New York', NULL, 'NY', '10118', 'US', 'This here\'s a big building. Can\'t miss it.', $long_lat_ny_empire_state['longitude'], $long_lat_ny_empire_state['latitude'], 10);
@@ -165,7 +165,7 @@ function kvp_test_81($in_login = NULL, $in_hashed_password = NULL, $in_password 
 function kvp_test_82($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $place = $andisol_instance->create_place();
         
         if (isset($place) && ($place instanceof CO_Place)) {
@@ -182,7 +182,7 @@ function kvp_test_82($in_login = NULL, $in_hashed_password = NULL, $in_password 
 function kvp_test_83($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $long_lat_ny_empire_state = Array('longitude' => -73.9854245, 'latitude' => 40.7484799);
     
         $place = $andisol_instance->create_ll_place($long_lat_ny_empire_state['longitude'], $long_lat_ny_empire_state['latitude']);
@@ -202,7 +202,7 @@ function kvp_test_83($in_login = NULL, $in_hashed_password = NULL, $in_password 
 function kvp_test_84($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $long_lat_ny_empire_state = Array('longitude' => -73.9854245, 'latitude' => 40.7484799);
     
         $place = $andisol_instance->create_place(false, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, $long_lat_ny_empire_state['longitude'], $long_lat_ny_empire_state['latitude']);
@@ -222,7 +222,7 @@ function kvp_test_84($in_login = NULL, $in_hashed_password = NULL, $in_password 
 function kvp_test_85($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $place = $andisol_instance->create_place(true, 'Empire State Building', '350 5th Avenue', 'New York', NULL, 'NY', '10118', 'US');
         
         if (isset($place) && ($place instanceof CO_Place)) {
@@ -240,7 +240,7 @@ function kvp_test_85($in_login = NULL, $in_hashed_password = NULL, $in_password 
 function kvp_test_86($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $place = $andisol_instance->create_place(false, 'Empire State Building', '350 5th Avenue', 'New York', NULL, 'NY', '10118', 'US');
         
         if (isset($place) && ($place instanceof CO_Place)) {
@@ -258,7 +258,7 @@ function kvp_test_86($in_login = NULL, $in_hashed_password = NULL, $in_password 
 function kvp_test_87($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $long_lat_mid_atlantic = Array('longitude' => -39.014456, 'latitude' => 35.025099);
     
         $place = $andisol_instance->create_ll_place($long_lat_mid_atlantic['longitude'], $long_lat_mid_atlantic['latitude']);

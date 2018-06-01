@@ -58,7 +58,7 @@ require_once($config_file_path);
                     define('LGV_ANDISOL_CATCHER', 1);
                 }
     
-                require_once(CO_Config::main_class_dir().'/andisol.class.php');
+                require_once(CO_Config::main_class_dir().'/co_andisol.class.php');
             ?>
             <img src="../icon.png" style="display:block;margin:auto;width:80px" alt="A Lump of COAL" />
             <h1 class="header">MAIN ENVIRONMENT SETUP</h1>

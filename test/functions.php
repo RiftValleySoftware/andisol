@@ -28,11 +28,11 @@
             define('LGV_ANDISOL_CATCHER', 1);
         }
     
-        require_once(CO_Config::main_class_dir().'/andisol.class.php');
+        require_once(CO_Config::main_class_dir().'/co_andisol.class.php');
     
-        $andisol_instance = new Andisol($in_login, $in_hashed_password, $in_password);
+        $andisol_instance = new CO_Andisol($in_login, $in_hashed_password, $in_password);
     
-        if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+        if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
             echo("<h2 style=\"color:green;font-weight:bold\">The ANDISOL instance is valid!</h2>");
         } elseif (isset($andisol_instance) && ($andisol_instance->error instanceof LGV_Error)) {
             echo("<h2 style=\"color:red;font-weight:bold\">The ANDISOL instance is not valid!</h2>");

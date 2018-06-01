@@ -28,7 +28,7 @@ function generic_storage_run_tests() {
 function generic_storage_test_088($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $generic_object = $andisol_instance->create_general_data_item();
         
         if (isset($generic_object) && ($generic_object instanceof CO_Main_DB_Record)) {
@@ -62,7 +62,7 @@ function generic_storage_test_089($in_login = NULL, $in_hashed_password = NULL, 
 function generic_storage_test_090($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $generic_object = $andisol_instance->get_single_data_record_by_id(6);
         
         if (isset($generic_object) && ($generic_object instanceof CO_Main_DB_Record)) {

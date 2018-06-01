@@ -1,4 +1,6 @@
-![ANDISOL](images/icon.png)
+[]: # \mainpage ANDISOL
+
+![ANDISOL](images/ANDISOL.png)
 
 ANDISOL
 =======
@@ -10,7 +12,17 @@ INTRODUCTION
 ============
 ANDISOL is the "public face" of the lowest levels of the Rift Valley Platform. It encapsulates the model (database or server connections), and provides an object-based, functional model to the implementation layers.
 
+SUBPROJECTS
+===========
+ANDISOL is one of four main projects that comprise the foundation of the Rift Valley Platform.
+
 ![ANDISOL Diagram](images/ANDISOLLayers.png)
+
+\ref COBRA is the security administration toolbox for the Rift Valley Platform. It is only available to logged-in users that are "manager" users; capable of editing other users.
+
+\ref CHAMELEON is the "First Layer Abstraction" from the data storage and retrieval. It implements a few higher-level capabilities, such as collections, users and places.
+
+\ref BADGER is the "First Layer Connection" to the data storage subsystem. It uses [PHP PDO](http://php.net/manual/en/book.pdo.php) to abstract from the databases, and provide SQL-injection protection through the use of [PHP PDO Prepared Statements](http://php.net/manual/en/pdo.prepared-statements.php).
 
 SECURITY
 ========
@@ -60,7 +72,7 @@ Security tokens are "atomic." They apply ONLY to a given record. They do not pro
 IMPLEMENTATION
 ==============
 
-You use ANDISOL by instantiating an instance of the Andisol class, after setting up a valid database configuration.
+You use ANDISOL by instantiating an instance of the CO_Andisol class, after setting up a valid database configuration.
 
 All interaction with the data layers needs to go through ANDISOL. You can interact with individual data objects, once they have been retrieved by ANDISOL.
 

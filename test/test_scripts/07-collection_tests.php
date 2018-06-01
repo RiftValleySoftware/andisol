@@ -27,8 +27,9 @@ function basic_collection_run_tests() {
 function more_collection_run_tests() {
     collection_run_test(98, 'PASS -Create A Deep, Wide Collection Hierarchy', 'We log in as the \'asp\' login, and create a fairly substantial little hierarchy that will be used for the following tests. This will create about 3,000 collection records.', 'asp', '', 'CoreysGoryStory');
     collection_run_test(99, 'PASS -Log In With God', 'We log in as the \'God\' login, and see what records we can see.', 'admin', '', CO_Config::god_mode_password());
-    collection_run_test(100, 'PASS -Log In With A Limited Visibility Login', 'We log in as the \'norm\' login, and see what records we can see.', 'norm', '', 'CoreysGoryStory');
-    collection_run_test(101, 'PASS -Log In With A Different Limited Visibility Login', 'We log in as the \'bob\' login, and see what records we can see (all of them).', 'bob', '', 'CoreysGoryStory');
+    collection_run_test(100, 'PASS -Log In With A Limited Visibility Login', 'We log in as the \'norm\' login, and see what records we can see (one of each).', 'norm', '', 'CoreysGoryStory');
+    collection_run_test(101, 'PASS -Log In With A Different Limited Visibility Login (\'king-cobra\')', 'We log in as the \'king-cobra\' login, and see what records we can see (two of each).', 'king-cobra', '', 'CoreysGoryStory');
+    collection_run_test(102, 'PASS -Log In With A Different Limited Visibility Login (\'bob\')', 'We log in as the \'bob\' login, and see what records we can see (all of them).', 'bob', '', 'CoreysGoryStory');
 }
 
 // -------------------------------- TESTS ---------------------------------------------
@@ -36,7 +37,7 @@ function more_collection_run_tests() {
 function collection_test_093($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $collection_instance = $andisol_instance->create_collection();
         
         if (isset($collection_instance) && ($collection_instance instanceof CO_Collection)) {
@@ -58,7 +59,7 @@ function collection_test_094($in_login = NULL, $in_hashed_password = NULL, $in_p
 function collection_test_095($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $initial_ids = Array(3, 4, 5);
         
         $collection_instance = $andisol_instance->create_collection($initial_ids);
@@ -78,7 +79,7 @@ function collection_test_095($in_login = NULL, $in_hashed_password = NULL, $in_p
 function collection_test_096($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $initial_ids = Array(3, 4, 5);
         
         $collection_instance1 = $andisol_instance->create_collection($initial_ids);
@@ -118,7 +119,7 @@ function collection_test_096($in_login = NULL, $in_hashed_password = NULL, $in_p
 function collection_test_097($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $collection = $andisol_instance->get_single_data_record_by_id(10);
         
         if (isset($collection) && ($collection instanceof CO_Collection)) {
@@ -159,7 +160,7 @@ function collection_test_097($in_login = NULL, $in_hashed_password = NULL, $in_p
 }
 
 function create_hierarchy_node($depth, $andisol_instance, $collection) {
-    $ret = FALSE;
+    $ret = false;
     
     if (0 < $depth) {
         for ($i = 1; $i < 6; $i++) {
@@ -187,7 +188,7 @@ function create_hierarchy_node($depth, $andisol_instance, $collection) {
 function collection_test_098($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL, $tag) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $collection = $andisol_instance->create_collection();
     
         if (isset($collection) && ($collection instanceof CO_Collection)) {
@@ -209,7 +210,7 @@ function collection_test_098($in_login = NULL, $in_hashed_password = NULL, $in_p
 function collection_test_099($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL, $tag) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
-    if (isset($andisol_instance) && ($andisol_instance instanceof Andisol)) {
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $st1 = microtime(true);
         $collection = $andisol_instance->get_single_data_record_by_id(11);
         $fetchTime = sprintf('%01.4f', microtime(true) - $st1);
@@ -237,6 +238,10 @@ function collection_test_100($in_login = NULL, $in_hashed_password = NULL, $in_p
 
 function collection_test_101($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     collection_test_099($in_login, $in_hashed_password, $in_password, 'test-3');
+}
+
+function collection_test_102($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    collection_test_099($in_login, $in_hashed_password, $in_password, 'test-4');
 }
 
 // -------------------------------- STRUCTURE ---------------------------------------------
