@@ -46,10 +46,12 @@ For "regular" logins, you have two login types:
 
 Logins are generally "twinned" with "user" records in the data database. The login, itself, is kept in the security database, but additional user information is kept in the data database. This is not required. Logins (or users) can be standalone.
 
-SECURITY TOKENS
----------------
+SECURITY TOKENS VS SECURITY LEVELS
+----------------------------------
 
 Security is done via integer "tokens." Tokens are record IDs in the Security database. These can be login IDs, or standalone "security token" IDs. These integers are then referenced as read or write tokens for individual data items.
+
+Security is not a "level-based" system. There are no "higher" tokens than other tokens; only "different" tokens. The only "higher" security level is the "God" login; which has access to all elements.
 
 In order to have read or write access to a given item, a login has to have the token for that record's read and/or write permission.
 
@@ -61,13 +63,16 @@ There are three special tokens:
 
 Integers over 1 are security tokens, and define access on a fairly granular level.
 
-Every record in the Rift Valley Platform dataset has two single tokens: read and write. Each login can have a list of tokens, in addition to the login ID of the login (remember, all security database item IDs double as security tokens). If one of the tokens in a login matches the read or write token of a record, then the user has access to that record; either read or write (which includes read).
+Every record in the Rift Valley Platform dataset has two single tokens: read and write. Each login can have a list of tokens, in addition to the ID of the login (remember, all security database item IDs double as security tokens). If one of the tokens in a login matches the read or write token of a record, then the user has access to that record; either read or write (which includes read).
 
 If a login does not have an access token for a record, then that record will not be accessible. It will be "invisible" to the user, at a very low level (won't even be accessed at the database level). The security tokens are enforced at the SQL level.
 
-Security tokens are "atomic." They apply ONLY to a given record. They do not propagate to other records. For example, a collection record, which aggregates other records, can have a lower security level than some of the records that it aggregates (or vice-versa).
+NO CASCADE
+----------
 
-"Manager" logins have a "pool" of tokens, and can only assign tokens to logins they manage from that "pool."
+Security tokens are "atomic." They apply ONLY to a given record. They do not propagate to other records. For example, a collection record, which aggregates other records, can have a different (not "lower" -"different") security level than some of the records that it aggregates.
+
+"Manager" logins have a "pool" of tokens, and can only assign tokens to logins they manage from that "pool." It is impossible for a manager to assign a security token that they, themselves, do not have. This should be remembered when creating other managers.
 
 IMPLEMENTATION
 ==============
