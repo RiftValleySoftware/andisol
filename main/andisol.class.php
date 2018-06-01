@@ -13,7 +13,7 @@
 */
 defined( 'LGV_ANDISOL_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__ANDISOL_VERSION__', '1.0.0.2000');
+define('__ANDISOL_VERSION__', '1.0.0.2001');
 
 if (!defined('LGV_ACCESS_CATCHER')) {
     define('LGV_ACCESS_CATCHER', 1);
@@ -62,7 +62,7 @@ class Andisol {
 
             if (isset($instance) && ($instance instanceof $in_classname)) {
                 // If we did not get a specific read security ID, then we assume 1.
-                if (!isset($in_read_security_id) || !intval($in_read_security_id)) {
+                if (!isset($in_read_security_id)) {
                     $in_read_security_id = 1;
                 }
             

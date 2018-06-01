@@ -120,7 +120,14 @@ function kvp_test_80($in_login = NULL, $in_hashed_password = NULL, $in_password 
                             echo('<p style="color:green">The returned longitude is '.$test_long.', and the returned latitude is '.$test_lat.'.</p>');
                         }
                     } else {
-                        echo('<h3 style="color:red">TEST '.$test.' Fails! We can\'t instantiate a new long/lat instance!</h3>');
+                        echo('<h3 style="color:red">TEST '.$test.' Fails! We can\'t instantiate a new long/lat instance for ID '.$instance_id.'!</h3>');
+                        if (isset($long_lat_instance)) {
+                            echo('<p style="margin-left:1em;color:red;font-weight:bold">'.get_class($long_lat_instance).' is the wrong data type!</p>');
+                        }
+                        
+                        if (isset($andisol_instance->error)) {
+                            echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance->error->error_code.') '.$andisol_instance->error->error_name.' ('.$andisol_instance->error->error_description.')</p>');
+                        }
                     }
                 } else {
                     echo('<h3 style="color:red">TEST '.$test.' Fails! We can\'t instantiate a new ANDISOL instance!</h3>');
