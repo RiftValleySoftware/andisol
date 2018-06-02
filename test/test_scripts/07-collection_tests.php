@@ -12,7 +12,7 @@
     Little Green Viper Software Development: https://littlegreenviper.com
 */
 require_once(dirname(dirname(__FILE__)).'/functions.php');
-set_time_limit ( 60 * 60 * 2 );
+set_time_limit ( 300 ); // More than five minutes is a problem.
     
 // -------------------------------- TEST DISPATCHER ---------------------------------------------
 
@@ -27,10 +27,10 @@ function basic_collection_run_tests() {
 function more_collection_run_tests() {
     collection_run_test(98, 'PASS -Create A Deep, Wide Collection Hierarchy', 'We log in as the \'asp\' login, and create a fairly substantial little hierarchy that will be used for the following tests. This will create about 3,000 collection records.', 'asp', '', 'CoreysGoryStory');
     collection_run_test(99, 'PASS -Log In With God', 'We log in as the \'God\' login, and see what records we can see.', 'admin', '', CO_Config::god_mode_password());
-    collection_run_test(100, 'PASS -Log In With A Limited Visibility Login', 'We log in as the \'norm\' login, and see what records we can see (one of each).', 'norm', '', 'CoreysGoryStory');
+    collection_run_test(100, 'PASS -Log In With A Limited Visibility Login', 'We log in as the \'norm\' login, and see what records we can see (only five of them, because of the visibility restrictions).', 'norm', '', 'CoreysGoryStory');
     collection_run_test(101, 'PASS -Log In With A Different Limited Visibility Login (\'king-cobra\')', 'We log in as the \'king-cobra\' login, and see what records we can see (two of each).', 'king-cobra', '', 'CoreysGoryStory');
-    collection_run_test(102, 'PASS -Log In With A Different Limited Visibility Login (\'bob\')', 'We log in as the \'bob\' login, and see what records we can see (all of them).', 'bob', '', 'CoreysGoryStory');
-    collection_run_test(103, 'PASS -Log In With A Limited Visibility Login, Delete Members, Then View With Another Login', 'We log in as the \'norm\' login, delete what we can see, then log in with \'bob\', and see what records we can see (four of each, now).');
+    collection_run_test(102, 'PASS -Log In With A Different Limited Visibility Login (\'bob\')', 'We log in as the \'bob\' login, and see what records we can see (four of each).', 'bob', '', 'CoreysGoryStory');
+    collection_run_test(103, 'PASS -Log In With A Limited Visibility Login, Delete Members, Then View With Another Login', 'We log in as the \'norm\' login, delete what we can see, then log in with \'God\', and see what records we can see (It\'s not quite as simple as four of each, because \'norm\' could only see one track, in the first place).');
 }
 
 // -------------------------------- TESTS ---------------------------------------------
@@ -170,6 +170,9 @@ function create_hierarchy_node($depth, $andisol_instance, $collection) {
                 $d = 6 - $depth;
                 $collection_instance->set_name($collection->name."->$d->$i");
                 $collection_instance->set_read_security_id($i + 1);
+                if ($i == 2) {
+                    $collection_instance->set_write_security_id($i + 1);
+                }
                 $collection->appendElement($collection_instance);
                 create_hierarchy_node($depth - 1, $andisol_instance, $collection_instance);
             } else {
@@ -247,32 +250,27 @@ function collection_test_102($in_login = NULL, $in_hashed_password = NULL, $in_p
 
 function delete_nodes($in_hierarchy_array) {
     if (isset($in_hierarchy_array) && is_array($in_hierarchy_array) && count($in_hierarchy_array)) {
-        echo('<div class="main_div inner_container">');
+        if (isset($in_hierarchy_array['children'])) {
+            foreach ($in_hierarchy_array['children'] as $child) {
+                if (!delete_nodes($child)) {
+                    return false;
+                }
+            }
+        }
+        
         if ($in_hierarchy_array['object']->user_can_write()) {
             $name = $in_hierarchy_array['object']->name.' ('.$in_hierarchy_array['object']->id().')';
             if ($in_hierarchy_array['object']->delete_from_db()) {
                 echo('<p>Deleted '.$name.'</p>');
             } else {
                 echo('<h3 style="color:red">Error Deleting Node!</h3>');
-                if (isset($andisol_instance->error)) {
-                    echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance->error->error_code.') '.$andisol_instance->error->error_name.' ('.$andisol_instance->error->error_description.')</p>');
+                if (isset($in_hierarchy_array['object']->error)) {
+                    echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$in_hierarchy_array['object']->error->error_code.') '.$in_hierarchy_array['object']->error->error_name.' ('.$in_hierarchy_array['object']->error->error_description.')</p>');
                 }
                 
                 return false;
             }
         }
-        
-        if (isset($in_hierarchy_array['children'])) {
-            foreach ($in_hierarchy_array['children'] as $child) {
-                echo('<div class="main_div inner_container">');
-                    if (!delete_nodes($child)) {
-                        echo('</div>');
-                        return false;
-                    }
-                echo('</div>');
-            }
-        }
-        echo('</div>');
     }
     
     return true;
@@ -296,7 +294,7 @@ function collection_test_103($in_login = NULL, $in_hashed_password = NULL, $in_p
             display_login_report($collection);
             display_raw_hierarchy($hierarchy, 'test-5');
             if (delete_nodes($hierarchy)) {
-                collection_test_099('bob', '', 'CoreysGoryStory', 'test-6');
+                collection_test_099('admin', '', CO_Config::god_mode_password(), 'test-6');
             }
         } else {
             echo('<h3 style="color:red">Error Accessing Collections!</h3>');
