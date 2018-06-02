@@ -30,6 +30,7 @@ function more_collection_run_tests() {
     collection_run_test(100, 'PASS -Log In With A Limited Visibility Login', 'We log in as the \'norm\' login, and see what records we can see (one of each).', 'norm', '', 'CoreysGoryStory');
     collection_run_test(101, 'PASS -Log In With A Different Limited Visibility Login (\'king-cobra\')', 'We log in as the \'king-cobra\' login, and see what records we can see (two of each).', 'king-cobra', '', 'CoreysGoryStory');
     collection_run_test(102, 'PASS -Log In With A Different Limited Visibility Login (\'bob\')', 'We log in as the \'bob\' login, and see what records we can see (all of them).', 'bob', '', 'CoreysGoryStory');
+    collection_run_test(103, 'PASS -Log In With A Limited Visibility Login, Delete Members, Then View With Another Login', 'We log in as the \'norm\' login, delete what we can see, then log in with \'bob\', and see what records we can see (four of each, now).');
 }
 
 // -------------------------------- TESTS ---------------------------------------------
@@ -242,6 +243,68 @@ function collection_test_101($in_login = NULL, $in_hashed_password = NULL, $in_p
 
 function collection_test_102($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     collection_test_099($in_login, $in_hashed_password, $in_password, 'test-4');
+}
+
+function delete_nodes($in_hierarchy_array) {
+    if (isset($in_hierarchy_array) && is_array($in_hierarchy_array) && count($in_hierarchy_array)) {
+        echo('<div class="main_div inner_container">');
+        if ($in_hierarchy_array['object']->user_can_write()) {
+            $name = $in_hierarchy_array['object']->name.' ('.$in_hierarchy_array['object']->id().')';
+            if ($in_hierarchy_array['object']->delete_from_db()) {
+                echo('<p>Deleted '.$name.'</p>');
+            } else {
+                echo('<h3 style="color:red">Error Deleting Node!</h3>');
+                if (isset($andisol_instance->error)) {
+                    echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance->error->error_code.') '.$andisol_instance->error->error_name.' ('.$andisol_instance->error->error_description.')</p>');
+                }
+                
+                return false;
+            }
+        }
+        
+        if (isset($in_hierarchy_array['children'])) {
+            foreach ($in_hierarchy_array['children'] as $child) {
+                echo('<div class="main_div inner_container">');
+                    if (!delete_nodes($child)) {
+                        echo('</div>');
+                        return false;
+                    }
+                echo('</div>');
+            }
+        }
+        echo('</div>');
+    }
+    
+    return true;
+}
+
+function collection_test_103($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL, $tag) {
+    $andisol_instance1 = make_andisol('norm', '', 'CoreysGoryStory');
+    
+    if (isset($andisol_instance1) && ($andisol_instance1 instanceof CO_Andisol)) {
+        $st1 = microtime(true);
+        $collection = $andisol_instance1->get_single_data_record_by_id(11);
+        $fetchTime = sprintf('%01.4f', microtime(true) - $st1);
+        echo("<h4>The test took $fetchTime seconds to get the collection object.</h4>");
+    
+        if (isset($collection) && ($collection instanceof CO_Collection)) {
+            $st1 = microtime(true);
+            $hierarchy = $collection->getHierarchy();
+            $fetchTime = sprintf('%01.4f', microtime(true) - $st1);
+            echo("<h4>The test took $fetchTime seconds to get the hierarchy.</h4>");
+            echo('<p style="color:greenfont-style:italic">This is the collection before we delete:</p>');
+            display_login_report($collection);
+            display_raw_hierarchy($hierarchy, 'test-5');
+            if (delete_nodes($hierarchy)) {
+                collection_test_099('bob', '', 'CoreysGoryStory', 'test-6');
+            }
+        } else {
+            echo('<h3 style="color:red">Error Accessing Collections!</h3>');
+            if (isset($andisol_instance->error)) {
+                echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance->error->error_code.') '.$andisol_instance->error->error_name.' ('.$andisol_instance->error->error_description.')</p>');
+            }
+        }
+    }
 }
 
 // -------------------------------- STRUCTURE ---------------------------------------------
