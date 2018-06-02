@@ -1,4 +1,9 @@
-**1.0.0.2001** *(TBD)*
+**1.0.0.2001** *(June 2, 2018)*
+
+- Updated latest COBRA, with some editor fixes.
+- Updated CHAMELEON, with the latest collection fixes.
+- Updated BADGER, with a few low-level fixes.
+- Got collection testing done.
 
 **1.0.0.2000** *(May 31, 2018)*
 
