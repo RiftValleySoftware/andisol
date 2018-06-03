@@ -1,4 +1,4 @@
-**1.0.0.2002** *(TBD)*
+**1.0.0.2002** *(June 3, 2018)*
 
 - Updated COBRA/CHAMELEON/BADGER.
 - Removed redundant files from spec.
