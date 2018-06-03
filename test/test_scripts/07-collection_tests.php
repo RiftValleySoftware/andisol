@@ -294,7 +294,28 @@ function collection_test_103($in_login = NULL, $in_hashed_password = NULL, $in_p
             display_login_report($collection);
             display_raw_hierarchy($hierarchy, 'test-5');
             if (delete_nodes($hierarchy)) {
-                collection_test_099('admin', '', CO_Config::god_mode_password(), 'test-6');
+                $andisol_instance = make_andisol('admin', '', CO_Config::god_mode_password());
+    
+                if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
+                    $st1 = microtime(true);
+                    $collection = $andisol_instance->get_single_data_record_by_id(11);
+                    $fetchTime = sprintf('%01.4f', microtime(true) - $st1);
+                    echo("<h4>The test took $fetchTime seconds to get the collection object.</h4>");
+    
+                    if (isset($collection) && ($collection instanceof CO_Collection)) {
+                        $st1 = microtime(true);
+                        $hierarchy = $collection->getHierarchy();
+                        $fetchTime = sprintf('%01.4f', microtime(true) - $st1);
+                        echo("<h4>The test took $fetchTime seconds to get the hierarchy.</h4>");
+                        display_login_report($collection);
+                        display_raw_hierarchy($hierarchy, 'test-6');
+                    } else {
+                        echo('<h3 style="color:red">Error Accessing Collections!</h3>');
+                        if (isset($andisol_instance->error)) {
+                            echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance->error->error_code.') '.$andisol_instance->error->error_name.' ('.$andisol_instance->error->error_description.')</p>');
+                        }
+                    }
+                }
             }
         } else {
             echo('<h3 style="color:red">Error Accessing Collections!</h3>');

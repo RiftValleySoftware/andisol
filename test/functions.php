@@ -115,13 +115,32 @@
             echo($in_hierarchy_array['object']->name);
             echo(' (READ: '.$in_hierarchy_array['object']->read_security_id);
             echo(', WRITE: '.$in_hierarchy_array['object']->write_security_id.')');
-    
+            
+            $child_ids = $in_hierarchy_array['object']->children_ids();
+            sort($child_ids);
+            $track = [];
+            
             if (isset($in_hierarchy_array['children'])) {
                 echo(" <em>(".count($in_hierarchy_array['children']).")</em>");
                 echo('</a></h3>');
                 foreach ($in_hierarchy_array['children'] as $child) {
-                    echo('<div class="main_div inner_container">');
-                        display_raw_hierarchy($child, $modifier);
+                    if (!in_array($child['object']->id(), $child_ids)) {
+                        echo('<h4 style="color:red">ERROR! The ID ('.$child['object']->id().') is not in the child ID array!</h4>');
+                    } else {
+                        $track[] = intval($child['object']->id());
+                        echo('<div class="main_div inner_container">');
+                            display_raw_hierarchy($child, $modifier);
+                        echo('</div>');
+                    }
+                }
+                
+                sort($track);
+                
+                if ($track != $child_ids) {
+                    echo('<h4 style="color:red">ERROR! It looks like we did not get to every child!</h4>');
+                    echo('<div class="main_div inner_container" style="color:red">');
+                        echo('<strong>What we did:</strong><pre>'.htmlspecialchars(print_r($track, true)).'</pre>');
+                        echo('<strong>What we should have done:</strong><pre>'.htmlspecialchars(print_r($child_ids, true)).'</pre>');
                     echo('</div>');
                 }
                 echo('</div>');
