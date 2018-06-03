@@ -1,4 +1,4 @@
-[]: # \mainpage ANDISOL
+[]: # \page ANDISOL ANDISOL
 
 ![ANDISOL](images/ANDISOL.png)
 
