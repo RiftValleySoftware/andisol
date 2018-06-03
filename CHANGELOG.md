@@ -1,3 +1,8 @@
+**1.0.0.2002** *(TBD)*
+
+- Updated COBRA/CHAMELEON/BADGER.
+- Removed redundant files from spec.
+
 **1.0.0.2001** *(June 2, 2018)*
 
 - Updated latest COBRA, with some editor fixes.

@@ -20,7 +20,7 @@ This file contains the implementation-dependent configuration settings.
 define('_MAIN_DB_TYPE_', 'mysql');
 define('_SECURITY_DB_TYPE_', 'mysql');
 
-require_once(dirname(dirname(dirname(__FILE__))).'/config/t_config.interface.php');
+require_once(dirname(dirname(dirname(__FILE__))).'/cobra/chameleon/badger/install-assets/t_config.interface.php');
 
 class CO_Config {
     use tCO_Config; // These are the built-in config methods.
