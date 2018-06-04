@@ -13,7 +13,7 @@
 */
 defined( 'LGV_ANDISOL_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__ANDISOL_VERSION__', '1.0.0.2002');
+define('__ANDISOL_VERSION__', '1.0.0.2003');
 
 if (!defined('LGV_ACCESS_CATCHER')) {
     define('LGV_ACCESS_CATCHER', 1);
@@ -25,7 +25,7 @@ if ( !defined('LGV_LANG_CATCHER') ) {
     define('LGV_LANG_CATCHER', 1);
 }
 
-require_once(CO_Config::lang_class_dir().'/common.inc.php');
+require_once(CO_Config::andisol_lang_class_dir().'/common.inc.php');
 
 /****************************************************************************************************************************/
 /**

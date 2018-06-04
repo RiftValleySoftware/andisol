@@ -58,7 +58,7 @@ require_once($config_file_path);
                     define('LGV_ANDISOL_CATCHER', 1);
                 }
     
-                require_once(CO_Config::main_class_dir().'/co_andisol.class.php');
+                require_once(CO_Config::andisol_main_class_dir().'/co_andisol.class.php');
             ?>
             <img src="../icon.png" style="display:block;margin:auto;width:80px" alt="A Lump of COAL" />
             <h1 class="header">MAIN ENVIRONMENT SETUP</h1>
@@ -72,7 +72,7 @@ require_once($config_file_path);
                         echo("<strong>COBRA Version</strong>...........".__COBRA_VERSION__."\n");
                         echo("<strong>CHAMELEON Version</strong>.......".__CHAMELEON_VERSION__."\n");
                         echo("<strong>BADGER Version</strong>..........".__BADGER_VERSION__."\n");
-                        echo("<strong>ANDISOL Base dir</strong>........".CO_Config::base_dir()."\n");
+                        echo("<strong>ANDISOL Base dir</strong>........".CO_Config::andisol_base_dir()."\n");
                         echo("<strong>COBRA Base dir</strong>..........".CO_Config::cobra_base_dir()."\n");
                         echo("<strong>CHAMELEON Base dir</strong>......".CO_Config::chameleon_base_dir()."\n");
                         echo("<strong>BADGER Base dir</strong>.........".CO_Config::badger_base_dir()."\n");

@@ -54,7 +54,7 @@ class CO_Config {
     \returns the POSIX path to the main ANDISOL directory.
      */
     static function base_dir() {
-        return dirname(dirname(dirname(__FILE__)));
+        return dirname(dirname(dirname(dirname(__FILE__))));
     }
     
 }
