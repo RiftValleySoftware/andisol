@@ -76,7 +76,7 @@ require_once($config_file_path);
                         echo("<strong>COBRA Base dir</strong>..........".CO_Config::cobra_base_dir()."\n");
                         echo("<strong>CHAMELEON Base dir</strong>......".CO_Config::chameleon_base_dir()."\n");
                         echo("<strong>BADGER Base dir</strong>.........".CO_Config::badger_base_dir()."\n");
-                        foreach (CO_Config::db_classes_extension_class_dir() as $dir) {
+                        foreach (CO_Config::andisol_db_classes_extension_class_dir() as $dir) {
                             echo("<strong>Extension classes dir:</strong>..$dir\n");
                         }
                         echo("</pre></div>");

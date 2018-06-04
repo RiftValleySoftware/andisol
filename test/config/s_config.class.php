@@ -57,4 +57,11 @@ class CO_Config {
         return dirname(dirname(dirname(dirname(__FILE__))));
     }
     
+    /***********************/
+    /**
+    \returns the POSIX path to the user-defined extended database row classes (we use the COBRA extensions for ANDISOL).
+     */
+    static function db_classes_extension_class_dir() {
+        return self::cobra_db_classes_extension_class_dir();
+    }
 }
