@@ -137,14 +137,15 @@ class CO_Andisol {
      */
 	public function __construct(    $in_login_string_id = NULL, ///< OPTIONAL: The String login ID
                                     $in_hashed_password = NULL, ///< OPTIONAL: The password, crypt-hashed
-                                    $in_raw_password = NULL     ///< OPTIONAL: The password, cleartext.
+                                    $in_raw_password = NULL,    ///< The password, cleartext.
+                                    $in_api_key = NULL          ///< An API key, for REST.
 	                            ) {
         $this->class_description = 'The main model interface class.';
 	    $this->version = __ANDISOL_VERSION__;
 	    $this->error = NULL;
 	    
 	    // The first thing we do, is set up any login instance, as well as any possible COBRA instance.
-        $chameleon_instance = new CO_Chameleon($in_login_string_id, $in_hashed_password, $in_raw_password);
+        $chameleon_instance = new CO_Chameleon($in_login_string_id, $in_hashed_password, $in_raw_password, $in_api_key);
         if (isset($chameleon_instance) && ($chameleon_instance instanceof CO_Chameleon)) {
             if ($chameleon_instance->valid) {
                 $this->_chameleon_instance = $chameleon_instance;
