@@ -501,7 +501,7 @@ class CO_Andisol {
     
     /***********************/
     /**
-    \returns an array of instances of all the users (not logins) that are visible to the current login. It should be noted that this can return standalone users.
+    \returns an array of instances of all the users (not logins) that are visible to the current login, and that have logins, themselves. It should be noted that this will not return standalone users.
      */
     public function get_all_login_users(    $and_write = false  ///< OPTIONAL: If true (Default is false), then we only want ones we have write access to.
                                         ) {
@@ -513,8 +513,10 @@ class CO_Andisol {
             // We make sure that we don't return the God user, if there is one (unless we are God).
             foreach ($temp as $user) {
                 $login_instance = $user->get_login_instance();
-                if ($this->god() || !$user->is_god_user()) {
-                    array_push($ret, $user);
+                if (isset($login_instance) && ($login_instance instanceof CO_Security_Login)) {
+                    if ($this->god() || !$user->is_god_user()) {
+                        array_push($ret, $user);
+                    }
                 }
             }
         }
