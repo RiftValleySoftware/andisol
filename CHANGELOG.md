@@ -1,3 +1,7 @@
+**1.0.0.2004** *(TBD)*
+
+- Improved documentation.
+
 **1.0.0.2003** *(June 8, 2018)*
 
 - Updated COBRA/CHAMELEON/BADGER.
