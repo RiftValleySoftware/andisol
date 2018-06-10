@@ -8,6 +8,8 @@ Part of the Rift Valley Platform
 --------------------------------
 ![Rift Valley Platform](images/RVPLogo.png)
 
+![BAOBAB Server](images/BAOBABLogo.png)
+
 INTRODUCTION
 ============
 ANDISOL is the "public face" of the lowest levels of the Rift Valley Platform. It encapsulates the model (database or server connections), and provides an object-based, functional model to the implementation layers.
