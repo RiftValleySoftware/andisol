@@ -1,3 +1,9 @@
+**1.0.0.2005** *(TBD)*
+
+- Improved documentation.
+- Updated COBRA/CHAMELEON/BADGER.
+- Added a routine to create standalone users, along with a generic initial name.
+
 **1.0.0.2004** *(June 11, 2018)*
 
 - Improved documentation.

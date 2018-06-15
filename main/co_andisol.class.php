@@ -13,7 +13,7 @@
 */
 defined( 'LGV_ANDISOL_CATCHER' ) or die ( 'Cannot Execute Directly' );	// Makes sure that this file is in the correct context.
 
-define('__ANDISOL_VERSION__', '1.0.0.2004');
+define('__ANDISOL_VERSION__', '1.0.0.2005');
 
 if (!defined('LGV_ACCESS_CATCHER')) {
     define('LGV_ACCESS_CATCHER', 1);
@@ -593,6 +593,31 @@ class CO_Andisol {
             $ret = $this->get_chameleon_instance()->get_user_from_login($in_login_integer_id);
         
             $this->error = isset($this->get_chameleon_instance()->error) ? $this->get_chameleon_instance()->error : NULL;
+        }
+        
+        return $ret;
+    }
+    
+    /***********************/
+    /**
+    Creates a new "standalone" user that has no associated login instance.
+    
+    \returns the new user record.
+     */
+    public function make_standalone_user() {
+        $ret = NULL;
+        
+        if ($this->manager()) { // Don't even bother unless we're a manager.
+            $ret = $login_item = $this->get_cobra_instance()->make_standalone_user();
+            
+            if (isset($ret) && ($ret instanceof CO_User_Collection)) {
+                $generic_name = sprintf(CO_ANDISOL_Lang::$andisol_new_unnamed_user_name_format, $ret->id());
+                $ret->set_name($generic_name);
+            }
+        } else {
+            $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_user_not_authorized,
+                                            CO_ANDISOL_Lang::$andisol_error_name_user_not_authorized,
+                                            CO_ANDISOL_Lang::$andisol_error_desc_user_not_authorized);
         }
         
         return $ret;

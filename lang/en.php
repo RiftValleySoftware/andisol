@@ -32,5 +32,6 @@ class CO_ANDISOL_Lang {
     static  $andisol_error_desc_insufficient_location_information = 'The location creator needs more infomation to create the location.';
     static  $andisol_error_name_location_failed_to_initialize = 'Location Object Failed to Initialize';
     static  $andisol_error_desc_location_failed_to_initialize = 'The location object was not created.';
+    static  $andisol_new_unnamed_user_name_format = 'New User %d';
 }
 ?>
