@@ -668,6 +668,26 @@ class CO_Andisol {
                         // Assuming all that went well, now we create the user item.
                         $id = $login_item->id();
                         $user_item = $this->get_cobra_instance()->get_user_from_login($id, true);
+                        if (isset($in_read_security_id)) {
+                            if (!$user_item->set_read_security_id($in_read_security_id)) {
+                                $user_item->delete_from_db();
+                                $login_item->delete_from_db();
+                                $user_item = NULL;
+                                $login_item = NULL;
+                                $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_login_instance_failed_to_initialize,
+                                                                CO_ANDISOL_Lang::$andisol_error_name_login_instance_failed_to_initialize,
+                                                                CO_ANDISOL_Lang::$andisol_error_desc_login_instance_failed_to_initialize);
+                            } elseif (!$login_item->set_read_security_id($in_read_security_id)) {
+                                $user_item->delete_from_db();
+                                $login_item->delete_from_db();
+                                $user_item = NULL;
+                                $login_item = NULL;
+                                $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_login_instance_failed_to_initialize,
+                                                                CO_ANDISOL_Lang::$andisol_error_name_login_instance_failed_to_initialize,
+                                                                CO_ANDISOL_Lang::$andisol_error_desc_login_instance_failed_to_initialize);
+                            }
+
+                        }
                         if ($user_item instanceof CO_User_Collection) {
                             if ($user_item->set_name($display_name)) {
                                 if ($login_item->set_password_from_cleartext($in_password)) {
