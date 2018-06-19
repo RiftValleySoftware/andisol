@@ -215,7 +215,7 @@ class CO_Andisol {
     \returns true, if we are logged in as a COBRA Login Manager or as God.
      */
     public function manager() {
-        return (NULL != $this->get_cobra_instance()) && ($this->get_cobra_instance() instanceof CO_Cobra);
+        return $this->logged_in() && ($this->get_cobra_instance() instanceof CO_Cobra);
     }
     
     /***********************/
@@ -223,7 +223,7 @@ class CO_Andisol {
     \returns true, if we are logged in as the "God" admin ID.
      */
     public function god() {
-        return $this->valid() && $this->get_chameleon_instance()->god_mode();
+        return $this->manager() && $this->get_chameleon_instance()->god_mode();
     }
     
     /***********************/
@@ -260,7 +260,6 @@ class CO_Andisol {
         
         if ($this->logged_in()) {
             $ret = $this->get_chameleon_instance()->get_login_item($in_login_integer_id);
-        
             $this->error = $this->get_chameleon_instance()->error;
         }
         
