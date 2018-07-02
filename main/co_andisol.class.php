@@ -1001,7 +1001,7 @@ class CO_Andisol {
     \returns the value for a given key. It is dependent on the class passed in. NULL, if no value or instance for the key.
      */
     public function get_value_for_key(  $in_key,                        ///< REQUIRED: This is the key that we are searching for. It must be a string.
-                                        $in_classname = 'CO_KeyValue'   ///< OPTIONAL: This is the class to search for the key. The default is the base class.
+                                        $in_classname = 'CO_KeyValue_Collection'   ///< OPTIONAL: This is the class to search for the key. The default is the base class.
                                     ) {
         $ret = NULL;
         
@@ -1035,7 +1035,7 @@ class CO_Andisol {
     \returns true, if successful.
      */
     public function delete_key( $in_key,                        ///< REQUIRED: This is the key that we are deleting. It must be a string.
-                                $in_classname = 'CO_KeyValue'   ///< OPTIONAL: This is the class to search for the key. The default is the base class.
+                                $in_classname = 'CO_KeyValue_Collection'   ///< OPTIONAL: This is the class to search for the key. The default is the base class.
                                 ) {
         return $this->set_value_for_key($in_key, NULL, $in_classname);
     }
@@ -1050,7 +1050,7 @@ class CO_Andisol {
      */
     public function set_value_for_key(  $in_key,                        ///< REQUIRED: This is the key that we are setting. It must be a string.
                                         $in_value,                      ///< REQUIRED: The value to set. If NULL, then we will delete the key.
-                                        $in_classname = 'CO_KeyValue'   ///< OPTIONAL: This is the class to use for the key. The default is the base class.
+                                        $in_classname = 'CO_KeyValue_Collection'   ///< OPTIONAL: This is the class to use for the key. The default is the base class.
                                     ) {
         $ret = NULL;
         

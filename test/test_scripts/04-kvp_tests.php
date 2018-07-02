@@ -223,7 +223,7 @@ function kvp_test_69() {
     
     if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $object_instance = $andisol_instance->get_object_for_key($key);
-        if ($object_instance && ($object_instance instanceof CO_KeyValue)) {
+        if ($object_instance && ($object_instance instanceof CO_KeyValue_Collection)) {
             echo('<h3 style="color:green">The object for the key \''.$key.'\', containing \''.$object_instance->get_value().'\' was successfully fetched!</h3>');
         } else {
             echo('<h3 style="color:red">The object for the key \''.$key.'\' was not found!</h3>');
@@ -238,7 +238,7 @@ function kvp_test_70() {
     
     if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
         $object_instance = $andisol_instance->get_object_for_key($key);
-        if ($object_instance && ($object_instance instanceof CO_KeyValue)) {
+        if ($object_instance && ($object_instance instanceof CO_KeyValue_Collection)) {
             echo('<h3 style="color:green">The object for the key \''.$key.'\', containing \''.$object_instance->get_value().'\' was successfully fetched!</h3>');
         } else {
             echo('<h3 style="color:red">The object for the key \''.$key.'\' was not found!</h3>');
