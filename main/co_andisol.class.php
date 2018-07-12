@@ -668,8 +668,8 @@ class CO_Andisol {
                         $id = $login_item->id();
                         $user_item = $this->get_cobra_instance()->get_user_from_login($id, true);
                         
-                        if (isset($in_read_security_id)) {
-                            if (!$user_item->set_read_security_id($in_read_security_id)) {
+                        if (isset($in_read_security_id) && intval($in_read_security_id)) {
+                            if (!$user_item->set_read_security_id(intval($in_read_security_id))) {
                                 $user_item->delete_from_db();
                                 $login_item->delete_from_db();
                                 $user_item = NULL;
