@@ -489,7 +489,7 @@ class CO_Andisol {
             // We make sure that we don't return the God user, if there is one (unless we are God).
             foreach ($temp as $user) {
                 $login_instance = $user->get_login_instance();
-                if ($this->god() || !$user->is_god_user()) {
+                if ($this->god() || !$user->is_god()) {
                     array_push($ret, $user);
                 }
             }
@@ -513,7 +513,7 @@ class CO_Andisol {
             foreach ($temp as $user) {
                 $login_instance = $user->get_login_instance();
                 if (isset($login_instance) && ($login_instance instanceof CO_Security_Login)) {
-                    if ($this->god() || !$user->is_god_user()) {
+                    if ($this->god() || !$user->is_god()) {
                         array_push($ret, $user);
                     }
                 }
@@ -537,7 +537,7 @@ class CO_Andisol {
             // We make sure that we don't return the God user, if there is one (unless we are God).
             foreach ($temp as $user) {
                 $login_instance = $user->get_login_instance();
-                if ($this->god() || !$user->is_god_user()) {
+                if ($this->god() || !$user->is_god()) {
                     array_push($ret, $user);
                 }
             }
