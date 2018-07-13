@@ -677,7 +677,7 @@ class CO_Andisol {
                                 $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_login_instance_failed_to_initialize,
                                                                 CO_ANDISOL_Lang::$andisol_error_name_login_instance_failed_to_initialize,
                                                                 CO_ANDISOL_Lang::$andisol_error_desc_login_instance_failed_to_initialize);
-                            } elseif (!$login_item->set_read_security_id($in_read_security_id)) {
+                            } elseif (!$login_item->set_read_security_id($login_item->id())) {
                                 $user_item->delete_from_db();
                                 $login_item->delete_from_db();
                                 $user_item = NULL;
@@ -695,7 +695,7 @@ class CO_Andisol {
                                 $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_login_instance_failed_to_initialize,
                                                                 CO_ANDISOL_Lang::$andisol_error_name_login_instance_failed_to_initialize,
                                                                 CO_ANDISOL_Lang::$andisol_error_desc_login_instance_failed_to_initialize);
-                            } elseif (!$login_item->set_read_security_id($login_item->write_security_id)) {
+                            } elseif (!$login_item->set_read_security_id($login_item->id())) {
                                 $user_item->delete_from_db();
                                 $login_item->delete_from_db();
                                 $user_item = NULL;
