@@ -340,6 +340,38 @@ class CO_Andisol {
         return $ret;
     }
     
+    /***********************/
+    /**
+    This returns the access class for the given ID for the Data Database.
+    
+    This is "security safe," so that means that if the user does not have rights to the row, they will get NULL.
+    
+    \returns a string, containing the access_class data column. NULL, if no response (like the ID does not exist, or the user does not have read rights to it).
+     */
+    public function get_data_access_class_by_id( $in_id  ///< This is the ID of the record to fetch.
+                                                ) {
+        $ret = $this->$this->get_chameleon_instance()->get_data_access_class_by_id($in_id);
+        $this->error = $this->get_chameleon_instance()->error;
+        
+        return $ret;
+    }
+    
+    /***********************/
+    /**
+    This returns the access class for the given ID for the Security Database.
+    
+    This is "security safe," so that means that if the user does not have rights to the row, they will get NULL.
+    
+    \returns a string, containing the access_class data column. NULL, if no response (like the ID does not exist, or the user does not have read rights to it).
+     */
+    public function get_security_access_class_by_id(    $in_id  ///< This is the ID of the record to fetch.
+                                                    ) {
+        $ret = $this->$this->get_chameleon_instance()->get_security_access_class_by_id($in_id);
+        $this->error = $this->get_chameleon_instance()->error;
+        
+        return $ret;
+    }
+    
     /************************************************************************************************************************/    
     /*################################################## DATA SEARCH METHODS ###############################################*/
     /************************************************************************************************************************/    
