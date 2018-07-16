@@ -242,6 +242,17 @@ class CO_Andisol {
         return $this->get_user_from_login();
     }
     
+    /***********************/
+    /**
+    Tests a token, to see if the current user has it.
+    
+    \returns true, if the current user has the given token.
+     */
+    public function i_have_this_token(  $in_token_to_test   ///< The token we are checking out
+                                    ) {
+        return $this->get_chameleon_instance()->i_have_this_token($in_token_to_test);
+    }
+    
     /************************************************************************************************************************/    
     /*################################################# USER ACCESS METHODS ################################################*/
     /************************************************************************************************************************/    

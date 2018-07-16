@@ -1,5 +1,7 @@
 **1.0.0.2006** *(TBD)*
 
+- Added a function to test tokens.
+
 **1.0.0.2005** *(July 6, 2018)*
 
 - Improved documentation.
