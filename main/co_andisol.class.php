@@ -1058,6 +1058,16 @@ class CO_Andisol {
     
     /***********************/
     /**
+    \returns true, if the key is unique in the DB for the given class (regardless of whether or not we can see it).
+     */
+    public function key_is_unique(  $in_key,                                    ///< The key to test (a string).
+                                    $in_classname = 'CO_KeyValue_CO_Collection' ///< This is the class to search for the key. The default is the base class.
+                                    ) {
+        return $this->get_chameleon_instance()->key_is_unique($in_key, $in_classname);
+    }
+    
+    /***********************/
+    /**
     \returns the object that stores the given key. NULL, if no value or instance for the key.
      */
     public function get_object_for_key( $in_key ///< REQUIRED: This is the key that we are searching for. It must be a string.
