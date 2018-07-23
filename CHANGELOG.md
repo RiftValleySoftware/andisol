@@ -1,4 +1,4 @@
-**1.0.0.2006** *(TBD)*
+**1.0.0.2006** *(July 22, 2018)*
 
 - Added a function to test tokens.
 
