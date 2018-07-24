@@ -1,3 +1,7 @@
+**1.0.0.2007** *(TBD)*
+
+- Updated COBRA.
+
 **1.0.0.2006** *(July 22, 2018)*
 
 - Added a function to test tokens.
