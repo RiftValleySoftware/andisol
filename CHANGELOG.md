@@ -1,6 +1,8 @@
 **1.0.0.2007** *(TBD)*
 
 - Updated COBRA.
+- Fixed a bug in the handler determination method.
+- Made sure that the determination routine checks for visibility first.
 
 **1.0.0.2006** *(July 22, 2018)*
 

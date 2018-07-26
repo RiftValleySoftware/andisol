@@ -350,8 +350,12 @@ class CO_Andisol {
      */
     public function get_data_access_class_by_id( $in_id  ///< This is the ID of the record to fetch.
                                                 ) {
-        $ret = $this->$this->get_chameleon_instance()->get_data_access_class_by_id($in_id);
-        $this->error = $this->get_chameleon_instance()->error;
+        $ret = NULL;
+        
+        if ($this->get_chameleon_instance()->can_i_see_this_data_record($in_id)) {
+            $ret = $this->get_chameleon_instance()->get_data_access_class_by_id($in_id);
+            $this->error = $this->get_chameleon_instance()->error;
+        }
         
         return $ret;
     }
