@@ -701,6 +701,7 @@ class CO_Andisol {
                 } else {
                     $login_item = $this->get_cobra_instance()->create_new_standard_login($in_login_string_id, $in_password, $in_security_tokens);
                 }
+                
                 // Make sure we got what we expect.
                 if ($login_item instanceof CO_Security_Login) {
                     // Next, set the display name.
