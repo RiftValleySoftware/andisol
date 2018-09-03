@@ -1,4 +1,4 @@
-**1.0.0.2007** *(TBD)*
+**1.0.0.3000** *(September 3, 2018)*
 
 - Updated COBRA.
 - Fixed a bug in the handler determination method.
