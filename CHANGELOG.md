@@ -1,3 +1,7 @@
+**1.0.0.3001** *(October 29, 2018)*
+
+- Updated COBRA.
+
 **1.0.0.3000** *(September 3, 2018)*
 
 - Updated COBRA.
