@@ -1,3 +1,7 @@
+**1.0.4.3000** *(November 5, 2020)*
+
+- Updated COBRA.
+
 **1.0.3.3000** *(October 29, 2020)*
 
 - Added Support for counting token access.
