@@ -1,4 +1,4 @@
-**1.0.6.3000** *TBD*
+**1.0.6.3000** *(November 7, 2020)*
 
 - Added a couple more handlers, to ensure proper facade against the lower levels.
 
