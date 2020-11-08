@@ -1,3 +1,7 @@
+**1.0.6.3000** *TBD*
+
+- Added a couple more handlers, to ensure proper facade against the lower levels.
+
 **1.0.5.3000** *(November 6, 2020)*
 
 - Added some calls to avoid BASALT accessing the CHAMELEON instance directly. ANDISOL is supposed to provide direct access to everything beneath, in an opaque manner.
