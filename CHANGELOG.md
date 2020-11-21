@@ -1,3 +1,7 @@
+**1.0.7.3000** *(November 21, 2020)*
+
+- Updated COBRA.
+
 **1.0.6.3000** *(November 7, 2020)*
 
 - Added a couple more handlers, to ensure proper facade against the lower levels.
