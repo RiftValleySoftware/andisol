@@ -1,3 +1,7 @@
+**1.0.8.3000** *(December 9, 2020)*
+
+- Added support for a fast query of users and names.
+
 **1.0.7.3000** *(November 21, 2020)*
 
 - Updated COBRA.
