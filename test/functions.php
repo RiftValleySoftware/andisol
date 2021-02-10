@@ -1,7 +1,7 @@
 <?php
 /***************************************************************************************************************************/
 /**
-    COBRA Security Administration Layer
+    ANDISOL Object Model Layer
     
     © Copyright 2018, The Great Rift Valley Software Company
     
@@ -35,7 +35,7 @@
         require_once($config_file_path);
     }
     
-    function make_andisol($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    function make_andisol($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL, $suppress_report = false) {
         if ( !defined('LGV_ANDISOL_CATCHER') ) {
             define('LGV_ANDISOL_CATCHER', 1);
         }
@@ -44,15 +44,17 @@
     
         $andisol_instance = new CO_Andisol($in_login, $in_hashed_password, $in_password);
     
-        if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
-            echo("<h2 style=\"color:green;font-weight:bold\">The ANDISOL instance is valid!</h2>");
-        } elseif (isset($andisol_instance) && ($andisol_instance->error instanceof LGV_Error)) {
-            echo("<h2 style=\"color:red;font-weight:bold\">The ANDISOL instance is not valid!</h2>");
-            echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance->error->error_code.') '.$andisol_instance->error->error_name.' ('.$andisol_instance->error->error_description.')</p>');
-        } else {
-            echo("<h2 style=\"color:red;font-weight:bold\">The ANDISOL instance was not instantiated!</h2>");
+        if (!$suppress_report) {
+            if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
+                echo("<h2 style=\"color:green;font-weight:bold\">The ANDISOL instance is valid!</h2>");
+            } elseif (isset($andisol_instance) && ($andisol_instance->error instanceof LGV_Error)) {
+                echo("<h2 style=\"color:red;font-weight:bold\">The ANDISOL instance is not valid!</h2>");
+                echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$andisol_instance->error->error_code.') '.$andisol_instance->error->error_name.' ('.$andisol_instance->error->error_description.')</p>');
+            } else {
+                echo("<h2 style=\"color:red;font-weight:bold\">The ANDISOL instance was not instantiated!</h2>");
+            }
         }
-    
+        
         return $andisol_instance;
     }
     
