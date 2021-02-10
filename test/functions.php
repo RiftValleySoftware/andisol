@@ -266,7 +266,24 @@
                             echo("<h4>NO IDS!</h4>");
                         }
                     }
-                        
+                    
+                    if (method_exists($in_record_object, 'personal_ids')) {
+                        $ids = $in_record_object->personal_ids();
+                        if ( isset($ids) && is_array($ids) && count($ids)) {
+                            echo("<p>Personal IDs: ");
+                                $first = true;
+                                foreach ( $ids as $id ) {
+                                    if (!$first) {
+                                        echo(", ");
+                                    } else {
+                                        $first = false;
+                                    }
+                                    echo($id);
+                                }
+                            echo("</p>");
+                        }
+                    }
+                
                     if (method_exists($in_record_object, 'children')) {
                         $children = $in_record_object->children();
                 
