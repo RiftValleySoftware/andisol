@@ -1,7 +1,7 @@
 <?php
 /***************************************************************************************************************************/
 /**
-    COBRA Security Administration Layer
+    ANDISOL Object Model Layer
     
     © Copyright 2018, The Great Rift Valley Software Company
     
