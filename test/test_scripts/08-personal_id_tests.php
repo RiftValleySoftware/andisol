@@ -28,8 +28,12 @@ set_time_limit ( 300 ); // More than five minutes is a problem.
     
 // -------------------------------- TEST DISPATCHER ---------------------------------------------
 
-function personal_id_run_tests() {
-    personal_id_run_test(104, 'PASS - Test Get Personal IDs', 'Make Sure that Item 3 Has 8 and 9 as Personal Tokens, Item 4 has 10 and 11, and Item 5 has no personal tokens.', 'admin', '', CO_Config::god_mode_password());
+function personal_id_run_basic_tests() {
+    personal_id_run_test(104, 'PASS - Test Get Personal IDs', 'Make Sure that Item 3 Has 8 and 9 as Personal Tokens, Item 4 has 10 and 11, Item 5 has no personal tokens, and all the personal tokens are reported when requested.', 'admin', '', CO_Config::god_mode_password());
+    personal_id_run_test(105, 'PASS - Test Change Personal IDs', 'Log in as the God Admin, remove IDs from one record, change the personal IDs of one record, and add new IDs to another.', 'admin', '', CO_Config::god_mode_password());
+}
+
+function personal_id_run_advanced_tests() {
 }
 
 // -------------------------------- TESTS ---------------------------------------------
@@ -71,7 +75,7 @@ function personal_id_test_104($in_login = NULL, $in_hashed_password = NULL, $in_
                                 }
                                 
                                 if ([8,9,10,11] == $all_ids) {
-                                    echo('<h4 style="color:red;font-weight:bold; color: green">ALL IDS PASSES!</h4>');
+                                    echo('<h4 style="color:red;font-weight:bold; color: green">GET ALL IDS TEST PASSES!</h4>');
                                 } else {
                                     echo('<h4 style="color:red;font-weight:bold; color: red">ALL IDS FAILS!</h4>');
                                 }
@@ -91,6 +95,83 @@ function personal_id_test_104($in_login = NULL, $in_hashed_password = NULL, $in_
         echo('</div>');
     } else {
         echo('<div class="inner_div"><h4 style="text-align:center;margin-top:0.5em; color: red">We do not have an ANDISOL instance!</h4></div>');
+    }
+}
+
+function personal_id_test_105($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
+        $test_items = $andisol_instance->get_chameleon_instance()->get_multiple_security_records_by_id([3,4,5]);
+        echo('<div class="inner_div">');
+            if ( isset($test_items) ) {
+                if (is_array($test_items)) {
+                    if (3 == count($test_items)) {
+                        $pass = true;
+                        if (3 == count($test_items)) {
+                            echo("<h4>BEFORE:</h4>");
+                            foreach ( $test_items as $item ) {
+                                display_record($item);
+                            }
+                        
+                            $result = $test_items[0]->set_personal_ids([]);
+                            
+                            if (!is_array($result) || count($result)) {
+                                $pass = false;
+                                echo("<h4 style=\"color:red;font-weight:bold\">UNEXPECTED RESULT FOR ITEM 3!</h4>");
+                            }
+                            $result = $test_items[1]->set_personal_ids([8,9]);
+                            if (!is_array($result) || 2 != count($result) || $result[0] != 8 || $result[1] != 9) {
+                                $pass = false;
+                                echo("<h4 style=\"color:red;font-weight:bold\">UNEXPECTED RESULT FOR ITEM 4!</h4>");
+                            }
+                            $result = $test_items[2]->set_personal_ids([10,11]);
+                            if (!is_array($result) || 2 != count($result) || $result[0] != 10 || $result[1] != 11) {
+                                $pass = false;
+                                echo("<h4 style=\"color:red;font-weight:bold\">UNEXPECTED RESULT FOR ITEM 5!</h4>");
+                            }
+                            
+                            echo('<h4 style="margin-top:1em">AFTER:</h4>');
+                            
+                            foreach ( $test_items as $item ) {
+                                display_record($item);
+                            }
+                            
+                            $all_ids = $andisol_instance->get_all_personal_ids_except_for_id();
+                            if (isset($all_ids) && is_array($all_ids) && count($all_ids)) {
+                                if (4 == count($all_ids)) {
+                                    if ([8,9,10,11] == $all_ids) {
+                                        $all_ids_string = implode(", ", $all_ids);
+                                        echo('<div><strong style=\"color:green;font-weight:bold\">All Personal IDs:</strong> '.htmlspecialchars($all_ids_string).'</div>');
+                                    } else {
+                                        $pass = false;
+                                        echo("<h4 style=\"color:red;font-weight:bold\">INCORRECT GLOBAL IDS!</h4>");
+                                    }
+                                } else {
+                                    $pass = false;
+                                    echo("<h4 style=\"color:red;font-weight:bold\">INCORRECT NUMBER OF GLOBAL IDS!</h4>");
+                                }
+                            } else {
+                                $pass = false;
+                                echo("<h4 style=\"color:red;font-weight:bold\">NO GLOBAL IDS!</h4>");
+                            }
+                            
+                            if ($pass) {
+                                echo("<h4 style=\"color:green;font-weight:bold\">TEST PASSES</h4>");
+                            }
+                        }
+                    } else {
+                        echo("<h4 style=\"color:red;font-weight:bold\">UNEXPECTED NUMBER OF ITEMS!</h4>");
+                        $pass = false;
+                    }
+                } else {
+                    echo("<h4 style=\"color:red;font-weight:bold\">NO ARRAY!</h4>");
+                }
+            } else {
+                echo("<h4 style=\"color:red;font-weight:bold\">NOTHING RETURNED!</h4>");
+            }
+        
+        echo('</div>');
     }
 }
 
@@ -126,7 +207,21 @@ ob_start();
             
                 $start = microtime(true);
                 
-                personal_id_run_tests();
+                personal_id_run_basic_tests();
+                
+                echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(true) - $start) . ' seconds to complete.</h5>');
+                
+            echo('</div>');
+        echo('</div>');
+        
+        echo('<div id="personal_id-tests-2" class="closed">');
+            echo('<h2 class="header"><a href="javascript:toggle_main_state(\'personal_id-tests-2\')">ADVANCED PERSONAL ID TESTS</a></h2>');
+            echo('<div class="container">');
+                echo('<p class="explain"></p>');
+            
+                $start = microtime(true);
+                
+                personal_id_run_advanced_tests();
                 
                 echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(true) - $start) . ' seconds to complete.</h5>');
                 
