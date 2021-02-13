@@ -34,6 +34,7 @@ function personal_id_run_basic_tests() {
 }
 
 function personal_id_run_advanced_tests() {
+    personal_id_run_test(106, 'TEST TYPE', 'EXPLAININ\' TO DO', 'admin', '', CO_Config::god_mode_password());
 }
 
 // -------------------------------- TESTS ---------------------------------------------
@@ -175,6 +176,16 @@ function personal_id_test_105($in_login = NULL, $in_hashed_password = NULL, $in_
     }
 }
 
+function personal_id_test_106($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
+        $test_items = $andisol_instance->get_chameleon_instance()->get_multiple_security_records_by_id([3,4,5]);
+        echo('<div class="inner_div">');
+        echo('</div>');
+    }
+}
+
 // -------------------------------- STRUCTURE ---------------------------------------------
 
 function personal_id_run_test($in_num, $in_title, $in_explain, $in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
@@ -200,19 +211,19 @@ ob_start();
     echo('<div class="test-wrapper" style="display:table;margin-left:auto;margin-right:auto;text-align:left">');
         echo('<h1 class="header">PERSONAL TOKEN TESTS</h1>');
         
-        echo('<div id="personal_id-tests" class="closed">');
-            echo('<h2 class="header"><a href="javascript:toggle_main_state(\'personal_id-tests\')">BASIC PERSONAL ID TESTS</a></h2>');
-            echo('<div class="container">');
-                echo('<p class="explain"></p>');
-            
-                $start = microtime(true);
-                
-                personal_id_run_basic_tests();
-                
-                echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(true) - $start) . ' seconds to complete.</h5>');
-                
-            echo('</div>');
-        echo('</div>');
+//         echo('<div id="personal_id-tests" class="closed">');
+//             echo('<h2 class="header"><a href="javascript:toggle_main_state(\'personal_id-tests\')">BASIC PERSONAL ID TESTS</a></h2>');
+//             echo('<div class="container">');
+//                 echo('<p class="explain"></p>');
+//             
+//                 $start = microtime(true);
+//                 
+//                 personal_id_run_basic_tests();
+//                 
+//                 echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(true) - $start) . ' seconds to complete.</h5>');
+//                 
+//             echo('</div>');
+//         echo('</div>');
         
         echo('<div id="personal_id-tests-2" class="closed">');
             echo('<h2 class="header"><a href="javascript:toggle_main_state(\'personal_id-tests-2\')">ADVANCED PERSONAL ID TESTS</a></h2>');

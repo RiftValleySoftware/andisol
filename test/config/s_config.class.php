@@ -39,7 +39,7 @@ class CO_Config {
 
     static private $_god_mode_id = 2;   ///< God Login Security DB ID. This is private, so it can't be programmatically changed.
     static private $_god_mode_password = 'BWU-HA-HAAAA-HA!'; ///< Plaintext password for the God Mode ID login. This overrides anything in the ID row.
-    static $use_personal_tokens = true;             ///< If TRUE, then we can use "personal IDs."
+    static private $_use_personal_tokens = true;             ///< If TRUE, then we can use "personal IDs."
     
     static $lang = 'en';                            ///< The default language for the server.
     static $min_pw_len = 8;                         ///< The minimum password length.
