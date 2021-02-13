@@ -688,11 +688,11 @@ class CO_Andisol {
     
     \returns the new CO_Cobra_Login instance.
      */
-    public function create_new_standard_login(  $in_login_id,                   ///< The login ID as text. It needs to be unique, within the Security database, and this will fail, if it is not.
-                                                $in_cleartext_password,         ///< The password to set (in cleartext). It will be stored as a hashed password.
-                                                $in_security_token_ids = NULL   ///< An array of integers. These are security token IDs for the login (default is NULL). If NULL, then no IDs will be set. These IDs must be selected from those available to the currently logged-in manager.
+    public function create_new_standard_login(  $in_login_id,                           ///< The login ID as text. It needs to be unique, within the Security database, and this will fail, if it is not.
+                                                $in_cleartext_password,                 ///< The password to set (in cleartext). It will be stored as a hashed password.
+                                                $in_create_this_many_personal_ids = 0   ///< This is how many Personal tokens should be created and assigned. Default is 0.
                                             ) {
-        return $this->get_cobra_instance()->create_new_standard_login($in_login_id, $in_cleartext_password, $in_security_token_ids);
+        return $this->get_cobra_instance()->create_new_standard_login($in_login_id, $in_cleartext_password, $in_create_this_many_personal_ids);
     }
     
     /***********************/
@@ -702,11 +702,11 @@ class CO_Andisol {
     
     \returns the new CO_Login_Manager instance.
      */
-    public function create_new_manager_login(   $in_login_id,                   ///< The login ID as text. It needs to be unique, within the Security database, and this will fail, if it is not.
-                                                $in_cleartext_password,         ///< The password to set (in cleartext). It will be stored as a hashed password.
-                                                $in_security_token_ids = NULL   ///< An array of integers. These are security token IDs for the login (default is NULL). If NULL, then no IDs will be set. These IDs must be selected from those available to the currently logged-in manager.
+    public function create_new_manager_login(   $in_login_id,                           ///< The login ID as text. It needs to be unique, within the Security database, and this will fail, if it is not.
+                                                $in_cleartext_password,                 ///< The password to set (in cleartext). It will be stored as a hashed password.
+                                                $in_create_this_many_personal_ids = 0   ///< This is how many Personal tokens should be created and assigned. Default is 0.
                                             ) {
-        return $this->get_cobra_instance()->create_new_manager_login($in_login_id, $in_cleartext_password, $in_security_token_ids, true);
+        return $this->get_cobra_instance()->create_new_manager_login($in_login_id, $in_cleartext_password, $in_create_this_many_personal_ids);
     }
     
     /***********************/
@@ -718,12 +718,13 @@ class CO_Andisol {
     
     \returns a string, with the login password as cleartext (If an acceptable-length password is supplied in $in_password, that that is returned). If the operation failed, then NULL is returned.
      */
-    public function create_new_user(    $in_login_string_id,            ///< REQUIRED: The string login ID. It must be unique in the Security DB.
-                                        $in_password = NULL,            ///< OPTIONAL: A new password. It must be at least as long as the minimum password length. If not supplied, an auto-generated password is created and returned as the function return. If too short, then an auto-generated password is created.
-                                        $in_display_name = NULL,        ///< OPTIONAL: A string, representing the basic "display name" to be associated with the login and user collection. If not supplied, the $in_login_string_id is used.
-                                        $in_security_tokens = NULL,     ///< Any additional security tokens to apply to the new login. These must be a subset of the security tokens available to the logged-in manager. The God admin can set any tokens they want.
-                                        $in_read_security_id = NULL,    ///< An optional read security ID. If not supplied, then ID 1 (logged-in users) is set. The write security ID is always set to the ID of the login.
-                                        $is_manager = false             ///< If true (default is false), then the new user will be a CO_Login_Manager object.
+    public function create_new_user(    $in_login_string_id,                    ///< REQUIRED: The string login ID. It must be unique in the Security DB.
+                                        $in_password = NULL,                    ///< OPTIONAL: A new password. It must be at least as long as the minimum password length. If not supplied, an auto-generated password is created and returned as the function return. If too short, then an auto-generated password is created.
+                                        $in_display_name = NULL,                ///< OPTIONAL: A string, representing the basic "display name" to be associated with the login and user collection. If not supplied, the $in_login_string_id is used.
+                                        $in_security_tokens = NULL,             ///< Any additional security tokens to apply to the new login. These must be a subset of the security tokens available to the logged-in manager. The God admin can set any tokens they want.
+                                        $in_read_security_id = NULL,            ///< An optional read security ID. If not supplied, then ID 1 (logged-in users) is set. The write security ID is always set to the ID of the login.
+                                        $is_manager = false,                    ///< If true (default is false), then the new user will be a CO_Login_Manager object.
+                                        $in_create_this_many_personal_ids = 0   ///< This is how many Personal tokens should be created and assigned. Default is 0.
                                     ) {
         $ret = NULL;
         
@@ -737,13 +738,18 @@ class CO_Andisol {
                 }
             
                 if ($is_manager) {  // See if they want to create a manager, or a standard login.
-                    $login_item = $this->get_cobra_instance()->create_new_manager_login($in_login_string_id, $in_password, $in_security_tokens);
+                    $login_item = $this->get_cobra_instance()->create_new_manager_login($in_login_string_id, $in_password, $in_create_this_many_personal_ids);
                 } else {
-                    $login_item = $this->get_cobra_instance()->create_new_standard_login($in_login_string_id, $in_password, $in_security_tokens);
+                    $login_item = $this->get_cobra_instance()->create_new_standard_login($in_login_string_id, $in_password, $in_create_this_many_personal_ids);
                 }
                 
                 // Make sure we got what we expect.
                 if ($login_item instanceof CO_Security_Login) {
+                    // Set any provided security tokens.
+                    if (is_array($in_security_tokens) && count($in_security_tokens)) {
+                        $login_item->set_ids($in_security_tokens); 
+                    }
+                    
                     // Next, set the display name.
                     $display_name = $in_display_name;
                     if (!$display_name) {

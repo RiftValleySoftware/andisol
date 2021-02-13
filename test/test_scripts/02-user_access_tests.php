@@ -588,61 +588,61 @@ ob_start();
     
     echo('<div class="test-wrapper" style="display:table;margin-left:auto;margin-right:auto;text-align:left">');
         echo('<h1 class="header">USER TESTS</h1>');
-//         echo('<div id="user_access-tests" class="closed">');
-//             echo('<h2 class="header"><a href="javascript:toggle_main_state(\'user_access-tests\')">LOGGED-IN USER ACCESS TESTS</a></h2>');
-//             echo('<div class="container">');
-//                 echo('<p class="explain"></p>');
-//             
-//                 $start = microtime(true);
-//                 
-//                 user_access_run_tests();
-//                 
-//                 echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(true) - $start) . ' seconds to complete.</h5>');
-//                 
-//             echo('</div>');
-//         echo('</div>');
-//         
-//         echo('<div id="user_visibility-tests" class="closed">');
-//             echo('<h2 class="header"><a href="javascript:toggle_main_state(\'user_visibility-tests\')">LOGGED-IN USER CROSS-VISIBILITY TESTS</a></h2>');
-//             echo('<div class="container">');
-//                 echo('<p class="explain"></p>');
-//             
-//                 $start = microtime(true);
-//                 
-//                 user_visibility_run_tests();
-//                 
-//                 echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(true) - $start) . ' seconds to complete.</h5>');
-//                 
-//             echo('</div>');
-//         echo('</div>');
-//         
-//         echo('<div id="login-tests" class="closed">');
-//             echo('<h2 class="header"><a href="javascript:toggle_main_state(\'login-tests\')">LOGIN TESTS</a></h2>');
-//             echo('<div class="container">');
-//                 echo('<p class="explain"></p>');
-//             
-//                 $start = microtime(true);
-//                 
-//                 login_run_tests();
-//                 
-//                 echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(true) - $start) . ' seconds to complete.</h5>');
-//                 
-//             echo('</div>');
-//         echo('</div>');
-//         
-//         echo('<div id="create-tests" class="closed">');
-//             echo('<h2 class="header"><a href="javascript:toggle_main_state(\'create-tests\')">CREATE USER FROM LOGIN TESTS</a></h2>');
-//             echo('<div class="container">');
-//                 echo('<p class="explain">In these tests, we have a couple of logins with no user associated, and we will try to create users for these logins.</p>');
-//             
-//                 $start = microtime(true);
-//                 
-//                 create_run_tests();
-//                 
-//                 echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(true) - $start) . ' seconds to complete.</h5>');
-//                 
-//             echo('</div>');
-//         echo('</div>');
+        echo('<div id="user_access-tests" class="closed">');
+            echo('<h2 class="header"><a href="javascript:toggle_main_state(\'user_access-tests\')">LOGGED-IN USER ACCESS TESTS</a></h2>');
+            echo('<div class="container">');
+                echo('<p class="explain"></p>');
+            
+                $start = microtime(true);
+                
+                user_access_run_tests();
+                
+                echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(true) - $start) . ' seconds to complete.</h5>');
+                
+            echo('</div>');
+        echo('</div>');
+        
+        echo('<div id="user_visibility-tests" class="closed">');
+            echo('<h2 class="header"><a href="javascript:toggle_main_state(\'user_visibility-tests\')">LOGGED-IN USER CROSS-VISIBILITY TESTS</a></h2>');
+            echo('<div class="container">');
+                echo('<p class="explain"></p>');
+            
+                $start = microtime(true);
+                
+                user_visibility_run_tests();
+                
+                echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(true) - $start) . ' seconds to complete.</h5>');
+                
+            echo('</div>');
+        echo('</div>');
+        
+        echo('<div id="login-tests" class="closed">');
+            echo('<h2 class="header"><a href="javascript:toggle_main_state(\'login-tests\')">LOGIN TESTS</a></h2>');
+            echo('<div class="container">');
+                echo('<p class="explain"></p>');
+            
+                $start = microtime(true);
+                
+                login_run_tests();
+                
+                echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(true) - $start) . ' seconds to complete.</h5>');
+                
+            echo('</div>');
+        echo('</div>');
+        
+        echo('<div id="create-tests" class="closed">');
+            echo('<h2 class="header"><a href="javascript:toggle_main_state(\'create-tests\')">CREATE USER FROM LOGIN TESTS</a></h2>');
+            echo('<div class="container">');
+                echo('<p class="explain">In these tests, we have a couple of logins with no user associated, and we will try to create users for these logins.</p>');
+            
+                $start = microtime(true);
+                
+                create_run_tests();
+                
+                echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(true) - $start) . ' seconds to complete.</h5>');
+                
+            echo('</div>');
+        echo('</div>');
         
         echo('<div id="create-delete-tests" class="closed">');
             echo('<h2 class="header"><a href="javascript:toggle_main_state(\'create-delete-tests\')">BASIC CREATE AND DELETE USER/LOGIN PAIRS</a></h2>');
@@ -651,6 +651,7 @@ ob_start();
             
                 $start = microtime(true);
                 
+    
                 create_delete_run_tests();
                 
                 echo('<h5>The entire set of tests took '. sprintf('%01.3f', microtime(true) - $start) . ' seconds to complete.</h5>');

@@ -281,6 +281,8 @@
                                     echo($id);
                                 }
                             echo("</p>");
+                            
+                            test_personal_ids_for_this_object($in_record_object->id());
                         }
                     }
                 
@@ -298,6 +300,33 @@
         } else {
             echo("<h4>Invalid Object!</h4>");
         }
+    }
+    
+    function test_personal_ids_for_this_object($in_test_target_id) {
+        $god_access_instance = new CO_Access('admin', NULL, CO_Config::god_mode_password());
+        $test_record = $god_access_instance->get_single_security_record_by_id($in_test_target_id);
+        if(isset($test_record)) {
+            $ids = $test_record->personal_ids();
+            $pass = true;
+            
+            if (is_array($ids) && count($ids)) {
+                foreach($ids as $id) {
+                    if (!$god_access_instance->is_this_a_personal_id($id)) {
+                        echo("<h2 style=\"color:red;font-weight:bold\">$id is not a personal ID!</h2>");
+                        $pass = false;
+                    }
+                }
+                
+                if ($pass) {
+                    echo("<h4 style=\"color:green\">All personal IDs are unique to login ID $in_test_target_id.</h4>");
+                } else {
+                    echo("<h4 style=\"color:red\">One or more personal IDs aren't actually personal IDs!</h4>");
+                }
+            }
+        } else {
+            echo("<h4 style=\"color:red\">The User instance is not valid!</h4>");
+        }
+
     }
         
 ?>
