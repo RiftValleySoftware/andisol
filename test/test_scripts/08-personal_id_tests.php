@@ -41,7 +41,8 @@ function personal_id_run_basic_tests() {
 
 function personal_id_run_advanced_tests() {
     global $global_num_ids;
-    personal_id_run_test(106, 'PASS- CREATE AND CHECK '.$global_num_ids.' RANDOM IDS', 'Sign in as the \'tertiary\' Admin, create IDs at random, with random numbers of personal IDs, then ensure that the IDs and types match.', 'tertiary', '', 'CoreysGoryStory');
+    global $global_max_num_personal_ids;
+    personal_id_run_test(106, 'PASS- CREATE AND CHECK '.$global_num_ids.' RANDOM IDS', 'Sign in as the \'tertiary\' Admin, create '.$global_num_ids.' IDs of random types (either user or manager), with random numbers of personal IDs (between 0 and '.$global_max_num_personal_ids.'), then ensure that the IDs and types match.', 'tertiary', '', 'CoreysGoryStory');
 }
 
 // ----------------------------------- BASIC TESTS ----------------------------------------------
@@ -76,7 +77,7 @@ function personal_id_test_104($in_login = NULL, $in_hashed_password = NULL, $in_
                                 
                                 $personal_ids = $test_items[2]->personal_ids();
                                 
-                                if (!count($personal_ids)) {
+                                if (!isset($personal_ids) || !count($personal_ids)) {
                                     echo('<h4 style="color:red;font-weight:bold; color: green">ID 5 PASSES!</h4>');
                                 } else {
                                     echo('<h4 style="color:red;font-weight:bold; color: red">ID 5 FAILS!</h4>');
@@ -126,17 +127,21 @@ function personal_id_test_105($in_login = NULL, $in_hashed_password = NULL, $in_
                             
                             if (!is_array($result) || count($result)) {
                                 $pass = false;
-                                echo("<h4 style=\"color:red;font-weight:bold\">UNEXPECTED RESULT FOR ITEM 3!</h4>");
+                                echo("<h4 style=\"color:red;font-weight:bold\">UNEXPECTED RESULT (".print_r($result, true).") FOR ITEM 3!</h4>");
                             }
+                            
                             $result = $test_items[1]->set_personal_ids([8,9]);
+                            
                             if (!is_array($result) || 2 != count($result) || $result[0] != 8 || $result[1] != 9) {
                                 $pass = false;
-                                echo("<h4 style=\"color:red;font-weight:bold\">UNEXPECTED RESULT FOR ITEM 4!</h4>");
+                                echo("<h4 style=\"color:red;font-weight:bold\">UNEXPECTED RESULT (".print_r($result, true).") FOR ITEM 4!</h4>");
                             }
+                            
                             $result = $test_items[2]->set_personal_ids([10,11]);
+                            
                             if (!is_array($result) || 2 != count($result) || $result[0] != 10 || $result[1] != 11) {
                                 $pass = false;
-                                echo("<h4 style=\"color:red;font-weight:bold\">UNEXPECTED RESULT FOR ITEM 5!</h4>");
+                                echo("<h4 style=\"color:red;font-weight:bold\">UNEXPECTED RESULT (".print_r($result, true).") FOR ITEM 5!</h4>");
                             }
                             
                             echo('<h4 style="margin-top:1em">AFTER:</h4>');
@@ -264,7 +269,9 @@ function make_one_user($in_cobra_instance, $in_user_id, $in_is_manager, $in_numb
     
     if (!isset($cobra_login_instance) || (!($cobra_login_instance instanceof CO_Cobra_Login) && !($cobra_login_instance instanceof CO_Cobra_Login_Manager))) {
         echo("<h4 style=\"color:red;font-weight:bold\">The User instance is not valid!</h4>");
-        echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$in_cobra_instance->error->error_code.') '.$in_cobra_instance->error->error_name.' ('.$in_cobra_instance->error->error_description.')</p>');
+        if ($in_cobra_instance->error) {
+            echo('<p style="margin-left:1em;color:red;font-weight:bold">Error: ('.$in_cobra_instance->error->error_code.') '.$in_cobra_instance->error->error_name.' ('.$in_cobra_instance->error->error_description.')</p>');
+        }
         $cobra_login_instance = NULL;
     }
     
