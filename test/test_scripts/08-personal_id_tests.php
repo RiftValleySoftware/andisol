@@ -29,23 +29,19 @@ set_time_limit ( 300 ); // More than five minutes is a problem.
 global $global_num_ids;
 global $global_max_num_personal_ids;
 
-$global_num_ids = 50;
+$global_num_ids = 25;
 $global_max_num_personal_ids = 200;
 
-// -------------------------------- TEST DISPATCHER ---------------------------------------------
+// ----------------------------------- BASIC TESTS ----------------------------------------------
+
+//##############################################################################################################################################
 
 function personal_id_run_basic_tests() {
     personal_id_run_test(104, 'PASS - Test Get Personal IDs', 'Make Sure that Item 3 Has 8 and 9 as Personal Tokens, Item 4 has 10 and 11, Item 5 has no personal tokens, and all the personal tokens are reported when requested.', 'admin', '', CO_Config::god_mode_password());
     personal_id_run_test(105, 'PASS - Test Change Personal IDs', 'Log in as the God Admin, remove IDs from one record, change the personal IDs of one record, and add new IDs to another.', 'admin', '', CO_Config::god_mode_password());
 }
 
-function personal_id_run_advanced_tests() {
-    global $global_num_ids;
-    global $global_max_num_personal_ids;
-    personal_id_run_test(106, 'PASS- CREATE AND CHECK '.$global_num_ids.' RANDOM IDS', 'Sign in as the \'tertiary\' Admin, create '.$global_num_ids.' IDs of random types (either user or manager), with random numbers of personal IDs (between 0 and '.$global_max_num_personal_ids.'), then ensure that the IDs and types match.', 'tertiary', '', 'CoreysGoryStory');
-}
-
-// ----------------------------------- BASIC TESTS ----------------------------------------------
+//##############################################################################################################################################
 
 function personal_id_test_104($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
@@ -106,6 +102,8 @@ function personal_id_test_104($in_login = NULL, $in_hashed_password = NULL, $in_
         echo('<div class="inner_div"><h4 style="text-align:center;margin-top:0.5em; color: red">We do not have an ANDISOL instance!</h4></div>');
     }
 }
+
+//##############################################################################################################################################
 
 function personal_id_test_105($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
@@ -190,6 +188,22 @@ function personal_id_test_105($in_login = NULL, $in_hashed_password = NULL, $in_
 
 // ---------------------------------- ADVANCED TESTS --------------------------------------------
 
+//##############################################################################################################################################
+
+function personal_id_run_advanced_tests() {
+    global $global_num_ids;
+    global $global_max_num_personal_ids;
+    personal_id_run_test(106, 'PASS- CREATE AND CHECK '.$global_num_ids.' RANDOM IDS', 'Sign in as the \'tertiary\' Admin, create '.$global_num_ids.' IDs of random types (either user or manager), with random numbers of personal IDs (between 0 and '.$global_max_num_personal_ids.'), then ensure that the IDs and types match.', 'tertiary', '', 'CoreysGoryStory');
+    personal_id_run_test(107, 'PASS- CHECK FOR VISIBILITY (MANAGER)', 'Log in as a non-God Admin, and check to see if the IDs are hidden properly. We should see 8 and 9 for Item 3 (Our login), and no personal IDs for either of the other logins.', 'secondary', '', 'CoreysGoryStory');
+    personal_id_run_test(108, 'PASS- CHECK FOR VISIBILITY (GOD)', 'Log in as a God Admin, and check to see if the IDs are displayed properly. We should see 8 and 9 for Item 3, 10 and 11 for Item 4, and no IDs for item 5.', 'admin', '', CO_Config::god_mode_password());
+    personal_id_run_test(109, 'PASS- ADD TOKEN', 'Log in as a non-God Admin, and set a personal token (9) to another ID.', 'secondary', '', 'CoreysGoryStory');
+    personal_id_run_test(110, 'FAIL- ADD TOKEN', 'Log in as a non-God Admin, and try the same, but with a non-personal ID (6).', 'secondary', '', 'CoreysGoryStory');
+    personal_id_run_test(111, 'PASS- REMOVE TOKEN', 'Log in as a non-God Admin, and remove token 9 from the ID we assigned it to, before.', 'secondary', '', 'CoreysGoryStory');
+    personal_id_run_test(112, 'FAIL- REMOVE TOKEN', 'Log in as a non-God Admin, and try to remove token 3 (non-personal) from ID 4.', 'secondary', '', 'CoreysGoryStory');
+}
+
+//##############################################################################################################################################
+
 function personal_id_test_106($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
     
@@ -239,7 +253,239 @@ function personal_id_test_106($in_login = NULL, $in_hashed_password = NULL, $in_
     }
 }
 
+//##############################################################################################################################################
+
+function personal_id_test_107($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
+        if ($andisol_instance->get_chameleon_instance()->security_db_available()) {
+            echo('<div class="inner_div">');
+                if (user_check($in_login, $in_hashed_password, $in_password, [3,4,5], [[8,9],[],[]])) {
+                    echo("<h4 style=\"color:green;font-weight:bold\">TEST PASSES!</h4>");
+                } else {
+                    echo("<h4 style=\"color:red;font-weight:bold\">TEST FAILS!</h4>");
+                }
+            echo('</div>');
+        } else {
+            echo('<div class="inner_div"><h4 style="text-align:center;margin-top:0.5em">We do not have a security DB</h4></div>');
+        }
+    }
+}
+
+//##############################################################################################################################################
+
+function personal_id_test_108($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
+        if ($andisol_instance->get_chameleon_instance()->security_db_available()) {
+            echo('<div class="inner_div">');
+                if (user_check($in_login, $in_hashed_password, $in_password, [3,4,5], [[8,9],[10,11],[]])) {
+                    echo("<h4 style=\"color:green;font-weight:bold\">TEST PASSES!</h4>");
+                } else {
+                    echo("<h4 style=\"color:red;font-weight:bold\">TEST FAILS!</h4>");
+                }
+            echo('</div>');
+        } else {
+            echo('<div class="inner_div"><h4 style="text-align:center;margin-top:0.5em">We do not have a security DB</h4></div>');
+        }
+    }
+}
+
+//##############################################################################################################################################
+
+function personal_id_test_109($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $access_instance = NULL;
+    $id_to_change = 5;
+    $token = 9;
+    
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
+        $access_instance = $andisol_instance->get_chameleon_instance();
+        $access_instance_god = new CO_Access('admin', '', CO_Config::god_mode_password());
+        if ($access_instance->security_db_available()) {
+            echo('<div class="inner_div">');
+                $source_item = $access_instance->get_login_item();
+                $test_item = $access_instance->get_single_security_record_by_id($id_to_change);
+                $examination_item = $access_instance_god->get_single_security_record_by_id($id_to_change);
+                echo('<div class="inner_div">');
+                    echo('<div class="inner_div">');
+                        if (isset($source_item) && isset($test_item)) {
+                            echo("<h4>BEFORE</h4>");
+                            echo("<h5>Our Login Record:</h5>");
+                            display_record($source_item);
+                            echo("<h5>The record we will change:</h5>");
+                            display_record($examination_item);
+                            $test_ids_before = $examination_item->ids();
+                            $success = $andisol_instance->add_personal_token_from_current_login($test_item->id(), $token);
+                            $examination_item = $access_instance_god->get_single_security_record_by_id($id_to_change);
+                            $test_ids_after = $examination_item->ids();
+                            $success = $success && !in_array($token, $test_ids_before) && in_array($token, $test_ids_after);
+                            echo('<div style="text-align:center"><img src="images/'.($success ? 'magic.gif' : 'fail.gif').'" style="margin:auto" /></div>');
+                            echo("<h5>The changed record:</h5>");
+                            display_record($examination_item);
+                            if ($success) {
+                                echo("<h4 style=\"color:green;font-weight:bold\">TEST PASSES!</h4>");
+                            } else {
+                                echo("<h4 style=\"color:red;font-weight:bold\">TEST FAILS!</h4>");
+                            }
+                        } else {
+                            echo("<h4 style=\"color:red;font-weight:bold\">NOTHING RETURNED!</h4>");
+                        }
+                    echo('</div>');
+                echo('</div>');
+            echo('</div>');
+        } else {
+            echo('<div class="inner_div"><h4 style="text-align:center;margin-top:0.5em">We do not have a security DB</h4></div>');
+        }
+    }
+}
+
+//##############################################################################################################################################
+
+function personal_id_test_110($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $access_instance = NULL;
+    $id_to_change = 5;
+    $token = 6;
+    
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
+        $access_instance = $andisol_instance->get_chameleon_instance();
+        $access_instance_god = new CO_Access('admin', '', CO_Config::god_mode_password());
+        if ($access_instance->security_db_available()) {
+            echo('<div class="inner_div">');
+                $source_item = $access_instance->get_login_item();
+                $test_item = $access_instance->get_single_security_record_by_id($id_to_change);
+                $examination_item = $access_instance_god->get_single_security_record_by_id($id_to_change);
+                echo('<div class="inner_div">');
+                    echo('<div class="inner_div">');
+                        if (isset($source_item) && isset($test_item)) {
+                            echo("<h4>BEFORE</h4>");
+                            echo("<h5>Our Login Record:</h5>");
+                            display_record($source_item);
+                            echo("<h5>The record we will change:</h5>");
+                            display_record($examination_item);
+                            $test_ids_before = $examination_item->ids();
+                            $success = $andisol_instance->add_personal_token_from_current_login($test_item->id(), $token);
+                            $examination_item = $access_instance_god->get_single_security_record_by_id($id_to_change);
+                            $test_ids_after = $examination_item->ids();
+                            $success = $success && !in_array($token, $test_ids_before) && in_array($token, $test_ids_after);
+                            echo('<div style="text-align:center"><img src="images/'.($success ? 'magic.gif' : 'fail.gif').'" style="margin:auto" /></div>');
+                            echo("<h5>The changed record:</h5>");
+                            display_record($examination_item);
+                            if ($success) {
+                                echo("<h4 style=\"color:green;font-weight:bold\">TEST PASSES!</h4>");
+                            } else {
+                                echo("<h4 style=\"color:red;font-weight:bold\">TEST FAILS!</h4>");
+                            }
+                        } else {
+                            echo("<h4 style=\"color:red;font-weight:bold\">NOTHING RETURNED!</h4>");
+                        }
+                    echo('</div>');
+                echo('</div>');
+            echo('</div>');
+        } else {
+            echo('<div class="inner_div"><h4 style="text-align:center;margin-top:0.5em">We do not have a security DB</h4></div>');
+        }
+    }
+}
+
+//##############################################################################################################################################
+
+function personal_id_test_111($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $access_instance = NULL;
+    $id_to_change = 5;
+    $token = 9;
+    
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
+        $access_instance_god = new CO_Access('admin', '', CO_Config::god_mode_password());
+        echo('<div class="inner_div">');
+        $source_item = $andisol_instance->get_login_item();
+        $test_item = $andisol_instance->get_login_item($id_to_change);
+        $examination_item = $access_instance_god->get_single_security_record_by_id($id_to_change);
+        echo('<div class="inner_div">');
+            echo('<div class="inner_div">');
+                if (isset($source_item) && isset($test_item)) {
+                    echo("<h4>BEFORE</h4>");
+                    echo("<h5>Our Login Record:</h5>");
+                    display_record($source_item);
+                    echo("<h5>The record we will change:</h5>");
+                    display_record($examination_item);
+                    $test_ids_before = $examination_item->ids();
+                    $success = $andisol_instance->remove_personal_token_from_this_login($test_item->id(), $token);
+                    $examination_item = $access_instance_god->get_single_security_record_by_id($id_to_change);
+                    $test_ids_after = $examination_item->ids();
+                    $success = $success && !in_array($token, $test_ids_after) && in_array($token, $test_ids_before);
+                    echo('<div style="text-align:center"><img src="images/'.($success ? 'magic.gif' : 'fail.gif').'" style="margin:auto" /></div>');
+                    echo("<h5>The changed record:</h5>");
+                    display_record($examination_item);
+                    if ($success) {
+                        echo("<h4 style=\"color:green;font-weight:bold\">TEST PASSES!</h4>");
+                    } else {
+                        echo("<h4 style=\"color:red;font-weight:bold\">TEST FAILS!</h4>");
+                    }
+                } else {
+                    echo("<h4 style=\"color:red;font-weight:bold\">NOTHING RETURNED!</h4>");
+                }
+                echo('</div>');
+            echo('</div>');
+        echo('</div>');
+    }
+}
+
+//##############################################################################################################################################
+
+function personal_id_test_112($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
+    $access_instance = NULL;
+    $id_to_change = 5;
+    $token = 3;
+    
+    $andisol_instance = make_andisol($in_login, $in_hashed_password, $in_password);
+    
+    if (isset($andisol_instance) && ($andisol_instance instanceof CO_Andisol)) {
+        $access_instance_god = new CO_Access('admin', '', CO_Config::god_mode_password());
+        echo('<div class="inner_div">');
+            $source_item = $andisol_instance->get_login_item();
+            $test_item = $andisol_instance->get_login_item($id_to_change);
+            $examination_item = $access_instance_god->get_single_security_record_by_id($id_to_change);
+            echo('<div class="inner_div">');
+                echo('<div class="inner_div">');
+                    if (isset($source_item) && isset($test_item)) {
+                        echo("<h4>BEFORE</h4>");
+                        echo("<h5>Our Login Record:</h5>");
+                        display_record($source_item);
+                        echo("<h5>The record we will change:</h5>");
+                        display_record($examination_item);
+                        $test_ids_before = $examination_item->ids();
+                        $success = $andisol_instance->remove_personal_token_from_this_login($test_item->id(), $token);
+                        $examination_item = $access_instance_god->get_single_security_record_by_id($id_to_change);
+                        $test_ids_after = $examination_item->ids();
+                        $success = $success && !in_array($token, $test_ids_after) && in_array($token, $test_ids_before);
+                        echo('<div style="text-align:center"><img src="images/'.($success ? 'magic.gif' : 'fail.gif').'" style="margin:auto" /></div>');
+                        echo("<h5>The changed record:</h5>");
+                        display_record($examination_item);
+                        if ($success) {
+                            echo("<h4 style=\"color:green;font-weight:bold\">TEST PASSES!</h4>");
+                        } else {
+                            echo("<h4 style=\"color:red;font-weight:bold\">TEST FAILS!</h4>");
+                        }
+                    } else {
+                        echo("<h4 style=\"color:red;font-weight:bold\">NOTHING RETURNED!</h4>");
+                    }
+                echo('</div>');
+            echo('</div>');
+        echo('</div>');
+    }
+}
+
 // -------------------------------- STRUCTURE ---------------------------------------------
+
+//##############################################################################################################################################
 
 function personal_id_run_test($in_num, $in_title, $in_explain, $in_login = NULL, $in_hashed_password = NULL, $in_password = NULL) {
     $test_num_string = sprintf("%03d", $in_num);
@@ -257,6 +503,8 @@ function personal_id_run_test($in_num, $in_title, $in_explain, $in_login = NULL,
         echo('</div>');
     echo('</div>');
 }
+
+//##############################################################################################################################################
 
 function make_one_user($in_cobra_instance, $in_user_id, $in_is_manager, $in_number_of_personal_ids) {
     $cobra_login_instance = NULL;
@@ -277,6 +525,8 @@ function make_one_user($in_cobra_instance, $in_user_id, $in_is_manager, $in_numb
     
     return $cobra_login_instance;
 }
+
+//##############################################################################################################################################
 
 function examine_one_user($in_god_access_instance, $in_tracker) {
     $test_record = $in_god_access_instance->get_login_item_by_login_string($in_tracker['login_id']);
@@ -299,10 +549,59 @@ function examine_one_user($in_god_access_instance, $in_tracker) {
     return false;
 }
 
+//##############################################################################################################################################
+
 function display_one_user($in_god_access_instance, $in_tracker) {
     $test_record = $in_god_access_instance->get_login_item_by_login_string($in_tracker['login_id']);
     display_record($test_record);
 }
+
+//##############################################################################################################################################
+
+function user_check($in_login = NULL, $in_hashed_password = NULL, $in_password = NULL, $ids, $comparison_ids) {
+    $access_instance = NULL;
+    
+    $pass = true;
+    
+    $access_instance = new CO_Access($in_login, $in_hashed_password, $in_password);
+    if ($access_instance->security_db_available()) {
+        echo('<div class="inner_div">');
+            $test_items = $access_instance->get_multiple_security_records_by_id($ids);
+            echo('<div class="inner_div">');
+                echo('<div class="inner_div">');
+                    if (isset($test_items)) {
+                        if (is_array($test_items) && count($test_items)) {
+                            $index = 0;
+                            foreach ( $test_items as $item ) {
+                                display_record($item);
+                                $ids = $comparison_ids[$index++];
+                                if ($item->personal_ids() != $ids) {
+                                    echo("<h4 style=\"color:red;font-weight:bold\">ITEM $index HAS A PERSONAL ID MISMATCH!</h4>");
+                                    $pass = false;
+                                }
+                            }
+                        } else {
+                            echo("<h4 style=\"color:red;font-weight:bold\">NO ARRAY!</h4>");
+                            $pass = false;
+                        }
+                    } else {
+                        echo("<h4 style=\"color:red;font-weight:bold\">NOTHING RETURNED!</h4>");
+                        $pass = false;
+                    }
+                echo('</div>');
+            echo('</div>');
+        echo('</div>');
+    } else {
+        echo('<div class="inner_div"><h4 style="text-align:center;margin-top:0.5em">We do not have a security DB</h4></div>');
+        $pass = false;
+    }
+    
+    return $pass;
+}
+
+//##############################################################################################################################################
+//                                                              MAIN CONTEXT
+//##############################################################################################################################################
 
 ob_start();
     prepare_databases('personal_id_test');
@@ -324,6 +623,8 @@ ob_start();
             echo('</div>');
         echo('</div>');
         
+        prepare_databases('personal_id_test');
+
         echo('<div id="personal_id-tests-2" class="closed">');
             echo('<h2 class="header"><a href="javascript:toggle_main_state(\'personal_id-tests-2\')">ADVANCED PERSONAL ID TESTS</a></h2>');
             echo('<div class="container">');
