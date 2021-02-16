@@ -283,7 +283,9 @@ class CO_Andisol {
         
         if ($this->logged_in()) {
             $ret = $this->get_chameleon_instance()->get_login_item($in_login_integer_id);
-            $this->error = $this->get_chameleon_instance()->error;
+            if (isset($this->get_chameleon_instance()->error)) {
+                $this->error = $this->get_chameleon_instance()->error;
+            }
         }
         
         return $ret;
@@ -304,7 +306,9 @@ class CO_Andisol {
         if ($this->logged_in()) {
             $ret = $this->get_chameleon_instance()->get_login_item_by_login_string($in_login_string_id);
         
-            $this->error = $this->get_chameleon_instance()->error;
+            if (isset($this->get_chameleon_instance()->error)) {
+                $this->error = $this->get_chameleon_instance()->error;
+            }
         }
         
         return $ret;
@@ -366,7 +370,9 @@ class CO_Andisol {
         
         if ($this->get_chameleon_instance()->can_i_see_this_data_record($in_id)) {
             $ret = $this->get_chameleon_instance()->get_data_access_class_by_id($in_id);
-            $this->error = $this->get_chameleon_instance()->error;
+            if (isset($this->get_chameleon_instance()->error)) {
+                $this->error = $this->get_chameleon_instance()->error;
+            }
         }
         
         return $ret;
@@ -383,7 +389,9 @@ class CO_Andisol {
     public function get_security_access_class_by_id(    $in_id  ///< This is the ID of the record to fetch.
                                                     ) {
         $ret = $this->$this->get_chameleon_instance()->get_security_access_class_by_id($in_id);
-        $this->error = $this->get_chameleon_instance()->error;
+        if (isset($this->get_chameleon_instance()->error)) {
+            $this->error = $this->get_chameleon_instance()->error;
+        }
         
         return $ret;
     }
@@ -507,7 +515,9 @@ class CO_Andisol {
                                     ) {
         $ret = $this->get_chameleon_instance()->generic_search($in_search_parameters, $or_search, $page_size, $initial_page, $and_writeable, $count_only, $ids_only);
         
-        $this->error = $this->get_chameleon_instance()->error;
+        if (isset($this->get_chameleon_instance()->error)) {
+            $this->error = $this->get_chameleon_instance()->error;
+        }
         
         return $ret;
     }
@@ -953,8 +963,10 @@ class CO_Andisol {
         
         if ($this->manager()) { // Don't even bother unless we're a manager.
             $ret = $this->get_cobra_instance()->get_all_logins($and_write, $in_login_string_id, $in_login_integer_id);
-        
-            $this->error = $this->get_cobra_instance()->error;
+            
+            if (isset($this->get_cobra_instance()->error)) {
+                $this->error = $this->get_cobra_instance()->error;
+            }
         } else {
             $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_user_not_authorized,
                                             CO_ANDISOL_Lang::$andisol_error_name_user_not_authorized,
@@ -1005,7 +1017,9 @@ class CO_Andisol {
                                                     ) {
         $ret = $this->get_chameleon_instance()->get_multiple_data_records_by_id($in_id_array);
         
-        $this->error = $this->get_chameleon_instance()->error;
+        if (isset($this->get_chameleon_instance()->error)) {
+            $this->error = $this->get_chameleon_instance()->error;
+        }
 
         return $ret;
     }
@@ -1020,7 +1034,9 @@ class CO_Andisol {
                                                 ) {
         $ret = $this->get_chameleon_instance()->get_single_data_record_by_id($in_id);
         
-        $this->error = $this->get_chameleon_instance()->error;
+        if (isset($this->get_chameleon_instance()->error)) {
+            $this->error = $this->get_chameleon_instance()->error;
+        }
     
         return $ret;
     }
@@ -1061,7 +1077,9 @@ class CO_Andisol {
         
         if (isset($in_initial_item_ids) && is_array($in_initial_item_ids) && count($in_initial_item_ids) && isset($ret) && ($ret instanceof CO_Collection)) {
             $elements = $this->get_chameleon_instance()->get_multiple_data_records_by_id($in_initial_item_ids);
-            $this->error = $this->get_chameleon_instance()->error;
+            if (isset($this->get_chameleon_instance()->error)) {
+                $this->error = $this->get_chameleon_instance()->error;
+            }
             
             if (isset($elements) && is_array($elements) && count($elements) && !isset($this->error)) {
                 if (!$ret->appendElements($elements)) {
@@ -1090,7 +1108,9 @@ class CO_Andisol {
         
         if ($this->logged_in()) {
             $ret = $this->get_chameleon_instance()->delete_data_record($in_item_id_integer);
-            $this->error = $this->get_chameleon_instance()->error;
+            if (isset($this->get_chameleon_instance()->error)) {
+                $this->error = $this->get_chameleon_instance()->error;
+            }
         } else {
             $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_user_not_authorized,
                                             CO_ANDISOL_Lang::$andisol_error_name_user_not_authorized,
@@ -1115,7 +1135,9 @@ class CO_Andisol {
         
         if ($this->valid()) {
             $ret = $this->get_chameleon_instance()->get_value_for_key($in_key, $in_classname);
-            $this->error = $this->get_chameleon_instance()->error;
+            if (isset($this->get_chameleon_instance()->error)) {
+                $this->error = $this->get_chameleon_instance()->error;
+            }
         }
         
         return $ret;
@@ -1174,7 +1196,9 @@ class CO_Andisol {
         
         if ($this->logged_in()) {
             $ret = $this->get_chameleon_instance()->set_value_for_key($in_key, $in_value, $in_classname);
-            $this->error = $this->get_chameleon_instance()->error;
+            if (isset($this->get_chameleon_instance()->error)) {
+                $this->error = $this->get_chameleon_instance()->error;
+            }
         } else {
             $this->error = new LGV_Error(   CO_ANDISOL_Lang_Common::$andisol_error_code_user_not_authorized,
                                             CO_ANDISOL_Lang::$andisol_error_name_user_not_authorized,
