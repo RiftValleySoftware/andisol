@@ -1,6 +1,7 @@
-**1.1.0.3000** *(February 14, 2021)*
+**1.1.0.3000** *(February 16, 2021)*
 
 - Added support for personal tokens.
+- Fixed a number of warnings.
 
 **1.0.10.3000** *(December 15, 2020)*
 
