@@ -1862,6 +1862,17 @@ class CO_Andisol {
     
     /***********************/
     /**
+    This returns IDs that have personal IDs.
+    This only works for the God admin.
+    
+    \returns an associative array of arrays of integer, keyed by integer. The key is the ID of the login, and the value is an array of integer, with the Personal IDs that match. NULL, if an error.
+     */
+    public function get_logins_with_personal_ids() {
+        return $this->get_chameleon_instance()->get_logins_with_personal_ids();
+    }
+        
+    /***********************/
+    /**
     This checks an ID, to see if it is a personal ID.
     
     \returns true, if the ID is a personal ID.
@@ -1870,7 +1881,18 @@ class CO_Andisol {
                                             ) {
         return $this->get_chameleon_instance()->is_this_a_personal_id($in_id);
     }
+            
+    /***********************/
+    /**
+    This checks an ID, to see if it is a login ID.
     
+    \returns true, if the ID is a login ID.
+     */
+    public function is_this_a_login_id( $in_id  ///< The ID we are checking. Must be greater than 1.
+                                            ) {
+        return $this->get_chameleon_instance()->is_this_a_login_id($in_id);
+    }
+        
     /***********************/
     /**
     This adds a personal token from one ID's pool, to the regular ID pool of another ID.
