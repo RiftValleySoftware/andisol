@@ -1849,6 +1849,22 @@ class CO_Andisol {
     
     /***********************/
     /**
+    This sets just the "personal" IDs for the given ID.
+    
+    This should only be called by the "God" admin, and will fail, otherwise (returns empty array).
+    
+    This is not an atomic operation. If any of the given IDs are also in the regular ID list, they will be removed from the personal IDs.
+    
+    \returns an array of integers, with the new personal security IDs (usually a copy of the input Array). It will be empty, if the procedure fails.
+     */
+    public function set_personal_ids(   $in_login_id,           ///< The ID of the login we want to modify.
+                                        $in_personal_ids = []   ///< An Array of Integers, with the new personal IDs. This replaces any previous ones. If empty, then the IDs are removed.
+                                    ) {
+        return $this->get_cobra_instance()->set_personal_ids($in_login_id, $in_personal_ids);
+    }
+    
+    /***********************/
+    /**
     This returns just the "personal" IDs for ALL logins, EXCEPT for the given ID.
     
     This should only be called from the ID fetcher in the access class, as it does not do a security predicate.
